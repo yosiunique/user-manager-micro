@@ -1,0 +1,14 @@
+.user-form-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}
+
+.reset-button {
+  margin-left: 8px;
+}
+
+/* Optional: To adjust the control alignment slightly */
+.register-area .ant-form-item-control {
+  text-align: left;
+}

@@ -1,0 +1,18 @@
+
+@if (!authService.isLoggedIn()) {
+
+<div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="login()">
+    <label>Username</label>
+    <input type="text" [(ngModel)]="userName" name="username" required />
+
+    <label>Password</label>
+    <input type="password" [(ngModel)]="password" name="password" required />
+
+    <button type="submit">Login</button>
+  </form>
+  <p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p>
+</div>
+
+} 

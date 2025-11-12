@@ -1,0 +1,106 @@
+
+
+
+<nz-table #usersTable
+ [nzBordered]="true"
+  [nzData]="users"  
+  [nzFrontPagination]="false"
+  [nzPageSize]="pageSize"
+  [nzPageSizeOptions]="[5,10,20,30,40,50]"
+  nzShowSizeChanger
+  nzShowPagination
+  [nzTotal]="total"
+ (nzPageIndexChange)="onPageChange($event)"
+ (nzPageSizeChange)="onPageSizeChange($event)"
+
+
+  *ngIf="haveRole('Admin')" 
+ >
+  
+  <thead>
+      <th (click)="addNewUser()" >
+                <button nz-button nzType="primary" nzSize="small"  >    
+ <i nz-icon nzType="plus" nzTheme="outline" ></i>
+        New User
+                </button> 
+
+       </th>
+
+          <th (click)="addNewRole()" >
+                <button nz-button nzType="primary" nzSize="small"  >    
+ <i nz-icon nzType="plus" nzTheme="outline" ></i>
+        New Role
+                </button> 
+
+       </th>
+    <tr style="background-color: rgb(45, 39, 134);">
+      <th>User ID</th>
+      <th>Username</th>
+      <!-- <th>Email</th> -->
+      <th>Status</th>
+      <th>Roles</th>
+      <th>Actions</th>
+   
+    </tr>
+  </thead>
+  <tbody>  
+    <tr *ngFor="let user of users">
+      <td>{{user.id}}</td>
+      <td>{{ user.userName }}</td>
+      <!-- <td>{{ user.email }}</td> -->
+      <!-- <td>{{ user.enabled ? 'Enabled' : 'Disabled' }} -->
+        <td>
+<nz-switch 
+  [ngModel]="user.enable" 
+  (ngModelChange)="onStatusChange($event,user)"
+  [nzCheckedChildren]="'Enabled'" 
+  [nzUnCheckedChildren]="'Disabled'"
+  nzSize="small"
+></nz-switch>
+
+
+      </td>
+      <td>
+  <button nz-button nzType="primary"  nzSize="small" (click)="assignRole(user.id)">
+        <i nz-icon nzType="edit"></i>Manage Role</button>
+      </td>
+      <td class="button">
+        <button nz-button nzType="primary" nzSize="small" (click)="resetPassword(user.id)">Reset</button>
+        <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deleteUser(user.id)">
+          <i nz-icon nzType="delete"></i>Remove</button>
+        <button nz-button nzType="default" nzWarn nzSize="small" (click)="updateUser(user.id)" style="background-color: yellow;">
+        <i nz-icon nzType="edit"></i> Update</button>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

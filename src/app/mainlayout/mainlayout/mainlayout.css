@@ -1,0 +1,75 @@
+.app-layout {
+  min-height: 100vh; /* Make the layout take up the full screen height */
+}
+
+/* --- Sidebar Styling --- */
+.logo {
+  height: 32px;
+  margin: 16px;
+  line-height: 32px;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  overflow: hidden; /* Hide text when collapsed */
+}
+
+/* --- Header Styling --- */
+nz-header {
+  background: #fff;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  display: flex;
+  align-items: center;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-right: 24px; /* Space for the user info */
+}
+
+.trigger {
+  padding: 0 24px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.trigger:hover {
+  color: #1890ff; /* Ant Design Primary Color */
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.welcome-message {
+  font-weight: 500;
+  color: #333;
+}
+
+.user-icon {
+  font-size: 20px;
+}
+
+/* --- Content Styling --- */
+nz-content {
+  margin: 24px;
+}
+
+.inner-content {
+  padding: 24px;
+  background: #fff;
+  min-height: 280px;
+  border-radius: 4px;
+}
+
+nz-footer {
+  text-align: center;
+  color: rgba(0, 0, 0, 0.65);
+}
