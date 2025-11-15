@@ -8,6 +8,9 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class Auth {
+  resetPassword(userName: string, newPassword: any):any  {
+return "null";
+  }
   private apiUrl=enviroment.ISSUE_URL
     private jwtHelper = new JwtHelperService();
       constructor(private http:HttpClient, private router:Router) {
@@ -44,6 +47,36 @@ export class Auth {
   getUserName():string{
 
     const token=this.getToken();
+    if(!token) return '';
+    const decoded=this.jwtHelper.decodeToken(token);
+    return decoded?.sub|| 'Re-Login'
+
+  }
+  getUserAttribute():string{
+    const token=this.getToken();
+    if(!token) return '';
+    const decoded=this.jwtHelper.decodeToken(token);
+    return decoded?.attribute || ''
+  }
+  getResetSate(): boolean {
+    const token=this.getToken();
+    if(!token) return false;
+    const decoded=this.jwtHelper.decodeToken(token);
+    return decoded.reset 
+  }
+  getTokenofReset(token:string):boolean{
+    if(!token) return false;
+    const decoded=this.jwtHelper.decodeToken(token);
+    return decoded.reset 
+
+  }
+  getTokenofEnable(token:string):boolean{
+    if(!token) return false;
+    const decoded=this.jwtHelper.decodeToken(token);
+    return decoded.enable 
+  }
+
+    getUserNamebeforLogin(token:string):string{
     if(!token) return '';
     const decoded=this.jwtHelper.decodeToken(token);
     return decoded?.sub|| 'Re-Login'

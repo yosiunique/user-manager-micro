@@ -7,6 +7,8 @@ import { Mainlayout } from './mainlayout/mainlayout/mainlayout';
 import { CreteUpdateUser } from './admin/crete-update-user/crete-update-user';
 import { Notfound } from './notfound/notfound/notfound';
 import { SavingComponenet } from './saving/saving-componenet/saving-componenet';
+import { LoanRepaymentsComponenets } from './loan/loan-repayments-componenets/loan-repayments-componenets';
+import { WelcomComponent } from './welcome/welcom-component/welcom-component';
 
 export const routes: Routes = [
   {path:'',
@@ -14,9 +16,14 @@ export const routes: Routes = [
     pathMatch:'full'
   },
   { path: 'login', component: Login  },
+  
   { path: 'home', children:[
   {
     path:'',component:Mainlayout,canActivate:[AuthGurd],
+  },
+  {
+    path:'welcome',
+    component:WelcomComponent
   },
   {
     path:'saving',
@@ -28,9 +35,18 @@ export const routes: Routes = [
     ]
   },
   {
+    path:'loan-repayment',
+    children:[
+     {
+      path:'view',
+      component:LoanRepaymentsComponenets ,canActivate:[AuthGurd]
+     }
+    ]
+  },
+  {
     path:'admin',
     children:[
-      { path: 'dashboard', component: AdminDashboard ,canActivate: [AuthGurd] },
+      { path: 'users', component: AdminDashboard ,canActivate: [AuthGurd] },
     ]
   }
 

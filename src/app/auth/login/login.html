@@ -1,18 +1,120 @@
-
 @if (!authService.isLoggedIn()) {
+<div class="office-auth-container">
+  
+  <!-- Login Section -->
+  <div *ngIf="!reset" class="office-auth-card">
+    <div class="office-logo">
+      <h1>Enat Bank</h1>
+    </div>
+    
+    <!-- <div class="auth-header">
+      <h2>Employee Login</h2>
+      <p>Enter your credentials to access the system</p>
+    </div> -->
+    
+    <form (ngSubmit)="login()" class="office-auth-form">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input 
+          type="text" 
+          id="username"
+          [(ngModel)]="userName" 
+          name="username" 
+          required 
+          placeholder="Enter your employee ID"
+          class="office-form-input"
+        />
+      </div>
 
-<div class="login-container">
-  <h2>Login</h2>
-  <form (ngSubmit)="login()">
-    <label>Username</label>
-    <input type="text" [(ngModel)]="userName" name="username" required />
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input 
+          type="password" 
+          id="password"
+          [(ngModel)]="password" 
+          name="password" 
+          required 
+          placeholder="Enter your password"
+          class="office-form-input"
+        />
+      </div>
 
-    <label>Password</label>
-    <input type="password" [(ngModel)]="password" name="password" required />
+      <button type="submit" class="office-auth-button">Login to System</button>
+    </form>
 
-    <button type="submit">Login</button>
-  </form>
-  <p *ngIf="errorMessage" style="color:red">{{ errorMessage }}</p>
+    <div class="office-auth-footer">
+      <a href="#" (click)="reset = true; $event.preventDefault()" class="office-auth-link">
+        Reset Password
+      </a>
+      <div class="support-info">
+        <small>Contact IT Support if you need assistance</small>
+      </div>
+    </div>
+
+    <p *ngIf="errorMessage" class="office-error-message">
+      <i class="icon-warning"></i>
+      {{ errorMessage }}
+    </p>
+  </div>
+
+  <!-- Reset Password Section -->
+  <div *ngIf="reset" class="office-auth-card">
+    <div class="office-logo">
+      <h1>Enat Bank</h1>
+    </div>
+    
+    <div class="auth-header">
+      <h2>Password Reset</h2>
+      <p>Set a new password for your account</p>
+    </div>
+    
+    <form [formGroup]="newRestFrom" (ngSubmit)="resetNow()" class="office-auth-form">
+      <div class="form-group">
+        <label for="reset-username">Employee ID / Username</label>
+        <input 
+          type="text" 
+          id="reset-username"
+          formControlName="userName" 
+          placeholder="Enter your employee ID"
+          class="office-form-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="new-password">New Password</label>
+        <input 
+          type="password" 
+          id="new-password"
+          formControlName="password" 
+          placeholder="Create new password"
+          class="office-form-input"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm New Password</label>
+        <input 
+          type="password" 
+          id="confirm-password"
+          formControlName="reenter" 
+          placeholder="Re-enter new password"
+          class="office-form-input"
+        />
+      </div>
+
+      <button type="submit" class="office-auth-button">Update Password</button>
+    </form>
+
+    <div class="office-auth-footer">
+      <a href="#" (click)="reset = false; $event.preventDefault()" class="office-auth-link">
+        ← Back to Login
+      </a>
+    </div>
+
+    <p *ngIf="errorMessage" class="office-error-message">
+      <i class="icon-warning"></i>
+      {{ errorMessage }}
+    </p>
+  </div>
 </div>
-
-} 
+}

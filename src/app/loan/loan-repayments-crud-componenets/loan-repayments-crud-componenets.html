@@ -1,14 +1,15 @@
 
-
 <div *ngIf="id.status==='details'">
-<div *ngFor="let sum of saving">
 
-  {{ssumSaving(sum.craSaving)}}
+  <div *ngFor="let sum of loan">
+
+  {{ssumSaving(sum.crassLoanRepayment)}}
 </div>
+
 <nz-table  #usersTable
 
  [nzBordered]="true"
-  [nzData]="saving" 
+  [nzData]="loan" 
   [nzLoading]="loading" 
   [nzFrontPagination]="false"
   [nzPageSize]="pageSize"
@@ -24,24 +25,23 @@
     <th (click)="deleteAll()" ><button nz-button nzType="primary" nzDanger nzSize="small" ><i nz-icon nzType="delete" nzTheme="outline" ></i>Remove All</button> 
 </th>
     <tr style="background-color: rgb(45, 39, 134);">
-      <th>Saving  ID</th>
+      <th>Laon ID</th>
       <th>Employee ID</th>
-      <th>fullName</th>
-      <th>CS</th>
+      <th>FullName</th>
       <th>CLR</th>
         <th>Actions</th>
     </tr>
   </thead>
   <tbody>  
-    <tr *ngFor="let save of saving">
-      <td>{{ save.id}}</td>
-      <td>{{ save.employeeId }}</td>
-      <td>{{ save.fullName }}</td>
-      <td>{{ save.craSaving}}
+    <tr *ngFor="let loan of loan">
+      <td>{{ loan.id}}</td>
+      <td>{{ loan.employeeId }}</td>
+      <td>{{ loan.fullName }}</td>
+      <td>{{loan.crassLoanRepayment}}</td>
       <td>
-  <button nz-button nzType="primary"  nzSize="small" (click)="updateSaving(true,save.id)">
+  <button nz-button nzType="primary"  nzSize="small" (click)="updateLoansRepayments(true,loan.id)">
         <i nz-icon nzType="details"></i>Update</button>
-        <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deletebyId(save.id)">
+        <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deletebyId(loan.id)">
           <i nz-icon nzType="delete"></i>Remove</button>
       </td>
     </tr>
@@ -53,7 +53,7 @@
 
 <div *ngIf="id.status==='create' || (id.status==='update' && updateForm )">
 <form   
-[formGroup]="savingForm" (ngSubmit)="submitForm()" nz-form nzLayout="vertical">
+[formGroup]="loanForm" (ngSubmit)="submitForm()" nz-form nzLayout="vertical">
   <nz-form-item>
     <nz-form-label [nzRequired]="true">Employee ID</nz-form-label>
     <nz-form-control [nzErrorTip]="'Employee ID is required'">
@@ -67,17 +67,16 @@
       <input nz-input formControlName="fullName" placeholder="Enter Full Name" />
     </nz-form-control>
   </nz-form-item>
-
   <nz-form-item>
-    <nz-form-label [nzRequired]="true">CRA Saving</nz-form-label>
-    <nz-form-control [nzErrorTip]="'CRA Saving must be a positive number'">
-      <input nz-input type="number" formControlName="craSaving" placeholder="Enter CRA Saving" />
+    <nz-form-label [nzRequired]="true">Crass Loan Repayment</nz-form-label>
+    <nz-form-control [nzErrorTip]="'Crass Loan Repayment must be a positive number'">
+      <input nz-input type="number" formControlName="crassLoanRepayment" placeholder="Enter Crass Loan Repayment" />
     </nz-form-control>
   </nz-form-item>
 
   <nz-form-item>
     <nz-form-control class="button-create-update">
-      <button nz-button nzType="primary" type="submit">  {{id.status==='create'?'Create New Saving':'Update Saving'}}  </button>
+      <button nz-button nzType="primary" type="submit">  {{id.status==='create'?'Create New LoanRepayment':'Update LoanRepayment'}}  </button>
     </nz-form-control>
   </nz-form-item>
 </form>

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { NZ_MODAL_DATA, NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { NZ_MODAL_DATA, NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
 import { SavingService } from '../../service/saving-service';
 import { SavingAndLoanRepayment } from '../model/saving';
@@ -11,35 +11,79 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzUploadChangeParam, NzUploadModule } from 'ng-zorro-antd/upload';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzTypographyModule } from 'ng-zorro-antd/typography';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzStatisticModule } from "ng-zorro-antd/statistic";
 
 @Component({
   selector: 'app-saving-crud-componenets',
   imports: [
-    NzTableModule, NzSwitchModule ,
-    CommonModule ,
-    NzModalModule ,
-    NzInputModule ,
+    NzTableModule, NzSwitchModule,
+    CommonModule,
+    NzModalModule,
+    NzInputModule,
     NzButtonModule,
-    ReactiveFormsModule  ,
+    ReactiveFormsModule,
     NzUploadModule,
-    NzProgressModule ,
-    NzDividerModule ,
-  ],
+    NzProgressModule,
+    NzDividerModule,
+    NzFormModule,
+    NzTagModule,
+    FormsModule,
+    NzTypographyModule,
+    NzCardModule,
+    NzStatisticModule
+],  
   templateUrl: './saving-crud-componenets.html',
   styleUrl: './saving-crud-componenets.css',
 })
 export class SavingCrudComponenets  extends BaseComponent<SavingAndLoanRepayment> implements OnInit {
+createSaving() {
+throw new Error('Method not implemented.');
+}
+onSearchChange($event: any) {
+throw new Error('Method not implemented.');
+}
+handleChange($event: NzUploadChangeParam) {
+throw new Error('Method not implemented.');
+}
+uploadFile() {
+throw new Error('Method not implemented.');
+}
+reloadPage() {
+throw new Error('Method not implemented.');
+}
 saving:SavingAndLoanRepayment[]=[];
   searchControl=new FormControl('search');
+  savingForm !:FormGroup ;
+  updateForm:boolean=false;
+  updateId!:number;
+  totalSaving:number=0;
+searchTerm: any;
+uploading: unknown;
   constructor( private  savingService:SavingService ,
+    private fb:FormBuilder,
+    private msg : NzMessageService,
+    private modalRef:NzModalRef,
     modal:NzModalService,
      @Inject(NZ_MODAL_DATA) protected id:any 
   ) { 
     super(savingService,modal);
   }
   ngOnInit(): void {
+    
    this.loadSavings();
+      this.savingForm = this.fb.group({
+      employeeId: ['', [Validators.required, Validators.maxLength(10)]],
+      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      craSaving: [0, [Validators.required, Validators.min(0)]],
+    });
+
+
   }
 
 
@@ -61,11 +105,61 @@ saving:SavingAndLoanRepayment[]=[];
     }); 
   }
 
-
-
-  addNewSaving(){
+  updateSaving(update:boolean ,id:number){
+    this.updateForm=update;
+    this.id.status='update';
+    this.updateId=id;
+    this.savingService.getById(id).subscribe({  
+      next:(data)=>{
+        this.savingForm.addControl('id',new FormControl(data.id));
+        this.savingForm.patchValue({
+          employeeId: data.employeeId,
+          fullName: data.fullName,
+          craSaving: data.craSaving,
+        });
+        console.log("saving record loaded for update",data)
+      },
+      error:(error)=>{
+        console.log("failed to load saving record for update",error)
+      }
+    }); 
 
   }
+
+ submitForm(){
+
+    if (this.savingForm.valid && this.id.status==='create') {
+this.savingService.create(this.savingForm.value).subscribe({
+  next:(data)=>{
+    console.log("saving record created successfully",data)  
+
+    this.msg.success('Saving record created successfully.',data);
+    this.modalRef.destroy();  
+  },
+  error:(error)=>{
+    this.msg.error('Failed to create saving record. Error: '+error);
+  }
+    })
+
+
+    } else if(this.id.status==='update' && this.savingForm.valid){
+      this.savingService.update(this.updateId,this.savingForm.value).subscribe({
+        next:(data)=>{
+          console.log("saving record updated successfully",data)
+          this.msg.success('Saving record updated successfully.',data);
+          this.modalRef.destroy();  
+        }
+        ,
+        error:(error)=>{
+          this.msg.error('Failed to update saving record. Error: '+error);
+        }
+      })  
+
+    }
+
+
+
+ }
 
 
 clear(){
@@ -93,6 +187,7 @@ deleteAll(){
         nzContent: 'All saving records for employee ID '+this.id.id+' deleted successfully.' 
       });
       this.loadSavings();
+      this.modalRef.destroy();
     },
     error:(error)=>{
       console.log("failed to delete saving records",error)
@@ -126,5 +221,48 @@ deletebyId(id:number){
   });
 
 }
+
+
+
+getTotalSaving():number{
+  return this.saving.reduce((total, save) => total + save.craSaving, 0);
+}
+
+
+// Component methods
+getProgressCircleValue(): string {
+  const total = this.getTotalSaving();
+  const circumference = 2 * Math.PI * 52;
+  const progress = total > 0 ? (total / 100000) * 100 : 0; // Adjust divisor as needed
+  const dasharray = `${(progress / 100) * circumference} ${circumference}`;
+  return dasharray;
+}
+
+getAverageSaving(): number {
+  if (!this.saving || this.saving.length === 0) return 0;
+  const total = this.getTotalSaving();
+  return total / this.saving.length;
+}
+
+trackByFn(index: number, item: any): number {
+  return item.id;
+}
+
+exportToExcel(): void {
+  // Implement Excel export functionality
+  console.log('Exporting to Excel...');
+}
+
+cancelForm(): void {
+  // Implement form cancellation
+  this.savingForm.reset();
+  // Additional cancellation logic
+}
+
+
+ssumSaving(craSaving:number):number{
+return craSaving=craSaving+craSaving;
+}
+
 
 }

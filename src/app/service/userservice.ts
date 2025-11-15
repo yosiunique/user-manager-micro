@@ -29,7 +29,16 @@ export class Userservice extends BaseService <User> {
       
   const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
     return this.http.put(`${enviroment.HOST}/users/reset`,user,{headers,responseType:'text' });
+  } 
+
+   getByUserNameToRestPasword(userName:string ,token:string){
+  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    return this.http.get<any>(`${enviroment.HOST}/users/find_by_username/${userName}`,{headers});
   }
+  resetPasswordbeorlogin(user:User ,password:string ,token:string){
+  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    return this.http.put(`${enviroment.HOST}/users/reset`,user,{headers,responseType:'text' });
+  } 
 
   
   

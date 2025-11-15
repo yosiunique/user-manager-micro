@@ -1,120 +1,173 @@
-
 <nz-layout class="app-layout">
+  <!-- Sidebar -->
   <nz-sider 
     nzCollapsible 
     [(nzCollapsed)]="isCollapsed" 
     [nzTrigger]="null" 
     nzBreakpoint="lg" 
     [nzCollapsedWidth]="80"
+    [nzWidth]="240"
+    class="app-sider"
   >
-    <div class="logo">
-      <span *ngIf="!isCollapsed">Financial App</span>
+    <div class="logo-container">
+      <div class="logo">
+        <img src="/enat.jpeg" alt="Enat Bank" *ngIf="!isCollapsed" class="logo-image">
+        <span class="logo-text" *ngIf="!isCollapsed">Enat Bank</span>
+        <img src="/enat.jpeg" alt="Enat" *ngIf="isCollapsed" class="logo-icon">
+      </div>
     </div>
 
-    <ul nz-menu nzTheme="dark" nzMode="inline">
-  <!-- Dashboard -->
-  <li nz-menu-item routerLink="/home/dashboard" routerLinkActive="ant-menu-item-selected">
-    <span nz-icon nzType="dashboard"></span>
-    <span>Dashboard</span>
-  </li>
+    <ul nz-menu nzTheme="dark" nzMode="inline" class="app-menu">
+      <!-- Dashboard -->
+      <li nz-menu-item routerLink="/home/dashboard" routerLinkActive="ant-menu-item-selected">
+        <span nz-icon nzType="dashboard"></span>
+        <span>Dashboard</span>
+      </li>
 
-  <!-- Saving -->
-  <li nz-submenu nzTitle="Saving" nzIcon="property-safety">
-    <ul>
-      <li nz-menu-item routerLink="/home/saving/view" routerLinkActive="ant-menu-item-selected">
-        <span>All Savings</span>
+      <!-- Saving -->
+      <li nz-submenu nzTitle="Saving" nzIcon="bank">
+        <ul>
+          <li nz-menu-item routerLink="/home/saving/view" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="file-text"></span>
+            <span>All Savings</span>
+          </li>
+        </ul>
       </li>
-      <li nz-menu-item routerLink="/home/saving/by-id" routerLinkActive="ant-menu-item-selected">
-        <span>Saving by ID</span>
+
+      <!-- Loan -->
+      <li nz-submenu nzTitle="Loan" nzIcon="credit-card">
+        <ul>
+          <li nz-menu-item routerLink="/home/loan-repayment/view" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="file-done"></span>
+            <span>All Loan Repayments</span>
+          </li>
+        </ul>
       </li>
-      <li nz-menu-item routerLink="/home/saving/import" routerLinkActive="ant-menu-item-selected">
-        <span>Import CSV</span>
+
+      <!-- Admin -->
+      <li nz-submenu nzTitle="Administration" nzIcon="setting">
+        <ul>
+          <li nz-menu-item routerLink="/home/admin/users" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="team"></span>
+            <span>Manage Users</span>
+          </li>
+          <li nz-menu-item routerLink="/home/admin/logs" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="database"></span>
+            <span>System Logs</span>
+          </li>
+        </ul>
       </li>
+
+      <!-- Reports -->
+      <!-- <li nz-submenu nzTitle="Reports & Analytics" nzIcon="bar-chart">
+        <ul>
+          <li nz-menu-item routerLink="/home/reports/savings" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="pie-chart"></span>
+            <span>Savings Report</span>
+          </li>
+          <li nz-menu-item routerLink="/home/reports/loans" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="line-chart"></span>
+            <span>Loan Report</span>
+          </li>
+          <li nz-menu-item routerLink="/home/reports/performance" routerLinkActive="ant-menu-item-selected">
+            <span nz-icon nzType="rise"></span>
+            <span>Performance Analytics</span>
+          </li>
+        </ul>
+      </li> -->
     </ul>
-  </li>
-
-  <!-- Loan -->
-  <li nz-submenu nzTitle="Loan" nzIcon="account-book">
-    <ul>
-      <li nz-menu-item routerLink="/home/loan/apply" routerLinkActive="ant-menu-item-selected">
-        <span>Apply for Loan</span>
-      </li>
-      <li nz-menu-item routerLink="/home/loan/schedule" routerLinkActive="ant-menu-item-selected">
-        <span>Loan Schedule</span>
-      </li>
-      <li nz-menu-item routerLink="/home/loan/payment" routerLinkActive="ant-menu-item-selected">
-        <span>Make a Payment</span>
-      </li>
-    </ul>
-  </li>
-
-  <!-- Admin -->
-  <li nz-submenu nzTitle="Admin" nzIcon="team">
-    <ul>
-      <li nz-menu-item routerLink="/home/admin/users" routerLinkActive="ant-menu-item-selected">
-        <span>Manage Users</span>
-      </li>
-      <li nz-menu-item routerLink="/home/admin/roles" routerLinkActive="ant-menu-item-selected">
-        <span>Manage Roles</span>
-      </li>
-      <li nz-menu-item routerLink="/home/admin/logs" routerLinkActive="ant-menu-item-selected">
-        <span>System Logs</span>
-      </li>
-    </ul>
-  </li>
-
-  <!-- Reports -->
-  <li nz-submenu nzTitle="Reports" nzIcon="bar-chart">
-    <ul>
-      <li nz-menu-item routerLink="/home/reports/savings" routerLinkActive="ant-menu-item-selected">
-        <span>Savings Report</span>
-      </li>
-      <li nz-menu-item routerLink="/home/reports/loans" routerLinkActive="ant-menu-item-selected">
-        <span>Loan Report</span>
-      </li>
-    </ul>
-  </li>
-</ul>
-
   </nz-sider>
 
-  <nz-layout>
-    
-    <nz-header>
+  <!-- Main Content -->
+  <nz-layout class="site-layout">
+    <!-- Header -->
+    <nz-header class="app-header">
       <div class="header-content">
-        <span 
-          class="trigger" 
-          nz-icon 
-          [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'" 
-          (click)="toggleCollapsed()"
-        ></span>
+        <div class="header-left">
+          <button 
+            nz-button 
+            nzType="text" 
+            class="trigger" 
+            (click)="toggleCollapsed()"
+          >
+        <span nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'">
+          <i nz-icon nzType="bank" nzTheme="outline" ></i>
+        </span>
+        </button>
+          <nz-breadcrumb class="breadcrumb">
+            <nz-breadcrumb-item>Home</nz-breadcrumb-item>
+            <nz-breadcrumb-item>{{ currentPage }}</nz-breadcrumb-item>
+          </nz-breadcrumb>
+        </div>
         
-       <div class="user-info" nz-dropdown [nzDropdownMenu]="menu">
-  <span class="welcome-message">{{ fullName }}</span>
-  <span nz-icon nzType="user" nzTheme="outline" class="user-icon"></span>
-</div>
-
-<nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul nz-menu>
-    <li nz-menu-item (click)="logOut()">
-      <span nz-icon nzType="logout" nzTheme="outline"></span> Logout
-    </li>
-  </ul>
-</nz-dropdown-menu>
-
+        <div class="header-right">
+          <nz-space [nzSize]="16">
+            <!-- Notifications -->
+            <span class="nz-space-item">
+              <button nz-button nzType="text" nzShape="circle" nz-tooltip="Notifications">
+                <span nz-icon nzType="bell" nzTheme="outline"></span>
+              </button>
+            </span>
+            
+            <!-- User Profile -->
+            <span class="nz-space-item">
+              <div class="user-profile" nz-dropdown [nzDropdownMenu]="userMenu">
+                <nz-avatar nzIcon="user" class="user-avatar"></nz-avatar>
+                <span class="user-name">{{ fullName }}</span>
+                <span nz-icon nzType="down" class="dropdown-arrow"></span>
+              </div>
+            </span>
+          </nz-space>
+        </div>
       </div>
     </nz-header>
-    
-    <nz-content>
-      <div class="inner-content">
 
+    <!-- User Dropdown Menu -->
+    <nz-dropdown-menu #userMenu="nzDropdownMenu">
+      <ul nz-menu>
+        <li nz-menu-item (click)="viewProfile()">
+          <span nz-icon nzType="user" nzTheme="outline"></span>
+          My Profile
+        </li>
+        <li nz-menu-item (click)="changePassword()">
+          <span nz-icon nzType="lock" nzTheme="outline"></span>
+          Change Password
+        </li>
+        <li nz-menu-divider></li>
+        <li nz-menu-item (click)="logOut()" class="logout-item">
+          <span nz-icon nzType="logout" nzTheme="outline"></span>
+          Logout
+        </li>
+      </ul>
+    </nz-dropdown-menu>
+
+    <!-- Content Area -->
+    <nz-content class="app-content">
+      <div class="content-wrapper">
         <router-outlet></router-outlet>
-
       </div>
     </nz-content>
 
-    <nz-footer>
-      Enat Bank @2025
+    <!-- Footer -->
+    <nz-footer class="app-footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <span>Enat Bank S.C. © 2025. All rights reserved.</span>
+        </div>
+        <div class="footer-right">
+          <nz-space [nzSize]="12">
+            <span class="nz-space-item">
+              <a>Privacy Policy</a>
+            </span>
+            <span class="nz-space-item">
+              <a>Terms of Service</a>
+            </span>
+            <span class="nz-space-item">
+              <a>Help Center</a>
+            </span>
+          </nz-space>
+        </div>
+      </div>
     </nz-footer>
   </nz-layout>
 </nz-layout>

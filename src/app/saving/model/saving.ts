@@ -2,8 +2,7 @@
    export interface SavingAndLoanRepayment {
  
     id: number;
-     employeeId:string
+    employeeId:string
     fullName: string;
     craSaving:number;
-    crassLoanRepayment:number;
    }

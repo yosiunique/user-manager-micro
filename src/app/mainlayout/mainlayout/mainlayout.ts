@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzIconModule, provideNzIcons } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzSliderModule } from 'ng-zorro-antd/slider';
@@ -15,7 +15,11 @@ import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
 import { Userservice } from '../../service/userservice';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzCardModule } from "ng-zorro-antd/card";
-
+import { DashboardOutline } from '@ant-design/icons-angular/icons';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 @Component({
   selector: 'app-mainlayout',
   imports: [
@@ -27,13 +31,29 @@ import { NzCardModule } from "ng-zorro-antd/card";
     NzIconModule,
     RouterModule,
     NzDropDownModule,
-    NzCardModule
+    NzCardModule,
+    NzSpaceModule ,
+    NzButtonModule,
+    NzBreadCrumbModule,
+    NzIconModule,
+    NzAvatarModule
+    
 ],
   templateUrl: './mainlayout.html',
   styleUrl: './mainlayout.css',
+  providers:[
+     
+  ]
 })
 export class Mainlayout  implements OnInit  {
+changePassword() {
+throw new Error('Method not implemented.');
+}
+viewProfile() {
+throw new Error('Method not implemented.');
+}
   fullName:string='';
+currentPage: any;
 
   ngOnInit(): void {
   this.userservice.getByUserName(this.auth.getUserName()).subscribe({

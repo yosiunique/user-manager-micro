@@ -1,0 +1,138 @@
+<div class="welcome-container">
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to Finance Manager</h1>
+      <p class="hero-subtitle">
+        Manage your loan repayments and savings efficiently with our comprehensive financial management system
+      </p>
+      <div class="hero-actions">
+        <button nz-button nzType="primary" nzSize="large" (click)="navigateToSavings()">
+          <i nz-icon nzType="dollar"></i>
+          Manage Savings
+        </button>
+        <button nz-button nzType="default" nzSize="large" (click)="navigateToLoans()">
+          <i nz-icon nzType="transaction"></i>
+          Manage Loans
+        </button>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="hero-placeholder">💰</div>
+    </div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="stats-section">
+    <nz-row nzGutter="16">
+      <nz-col nzSpan="6">
+        <nz-statistic 
+          nzTitle="Total Savings" 
+          [nzValue]="totalSavings" 
+          nzPrefix="$"
+          [nzValueStyle]="{ color: '#52c41a' }"
+        ></nz-statistic>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-statistic 
+          nzTitle="Active Loans" 
+          [nzValue]="activeLoans" 
+          [nzValueStyle]="{ color: '#1890ff' }"
+        ></nz-statistic>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-statistic 
+          nzTitle="Total Users" 
+          [nzValue]="totalUsers" 
+          [nzValueStyle]="{ color: '#faad14' }"
+        ></nz-statistic>
+      </nz-col>
+      <nz-col nzSpan="6">
+        <nz-statistic 
+          nzTitle="Pending Actions" 
+          [nzValue]="pendingActions" 
+          [nzValueStyle]="{ color: '#722ed1' }"
+        ></nz-statistic>
+      </nz-col>
+    </nz-row>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <h2 class="section-title">What You Can Do</h2>
+    <nz-row nzGutter="24">
+      <div nz-col nzSpan="12">
+        <nz-card class="feature-card" nzHoverable (click)="navigateToSavings()">
+          <div class="feature-content">
+            <div class="feature-icon savings">
+              <i nz-icon nzType="dollar" nzTheme="outline"></i>
+            </div>
+            <div class="feature-text">
+              <h3>Savings Management</h3>
+              <p>Track and manage all your savings accounts, set goals, and monitor your financial growth</p>
+              <ul>
+                <li>Import savings data from CSV</li>
+                <li>View savings history and trends</li>
+                <li>Set and track savings goals</li>
+                <li>Generate savings reports</li>
+              </ul>
+            </div>
+          </div>
+        </nz-card>
+      </div>
+      <div nz-col nzSpan="12">
+        <nz-card class="feature-card" nzHoverable (click)="navigateToLoans()">
+          <div class="feature-content">
+            <div class="feature-icon loans">
+              <i nz-icon nzType="transaction" nzTheme="outline"></i>
+            </div>
+            <div class="feature-text">
+              <h3>Loan Repayments</h3>
+              <p>Manage loan repayment schedules, track payments, and monitor outstanding balances</p>
+              <ul>
+                <li>Import loan data from CSV files</li>
+                <li>Track payment schedules</li>
+                <li>Monitor outstanding balances</li>
+                <li>Generate repayment reports</li>
+              </ul>
+            </div>
+          </div>
+        </nz-card>
+      </div>
+    </nz-row>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="quick-actions">
+    <h2 class="section-title">Quick Actions</h2>
+    <nz-row nzGutter="16">
+      <nz-col nzSpan="8">
+        <nz-card class="action-card" nzHoverable (click)="navigateToSavings()">
+          <div class="action-content">
+            <i nz-icon nzType="plus-circle" class="action-icon"></i>
+            <h4>Add New Record</h4>
+            <p>Create new savings or loan records manually</p>
+          </div>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card class="action-card" nzHoverable (click)="navigateToSavings()">
+          <div class="action-content">
+            <i nz-icon nzType="upload" class="action-icon"></i>
+            <h4>Import CSV</h4>
+            <p>Bulk import data from CSV files</p>
+          </div>
+        </nz-card>
+      </nz-col>
+      <nz-col nzSpan="8">
+        <nz-card class="action-card" nzHoverable (click)="navigateToSavings()">
+          <div class="action-content">
+            <i nz-icon nzType="bar-chart" class="action-icon"></i>
+            <h4>View Reports</h4>
+            <p>Generate comprehensive financial reports</p>
+          </div>
+        </nz-card>
+      </nz-col>
+    </nz-row>
+  </div>
+</div>

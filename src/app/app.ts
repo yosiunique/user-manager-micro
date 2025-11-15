@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';;
+import { ChangeDetectorRef, Component, signal } from '@angular/core';;
 import { CommonModule } from '@angular/common';
 import { Mainlayout } from './mainlayout/mainlayout/mainlayout';
 import { Auth } from './auth/auth';
@@ -13,9 +13,9 @@ import { Login } from "./auth/login/login";
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App  {
   constructor(protected login:Auth){
 
   }
-  protected readonly title = signal('repayments');
+  
 }
