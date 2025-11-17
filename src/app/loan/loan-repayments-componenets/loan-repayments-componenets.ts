@@ -17,6 +17,7 @@ import { SavingCrudComponenets } from '../../saving/saving-crud-componenets/savi
 import { SavingService } from '../../service/saving-service';
 import { LoanRepaymentService } from '../../service/loan-repayment-service';
 import { LoanRepaymentsCrudComponenets } from '../loan-repayments-crud-componenets/loan-repayments-crud-componenets';
+import { Auth } from '../../auth/auth';
 
 @Component({
   selector: 'app-loan-repayments-componenets',
@@ -41,9 +42,6 @@ export class LoanRepaymentsComponenets extends  BaseComponent<LoanRepayment> imp
 
 
 
-   reloadPage() {
-      throw new Error('Method not implemented.');
-    }
   
     loan: LoanRepayment[] = [];
     searchControl = new FormControl('search');
@@ -56,7 +54,8 @@ export class LoanRepaymentsComponenets extends  BaseComponent<LoanRepayment> imp
     destroy$ = new Subject<void>();
     private msg = inject(NzMessageService);
     constructor(private loanRepaymentService: LoanRepaymentService,
-      modal: NzModalService
+      modal: NzModalService ,
+      private auth:Auth 
     ) {
       super(loanRepaymentService, modal);
     }
@@ -255,6 +254,16 @@ export class LoanRepaymentsComponenets extends  BaseComponent<LoanRepayment> imp
       });
     }
   
+
+   reloadPage() {
+  this.selectedFile=null ;
+    }
+
+      haveRole(roleName:string){
+     
+ const roles=this.auth.getUserRoles().map((role:any )=>role.roleTypes.role);
+ return roles.includes(roleName);
+  }
   
   }
 

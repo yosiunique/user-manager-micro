@@ -19,7 +19,7 @@
 
     <ul nz-menu nzTheme="dark" nzMode="inline" class="app-menu">
       <!-- Dashboard -->
-      <li nz-menu-item routerLink="/home/dashboard" routerLinkActive="ant-menu-item-selected">
+      <li nz-menu-item routerLink="/home/welcome" routerLinkActive="ant-menu-item-selected">
         <span nz-icon nzType="dashboard"></span>
         <span>Dashboard</span>
       </li>
@@ -51,30 +51,12 @@
             <span nz-icon nzType="team"></span>
             <span>Manage Users</span>
           </li>
-          <li nz-menu-item routerLink="/home/admin/logs" routerLinkActive="ant-menu-item-selected">
+          <!-- <li nz-menu-item routerLink="/home/admin/logs" routerLinkActive="ant-menu-item-selected">
             <span nz-icon nzType="database"></span>
             <span>System Logs</span>
-          </li>
+          </li> -->
         </ul>
       </li>
-
-      <!-- Reports -->
-      <!-- <li nz-submenu nzTitle="Reports & Analytics" nzIcon="bar-chart">
-        <ul>
-          <li nz-menu-item routerLink="/home/reports/savings" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="pie-chart"></span>
-            <span>Savings Report</span>
-          </li>
-          <li nz-menu-item routerLink="/home/reports/loans" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="line-chart"></span>
-            <span>Loan Report</span>
-          </li>
-          <li nz-menu-item routerLink="/home/reports/performance" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="rise"></span>
-            <span>Performance Analytics</span>
-          </li>
-        </ul>
-      </li> -->
     </ul>
   </nz-sider>
 
@@ -102,12 +84,12 @@
         
         <div class="header-right">
           <nz-space [nzSize]="16">
-            <!-- Notifications -->
-            <span class="nz-space-item">
+            <!--if nceeery i will add this features  Notifications -->
+            <!-- <span class="nz-space-item">
               <button nz-button nzType="text" nzShape="circle" nz-tooltip="Notifications">
                 <span nz-icon nzType="bell" nzTheme="outline"></span>
               </button>
-            </span>
+            </span> -->
             
             <!-- User Profile -->
             <span class="nz-space-item">
@@ -125,14 +107,6 @@
     <!-- User Dropdown Menu -->
     <nz-dropdown-menu #userMenu="nzDropdownMenu">
       <ul nz-menu>
-        <li nz-menu-item (click)="viewProfile()">
-          <span nz-icon nzType="user" nzTheme="outline"></span>
-          My Profile
-        </li>
-        <li nz-menu-item (click)="changePassword()">
-          <span nz-icon nzType="lock" nzTheme="outline"></span>
-          Change Password
-        </li>
         <li nz-menu-divider></li>
         <li nz-menu-item (click)="logOut()" class="logout-item">
           <span nz-icon nzType="logout" nzTheme="outline"></span>
@@ -153,19 +127,6 @@
       <div class="footer-content">
         <div class="footer-left">
           <span>Enat Bank S.C. © 2025. All rights reserved.</span>
-        </div>
-        <div class="footer-right">
-          <nz-space [nzSize]="12">
-            <span class="nz-space-item">
-              <a>Privacy Policy</a>
-            </span>
-            <span class="nz-space-item">
-              <a>Terms of Service</a>
-            </span>
-            <span class="nz-space-item">
-              <a>Help Center</a>
-            </span>
-          </nz-space>
         </div>
       </div>
     </nz-footer>

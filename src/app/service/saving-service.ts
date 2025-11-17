@@ -35,5 +35,13 @@ export class SavingService extends BaseService<SavingAndLoanRepayment> {
     return this.http.delete(`${enviroment.HOST}/saving-and-loan-repayments/delete-by-employee-id/${employeeId}`,{headers,responseType:'text'});
   }
 
+ 
+
+   findTotalByEmployeeId(employeeId:string){
+    const token = localStorage.getItem('jwtToken');
+  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    return this.http.get(`${enviroment.HOST}/saving-and-loan-repayments/total-cra-saving/${employeeId}`,{headers,responseType:'text'});
+  }
+
   
 }

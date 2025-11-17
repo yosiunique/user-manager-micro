@@ -1,10 +1,15 @@
 
 <div *ngIf="id.status==='details'">
 
-  <div *ngFor="let sum of loan">
+ <nz-card nzTitle="Employee Loan Repayments Summary" class="mb-3 shadow-sm">
+    <div class="flex justify-between">
+      <div>
+        <h3 class="m-0 text-primary">Total Loan Repayments </h3>
+        <h2 class="text-success fw-bold">{{ totalRepayments| number }} </h2>
+      </div>
 
-  {{ssumSaving(sum.crassLoanRepayment)}}
-</div>
+    </div> 
+  </nz-card>
 
 <nz-table  #usersTable
 

@@ -1,85 +1,119 @@
+<!-- ==================== DETAILS VIEW ==================== -->
+<div *ngIf="id.status === 'details'" class="p-3">
 
+  <!-- Summary Card -->
+  <nz-card nzTitle="Employee Saving Summary" class="mb-3 shadow-sm">
+    <div class="flex justify-between">
+      <div>
+        <h3 class="m-0 text-primary">Total Saving:</h3>
+        <h2 class="text-success fw-bold">{{ totalSaving | number }} </h2>
+      </div>
 
-<div *ngIf="id.status==='details'">
-<div *ngFor="let sum of saving">
+    </div> 
+  </nz-card>
 
-  {{ssumSaving(sum.craSaving)}}
+  <!-- Remove All Button -->
+  <div class="mb-2 text-end">
+    <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deleteAll()">
+      <i nz-icon nzType="delete"></i> Remove All
+    </button>
+  </div>
+
+  <!-- Saving Table -->
+  <nz-table
+    #usersTable
+    [nzBordered]="true"
+    [nzData]="saving"
+    [nzLoading]="loading"
+    [nzFrontPagination]="false"
+    [nzPageSize]="pageSize"
+    [nzPageSizeOptions]="[5,10,20,30,40,50]"
+    nzShowSizeChanger
+    nzShowPagination
+    [nzTotal]="total"
+    (nzPageIndexChange)="onPageChange($event)"
+    (nzPageSizeChange)="onPageSizeChange($event)"
+  >
+    <thead>
+      <tr style="background: #2e3192; color: white;">
+        <th>ID</th>
+        <th>Employee ID</th>
+        <th>Full Name</th>
+        <th>CRA Saving</th>
+        <th width="180">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let save of saving; trackBy: trackByFn">
+        <td>{{ save.id }}</td>
+        <td>{{ save.employeeId }}</td>
+        <td>{{ save.fullName }}</td>
+        <td>{{ save.craSaving }}</td>
+
+        <td>
+          <button nz-button nzType="default" nzSize="small"
+            class="me-1"
+            (click)="updateSaving(true, save.id)">
+            <i nz-icon nzType="edit"></i> Update
+          </button>
+
+          <button nz-button nzType="primary" nzDanger nzSize="small"
+            (click)="deletebyId(save.id)">
+            <i nz-icon nzType="delete"></i> Remove
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
 </div>
-<nz-table  #usersTable
 
- [nzBordered]="true"
-  [nzData]="saving" 
-  [nzLoading]="loading" 
-  [nzFrontPagination]="false"
-  [nzPageSize]="pageSize"
-  [nzPageSizeOptions]="[5,10,20,30,40,50]"
-  nzShowSizeChanger
-  nzShowPagination
-  [nzTotal]="total"
- (nzPageIndexChange)="onPageChange($event)"
- (nzPageSizeChange)="onPageSizeChange($event)"
- >
-  
-  <thead>
-    <th (click)="deleteAll()" ><button nz-button nzType="primary" nzDanger nzSize="small" ><i nz-icon nzType="delete" nzTheme="outline" ></i>Remove All</button> 
-</th>
-    <tr style="background-color: rgb(45, 39, 134);">
-      <th>Saving  ID</th>
-      <th>Employee ID</th>
-      <th>fullName</th>
-      <th>CS</th>
-      <th>CLR</th>
-        <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>  
-    <tr *ngFor="let save of saving">
-      <td>{{ save.id}}</td>
-      <td>{{ save.employeeId }}</td>
-      <td>{{ save.fullName }}</td>
-      <td>{{ save.craSaving}}
-      <td>
-  <button nz-button nzType="primary"  nzSize="small" (click)="updateSaving(true,save.id)">
-        <i nz-icon nzType="details"></i>Update</button>
-        <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deletebyId(save.id)">
-          <i nz-icon nzType="delete"></i>Remove</button>
-      </td>
-    </tr>
 
-  </tbody>
-</nz-table>
+
+<!-- ==================== CREATE / UPDATE FORM ==================== -->
+<div *ngIf="id.status === 'create' || (id.status==='update' && updateForm)"
+     class="p-4">
+
+  <nz-card nzTitle="{{ id.status === 'create' ? 'Create Saving Record' : 'Update Saving Record' }}"
+           class="shadow-lg">
+
+    <form nz-form nzLayout="vertical" [formGroup]="savingForm" (ngSubmit)="submitForm()">
+
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">Employee ID</nz-form-label>
+        <nz-form-control [nzErrorTip]="'Employee ID is required'">
+          <input nz-input formControlName="employeeId" placeholder="Enter Employee ID" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">Full Name</nz-form-label>
+        <nz-form-control [nzErrorTip]="'Full Name must be at least 3 characters'">
+          <input nz-input formControlName="fullName" placeholder="Enter Full Name" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">CRA Saving</nz-form-label>
+        <nz-form-control [nzErrorTip]="'Amount must be positive'">
+          <input nz-input type="number" formControlName="craSaving"
+                 placeholder="Enter CRA Saving" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Buttons -->
+      <nz-form-item>
+        <div class="mt-3 d-flex justify-content-end">
+          <button nz-button nzType="default" class="me-2" (click)="cancelForm()" type="button">
+            Cancel
+          </button>
+
+          <button nz-button nzType="primary" type="submit">
+            {{ id.status === 'create' ? 'Create Saving' : 'Update Saving' }}
+          </button>
+        </div>
+      </nz-form-item>
+
+    </form>
+  </nz-card>
 </div>
-
-
-<div *ngIf="id.status==='create' || (id.status==='update' && updateForm )">
-<form   
-[formGroup]="savingForm" (ngSubmit)="submitForm()" nz-form nzLayout="vertical">
-  <nz-form-item>
-    <nz-form-label [nzRequired]="true">Employee ID</nz-form-label>
-    <nz-form-control [nzErrorTip]="'Employee ID is required'">
-      <input nz-input formControlName="employeeId" placeholder="Enter Employee ID" />
-    </nz-form-control>
-  </nz-form-item>
-
-  <nz-form-item>
-    <nz-form-label [nzRequired]="true">Full Name</nz-form-label>
-    <nz-form-control [nzErrorTip]="'Full Name is required and minimum 3 characters'">
-      <input nz-input formControlName="fullName" placeholder="Enter Full Name" />
-    </nz-form-control>
-  </nz-form-item>
-
-  <nz-form-item>
-    <nz-form-label [nzRequired]="true">CRA Saving</nz-form-label>
-    <nz-form-control [nzErrorTip]="'CRA Saving must be a positive number'">
-      <input nz-input type="number" formControlName="craSaving" placeholder="Enter CRA Saving" />
-    </nz-form-control>
-  </nz-form-item>
-
-  <nz-form-item>
-    <nz-form-control class="button-create-update">
-      <button nz-button nzType="primary" type="submit">  {{id.status==='create'?'Create New Saving':'Update Saving'}}  </button>
-    </nz-form-control>
-  </nz-form-item>
-</form>
-
-</div>  

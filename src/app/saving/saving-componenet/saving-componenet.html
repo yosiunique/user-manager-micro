@@ -1,4 +1,4 @@
-
+<div *ngIf="haveRole('saving')">
 <div class="toolbar" style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
   <button nz-button nzType="primary" nzSize="small" (click)="createSaving()">
     <i nz-icon nzType="plus" nzTheme="outline"></i>
@@ -64,4 +64,4 @@
 
   </tbody>
 </nz-table>
-
+</div>

@@ -46,6 +46,9 @@ loan:LoanRepayment[]=[];
   loanForm !:FormGroup ;
   updateForm:boolean=false;
   updateId!:number;
+  employeeId:string='';
+totalRepayments:number=0;
+
   constructor( private  loanRepaymentService:LoanRepaymentService ,
     private fb:FormBuilder,
     private msg : NzMessageService,
@@ -71,6 +74,8 @@ loan:LoanRepayment[]=[];
 
 
  loadLoanRepayments(){
+  this.employeeId =this.id.id;
+  this.getTotalTotalRepaymets();
     this.loanRepaymentService.getLoanRepaymentByEmployeeId(this.id.id,this.pageIndex,this.pageSize).subscribe({
       
       next:(data)=>{
@@ -160,6 +165,10 @@ onPageSizeChange($event: number) {
 
 
 deleteAll(){
+    this.modal.confirm({
+    nzOkText:'are you sure ?',
+    nzOnOk:()=>{
+
   this.loanRepaymentService.deleteByEmployeeId(this.id.id).subscribe({
     next:(data)=>{
       console.log("all saving records deleted successfully",data)
@@ -179,9 +188,14 @@ deleteAll(){
         
     }
   });
+}});
 }
 
 deletebyId(id:number){
+    this.modal.confirm({
+    nzOkText:'are you sure ?',
+    nzOnOk:()=>{
+
   this.loanRepaymentService.delete(id).subscribe({
     next:(data)=>{
       console.log("saving record deleted successfully",data)
@@ -200,13 +214,21 @@ deletebyId(id:number){
 
     }
   });
+  }});
 
 }
 
 
 
-getTotalSaving():number{
-  return this.loan.reduce((total, save) => total + save.crassLoanRepayment, 0);
+ async getTotalTotalRepaymets() {
+
+
+  this.loanRepaymentService.findTotalByEmployeeId(this.employeeId).subscribe({
+    next:(data:any)=>{
+      this.totalRepayments=data;
+    }
+  });
+  return this.totalRepayments;
 }
 
 

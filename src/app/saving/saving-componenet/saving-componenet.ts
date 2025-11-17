@@ -15,6 +15,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { SavingCrudComponenets } from '../saving-crud-componenets/saving-crud-componenets';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Auth } from '../../auth/auth';
 
 @Component({
   selector: 'app-saving-componenet',
@@ -35,9 +36,7 @@ import { NzMessageService } from 'ng-zorro-antd/message';
   styleUrl: './saving-componenet.css',
 })
 export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> implements OnInit {
-  reloadPage() {
-    throw new Error('Method not implemented.');
-  }
+
 
   saving: SavingAndLoanRepayment[] = [];
   searchControl = new FormControl('search');
@@ -50,6 +49,7 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
   destroy$ = new Subject<void>();
   private msg = inject(NzMessageService);
   constructor(private savingService: SavingService,
+    private auth:Auth ,
     modal: NzModalService
   ) {
     super(savingService, modal);
@@ -249,6 +249,15 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
     });
   }
 
+   haveRole(roleName:string){
+     
+ const roles=this.auth.getUserRoles().map((role:any )=>role.roleTypes.role);
+ return roles.includes(roleName);
+  }
+
+    reloadPage() {
+    this.selectedFile=null;
+  }
 
 }
 

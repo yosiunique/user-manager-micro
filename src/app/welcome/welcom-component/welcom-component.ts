@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzFormModule } from "ng-zorro-antd/form";
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
@@ -11,6 +12,9 @@ import { NzStatisticModule } from 'ng-zorro-antd/statistic';
     NzFormModule,
     NzStatisticModule ,
     NzCardModule ,
+  
+    NzButtonModule 
+
     
 ],
   templateUrl: './welcom-component.html',
@@ -28,11 +32,11 @@ export class WelcomComponent {
   constructor(private router: Router) {}
 
   navigateToSavings(): void {
-    this.router.navigate(['/savings']);
+    this.router.navigate(['home/saving/view']);
   }
 
   navigateToLoans(): void {
-    this.router.navigate(['/loan-repayments']);
+    this.router.navigate(['home/loan-repayment/view']);
   }
 }
 

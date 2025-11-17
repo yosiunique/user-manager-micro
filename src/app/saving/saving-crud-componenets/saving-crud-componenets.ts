@@ -42,6 +42,12 @@ import { NzStatisticModule } from "ng-zorro-antd/statistic";
   styleUrl: './saving-crud-componenets.css',
 })
 export class SavingCrudComponenets  extends BaseComponent<SavingAndLoanRepayment> implements OnInit {
+calculateAverageSavings(): string|number {
+throw new Error('Method not implemented.');
+}
+calculateTotalSavings(): string|number {
+throw new Error('Method not implemented.');
+}
 createSaving() {
 throw new Error('Method not implemented.');
 }
@@ -64,6 +70,7 @@ saving:SavingAndLoanRepayment[]=[];
   updateId!:number;
   totalSaving:number=0;
 searchTerm: any;
+employeeId:string=''
 uploading: unknown;
   constructor( private  savingService:SavingService ,
     private fb:FormBuilder,
@@ -90,6 +97,8 @@ uploading: unknown;
 
 
   loadSavings(){
+    this.employeeId=this.id.id;
+    this.getTotalSaving();
     this.savingService.getsavingByEmployeeId(this.id.id,this.pageIndex,this.pageSize).subscribe({
       
       next:(data)=>{
@@ -179,6 +188,16 @@ onPageSizeChange($event: number) {
 
 
 deleteAll(){
+
+  this.modal.confirm({
+    nzOkText:'are you sure ?',
+    nzOnOk:()=>{
+
+
+
+
+
+
   this.savingService.deleteByEmployeeId(this.id.id).subscribe({
     next:(data)=>{
       console.log("all saving records deleted successfully",data)
@@ -198,9 +217,19 @@ deleteAll(){
         
     }
   });
+
+
+
+    }
+  })
+
 }
 
 deletebyId(id:number){
+    this.modal.confirm({
+    nzOkText:'are you sure ?',
+    nzOnOk:()=>{
+
   this.savingService.delete(id).subscribe({
     next:(data)=>{
       console.log("saving record deleted successfully",data)
@@ -219,39 +248,49 @@ deletebyId(id:number){
 
     }
   });
+    }
+    });
 
 }
 
 
 
-getTotalSaving():number{
-  return this.saving.reduce((total, save) => total + save.craSaving, 0);
+async getTotalSaving(){
+  this.totalSaving=0;
+ this.savingService.findTotalByEmployeeId(this.employeeId).subscribe({
+    next:(data:any)=>{
+      console.log("this total  data ", data)
+ return this.totalSaving=data;
+    }
+  });
+
+ 
 }
 
 
-// Component methods
-getProgressCircleValue(): string {
-  const total = this.getTotalSaving();
-  const circumference = 2 * Math.PI * 52;
-  const progress = total > 0 ? (total / 100000) * 100 : 0; // Adjust divisor as needed
-  const dasharray = `${(progress / 100) * circumference} ${circumference}`;
-  return dasharray;
-}
+// // Component methods
+// getProgressCircleValue(): string {
+//   const total = this.getTotalSaving();
+//   const circumference = 2 * Math.PI * 52;
+//   const progress = total > 0 ? (total / 100000) * 100 : 0; // Adjust divisor as needed
+//   const dasharray = `${(progress / 100) * circumference} ${circumference}`;
+//   return dasharray;
+// }
 
-getAverageSaving(): number {
-  if (!this.saving || this.saving.length === 0) return 0;
-  const total = this.getTotalSaving();
-  return total / this.saving.length;
-}
+// getAverageSaving(): number {
+//   if (!this.saving || this.saving.length === 0) return 0;
+//   const total = this.getTotalSaving();
+//   return total / this.saving.length;
+// }
 
 trackByFn(index: number, item: any): number {
   return item.id;
 }
 
-exportToExcel(): void {
-  // Implement Excel export functionality
-  console.log('Exporting to Excel...');
-}
+// exportToExcel(): void {
+//   // Implement Excel export functionality
+//   console.log('Exporting to Excel...');
+// }
 
 cancelForm(): void {
   // Implement form cancellation
@@ -260,9 +299,9 @@ cancelForm(): void {
 }
 
 
-ssumSaving(craSaving:number):number{
-return craSaving=craSaving+craSaving;
-}
+// ssumSaving(craSaving:number):number{
+// return craSaving=craSaving+craSaving;
+// }
 
 
 }

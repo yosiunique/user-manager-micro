@@ -35,5 +35,13 @@ export class LoanRepaymentService extends BaseService<LoanRepayment> {
     return this.http.delete(`${enviroment.HOST}/loan-repayments/delete-by-employee-id/${employeeId}`,{headers,responseType:'text'});
   }
 
+ 
+
+   findTotalByEmployeeId(employeeId:string){
+    const token = localStorage.getItem('jwtToken');
+  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    return this.http.get(`${enviroment.HOST}/loan-repayments/total-cra-loan-repayments/${employeeId}`,{headers,responseType:'text'});
+  }
+
   
 }
