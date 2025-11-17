@@ -35,9 +35,10 @@ pipeline {
         stage("Deliver for development") {
           
              when{
-            expression{
-                return env.BRANCH_NAME ==~ /(feature\/.*|develop)/
-            }
+            // expression{
+            //     return env.BRANCH_NAME ==~ /(feature\/.*|develop)/
+            // }
+            branch ="develop"
         }
 
             steps {
