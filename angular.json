@@ -48,7 +48,34 @@
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
-            }
+            },
+
+
+"staging": {
+  "budgets": [
+    {
+      "type": "initial",
+      "maximumWarning": "2mb",
+      "maximumError": "5mb"
+    }
+  ],
+  "optimization": true,
+  "outputHashing": "all",
+  "sourceMap": true,
+  "extractLicenses": false,
+  "fileReplacements": [
+    {
+      "replace": "src/enviroment/enviroment.ts",
+      "with": "src/enviroment/enviroment-staging.ts"
+    }
+  ]
+}
+
+
+
+
+
+
           },
           "defaultConfiguration": "production"
         },
