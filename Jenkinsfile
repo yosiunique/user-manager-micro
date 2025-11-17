@@ -32,18 +32,23 @@ pipeline {
             }
         }
 
-        stage("Deliver for development") {
-          
-             when{
-            branch "develop"
+       stage("Deliver for development") {
+    when {
+        branch "develop"
+    }
+    steps {
+        sshagent(['enat-remedy-development']) {
+            sh """
+            ssh -o StrictHostKeyChecking=no -l ${TEST_SERVER_USERNAME} ${TEST_SERVER_ADDRESS} "
+                docker stop loan-repayment-ui || true;
+                docker rm loan-repayment-ui || true;
+                docker run -p 4510:80 -d --name loan-repayment-ui ${DOCKER_PRIVATE_REGISTRY}/loan-repayment-ui:${TAG}
+            "
+            """
         }
+    }
+}
 
-            steps {
-                sshagent(['enat-remedy-development']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -l ${TEST_SERVER_USERNAME} ${TEST_SERVER_ADDRESS} "docker stop loan-repayment-ui | true; docker loan-repayment-ui | true; docker run -p 4510:80 -d --name loan-repayment-ui ${DOCKER_PRIVATE_REGISTRY}/ifb-financing-ui:${TAG}"'
-                }
-            }
-        }
         stage("Deploy for production") {
             when {
                 branch "main"
