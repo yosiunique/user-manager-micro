@@ -42,6 +42,12 @@ export class SavingService extends BaseService<SavingAndLoanRepayment> {
   const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
     return this.http.get(`${enviroment.HOST}/saving-and-loan-repayments/total-cra-saving/${employeeId}`,{headers,responseType:'text'});
   }
+  countAllSaving(){
+    const token = localStorage.getItem('jwtToken');
+  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+
+   return this.http.get(`${enviroment.HOST}/saving-and-loan-repayments/count`,{headers});
+  }
 
   
 }

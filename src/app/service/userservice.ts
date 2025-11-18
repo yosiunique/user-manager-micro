@@ -40,6 +40,13 @@ export class Userservice extends BaseService <User> {
     return this.http.put(`${enviroment.HOST}/users/reset`,user,{headers,responseType:'text' });
   } 
 
+   countAllUser(){
+   const token = localStorage.getItem('jwtToken');
+      
+  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    return this.http.get(`${enviroment.HOST}/users/count`,{headers});
+  } 
+
   
   
 }

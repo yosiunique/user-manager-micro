@@ -29,23 +29,26 @@
         <nz-statistic 
           nzTitle="Total Savings" 
           [nzValue]="totalSavings" 
-          nzPrefix="$"
+          nzPrefix=""
+          nzSuffix="ETB"
           [nzValueStyle]="{ color: '#52c41a' }"
         ></nz-statistic>
       </nz-col>
       <nz-col nzSpan="6">
         <nz-statistic 
           nzTitle="Active Loans" 
+          nzSuffix="ETB"
           [nzValue]="activeLoans" 
           [nzValueStyle]="{ color: '#1890ff' }"
-        ></nz-statistic>
+        >ETB</nz-statistic>
       </nz-col>
       <nz-col nzSpan="6">
         <nz-statistic 
           nzTitle="Total Users" 
+          nzSuffix="Users"
           [nzValue]="totalUsers" 
           [nzValueStyle]="{ color: '#faad14' }"
-        ></nz-statistic>
+        >Users</nz-statistic>
       </nz-col>
       <nz-col nzSpan="6">
         <nz-statistic 

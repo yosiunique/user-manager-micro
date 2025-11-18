@@ -111,6 +111,7 @@ this.roleForm = this.fb.group({
     this.resetFormBuilder()
    }
    if(this.operation.status==='isRole'){
+    this.roles=[];
     this.getRoles(this.operation.id);
    this.loadRoles();
   }
@@ -294,6 +295,7 @@ assignRole(id: number) {
             nzContent: 'Role assigned successfully ✅'
           });
           console.log("Role assignment response: ", data);
+          this.modalref.destroy();
         },
         error: (error) => {
           this.modal.error({
@@ -320,6 +322,7 @@ this.userRole.delete(id).subscribe({
     this.modal.confirm({
       nzContent:data
     })
+    this.modalref.destroy();
   },
   error:(error)=>{
     this.modal.error({
