@@ -40,23 +40,6 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 })
 
 export class CreteUpdateUser extends BaseComponent<User> implements OnInit {
-haveRole(arg0: string): any {
-throw new Error('Method not implemented.');
-}
-
-addNewUser() {
-throw new Error('Method not implemented.');
-}
-onStatusChange($event: Event,_t242: any) {
-throw new Error('Method not implemented.');
-}
-deleteUser(arg0: any) {
-throw new Error('Method not implemented.');
-}
-updateUser(arg0: any) {
-throw new Error('Method not implemented.');
-}
-
 
   validateForm!: FormGroup;
   resetFromPassword !:FormGroup;
@@ -78,32 +61,56 @@ throw new Error('Method not implemented.');
     super(userService ,modal);
   }
 
-  ngOnInit(): void {    this.validateForm = this.fb.group({
-      firstName:['',[Validators.required,Validators.minLength(1)]],
-      lastName:['',[Validators.required,Validators.minLength(1)]],
-      userName: ['', [Validators.required, Validators.maxLength(50)]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
-      attribute: ['', [Validators.required]],
-    });
-    this.resetFromPassword =this.fb.group({
-id:''   ,   
-password:[Validators.required,Validators.minLength(1)],
-reenter:[Validators.required,Validators.minLength(1)],
-reset:true,
- userName:[],
-fisrtName:[],
-lastName:[],
-email:[],
-attribute:[],   
-role:[],
-enable:[]
-
-
-});
+  ngOnInit(): void {    
+    
+    this.validateForm=this.fb.group(
+  {
+    firstName: ['', [Validators.required, Validators.minLength(1)]],
+    lastName: ['', [Validators.required, Validators.minLength(1)]],
+    userName: ['', [Validators.required, Validators.maxLength(50)]],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
+      ]
+    ],
+    confirmPassword: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+    attribute: ['', Validators.required]
+  },
+  { validators: this.passwordsMatchValidator }
+);
+   this.resetFromPassword = this.fb.group(
+  {
+    id: [''],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
+      ]
+    ],
+    confirmPassword: [
+      '',
+      [Validators.required]
+    ],
+    userName: [''],
+    fisrtName: [''],
+    lastName: [''],
+    email: [''],
+    attribute: [''],
+    role: [''],
+    enable: [''],
+    reset: [true]
+  },
+  { validators: this.passwordsMatchValidator }
+);
 
 this.roleForm = this.fb.group({
-  role:['', Validators.minLength(1)]
+  role:['', [Validators.minLength(1) ,Validators.required]]
 });   
    
    this.operation.status==='isUpdate'? this.updateForm(this.operation.id):this.operation.status==='isCreate';
@@ -118,6 +125,14 @@ this.roleForm = this.fb.group({
 }
 
 
+
+
+
+passwordsMatchValidator(form: FormGroup) {
+  const password = form.get('password')?.value;
+  const confirmPassword = form.get('confirmPassword')?.value;
+  return password === confirmPassword ? null : { passwordMismatch: true };
+}
   resetFormBuilder(){
   this.userService.getById(this.operation.id).subscribe({
     next:(data)=>{
@@ -220,9 +235,9 @@ if(this.operation.status==='isUpdate'){
 
 
   resetPassword(){
-    if(this.resetFromPassword.get('password')?.value !== this.resetFromPassword.get('reenter')?.value){
+    if(this.resetFromPassword.get('password')?.value !== this.resetFromPassword.get('confirmPassword')?.value){
  this.resetFromPassword.get('password')?.setValue('');
- this.resetFromPassword.get('reenter')?.setValue('');
+ this.resetFromPassword.get('confirmPassword')?.setValue('');
      this.modal.error({
       nzContent:'password and re-entered password do not match'
      });
@@ -292,7 +307,7 @@ assignRole(id: number) {
         next: (data) => {
           this.modal.success({
             nzTitle: 'Success',
-            nzContent: 'Role assigned successfully ✅'
+            nzContent: 'Role assigned successfully '
           });
           console.log("Role assignment response: ", data);
           this.modalref.destroy();
@@ -320,7 +335,7 @@ deleteRole(id:number){
 this.userRole.delete(id).subscribe({
   next:(data)=>{
     this.modal.confirm({
-      nzContent:data
+      nzContent:"role "+id+" is deleted Successfully",
     })
     this.modalref.destroy();
   },
@@ -335,29 +350,14 @@ this.userRole.delete(id).subscribe({
 
 
 getRoles(id: number) {
-  this.userService.getById(id).pipe(
-    first(),
-    switchMap((user: User) => {
-      console.log('User data:', user);
-      const currentUserRoles: string[] = user.role.map(
-        (r: any) => r.roleTypes.role
-      );
+  this.userService.getById(id).subscribe({
+    next:(data)=>{
+    this.roles=data.role;
+    
+  
+      console.log("htis is the role of u  ..... ",this.roles)
 
-      return this.userRole.getAll(this.pageIndex, this.pageSize).pipe(
-        first(),
-        switchMap((data: any) => {
-          const filteredRoles = data.content.filter((role: any) =>
-            currentUserRoles.includes(role.roleTypes.role)
-          );
-          return [filteredRoles];
-        })
-      );
-    })
-  ).subscribe({
-    next: (filteredRoles: Role[]) => {
-      this.roles = filteredRoles;
-      
-    },
+  },
     error: (err) => {
       console.error('the root cause is ', err);
     }

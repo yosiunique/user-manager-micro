@@ -65,11 +65,13 @@
         <i nz-icon nzType="edit"></i>Manage Role</button>
       </td>
       <td class="button">
-        <button nz-button nzType="primary" nzSize="small" (click)="resetPassword(user.id)">Reset</button>
+        <button nz-button nzType="default" nzSize="small" (click)="resetPassword(user.id)" style="background-color: hsl(197, 100%, 50%);">
+         <i nz-icon nzType="reset"></i>Reset</button>
+          <button nz-button nzType="default" nzWarn nzSize="small" (click)="updateUser(user.id)" style="background-color: yellow;">
+        <i nz-icon nzType="edit"></i> Edit</button>
         <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deleteUser(user.id)">
-          <i nz-icon nzType="delete"></i>Remove</button>
-        <button nz-button nzType="default" nzWarn nzSize="small" (click)="updateUser(user.id)" style="background-color: yellow;">
-        <i nz-icon nzType="edit"></i> Update</button>
+          <i nz-icon nzType="delete"></i>Delete</button>
+        
       </td>
     </tr>
   </tbody>
