@@ -43,7 +43,7 @@
       <td>{{ loan.employeeId }}</td>
       <td>{{ loan.fullName }}</td>
       <td>{{loan.crassLoanRepayment}}</td>
-      <td>
+      <td class="button">
   <button nz-button nzType="primary"  nzSize="small" (click)="updateLoansRepayments(true,loan.id)">
         <i nz-icon nzType="details"></i>Update</button>
         <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deletebyId(loan.id)">
