@@ -55,11 +55,11 @@
   <tbody>  
     <tr *ngFor="let loan of  loan">
       <td>{{ loan.id}}</td>
-      <td>{{ loan.employeeId }}</td>
+      <td>{{ loan.employee.id }}</td>
       <td>{{ loan.fullName }}</td>
       <td>{{loan.crassLoanRepayment}}</td>
       <td>
-  <button nz-button nzType="primary"  nzSize="small" (click)="getLoanRepaymentgById(loan.employeeId)">
+  <button nz-button nzType="primary"  nzSize="small" (click)="getLoanRepaymentgById(loan.employee.id)">
         <i nz-icon nzType="more"></i>Details</button>
       </td>
     </tr>

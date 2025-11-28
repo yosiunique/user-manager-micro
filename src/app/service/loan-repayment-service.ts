@@ -13,14 +13,17 @@ export class LoanRepaymentService extends BaseService<LoanRepayment> {
     super(http, `${enviroment.HOST}/loan-repayments`);
   }
 
-  importCsv(file:File){
+  importCsv(file: File, forMonth: Date) {
     const formData = new FormData();
-  formData.append("file", file); 
-  console.log("this is the file parts ",file)
-     const token = localStorage.getItem('jwtToken');
-
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-    return this.http.post(`${enviroment.HOST}/loan-repayments/import-csv`,formData,{headers});
+    formData.append("file", file);
+    // Format the date as 'yyyy-MM-dd' which is what Java's LocalDate expects
+    const formattedDate = forMonth.toISOString().split('T')[0];
+    formData.append("forMonth", formattedDate);
+    
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    
+    return this.http.post<LoanRepayment[]>(`${enviroment.HOST}/loan-repayments/import-csv`, formData, { headers });
   }
   getLoanRepaymentByEmployeeId(employeeId:string ,pageIndex :number , pageSize:number  )
   

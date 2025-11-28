@@ -16,6 +16,7 @@ import { SavingCrudComponenets } from '../saving-crud-componenets/saving-crud-co
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Auth } from '../../auth/auth';
+import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
 
 @Component({
   selector: 'app-saving-componenet',
@@ -104,7 +105,7 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
 
 
 
-  getsavingById(employeeId: string) {
+  getsavingById(employeeId: number) {
     const modal = this.modal.create({
       nzTitle: 'Saving Details',
       nzContent: SavingCrudComponenets,
@@ -208,46 +209,19 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
 
 
 
+uploadFile(){
 
 
+  this.modal.create({
+    nzTitle:'Uploading file',
+    nzContent:Uploadingfile ,
+    nzOkText:'',
+    nzCancelText:''
+  })
 
-  //upload handlers
-  handleChange(event: any): void {
-    const files = event.target?.files[0];
+}
 
-    this.selectedFile = files;
-    console.log('Selected file', this.selectedFile);
 
-  }
-
-  uploadFile(): void {
-    if (!this.selectedFile) {
-      this.modal.error({ nzContent: 'No file selected' });
-      return;
-    }
-
-    this.uploading = true;
-    this.savingService.importCsv(this.selectedFile).subscribe({
-      next: (res: any) => {
-        this.uploading = false;
-        this.msg.success('File uploaded successfully');
-        // If backend returns imported rows preview, set metadataList:
-        if (Array.isArray(res)) {
-          this.metadataList = res;
-        } else if (res?.metadata) {
-          this.metadataList = res.metadata;
-        }
-        // refresh table
-        this.loadSavings();
-        this.selectedFile = null;
-      },
-      error: (err) => {
-        console.error('Upload error', err);
-        this.uploading = false;
-        this.msg.error('Upload failed');
-      }
-    });
-  }
 
    haveRole(roleName:string){
      

@@ -122,7 +122,7 @@ uploading: unknown;
       next:(data)=>{
         this.savingForm.addControl('id',new FormControl(data.id));
         this.savingForm.patchValue({
-          employeeId: data.employeeId,
+          employeeId: data.employee.id,
           fullName: data.fullName,
           craSaving: data.craSaving,
         });
