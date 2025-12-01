@@ -236,6 +236,13 @@ this.modal.create({
 })
 
 
+this.modal._afterAllClosed.subscribe({
+  next:()=>{
+    this.loadLoanRepayments();
+  }
+})
+
+
 
 
 
@@ -297,7 +304,7 @@ this.modal.create({
   
 
    reloadPage() {
-  this.selectedFile=null ;
+  location.reload();
     }
 
       haveRole(roleName:string){

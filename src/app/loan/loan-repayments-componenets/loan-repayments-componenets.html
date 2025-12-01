@@ -14,7 +14,7 @@
     (ngModelChange)="onSearchChange($event)"
     style="width: 320px;"
   />
-  <input type="file" accept=".csv" (change)="handleChange($event)" style="margin-left:8px;" />
+  <!--<input type="file" accept=".csv" (change)="handleChange($event)" style="margin-left:8px;" /> -->
 
   <button nz-button nzType="primary" nzSize="small" [nzLoading]="uploading" (click)="uploadFile()">
     <i nz-icon nzType="upload"></i> Upload CSV
@@ -47,8 +47,11 @@
     <tr style="background-color: rgb(45, 39, 134);">
       <th>Repayment ID</th>
       <th>Employee ID</th>
+      <th>Month</th>
       <th>FullName</th>
       <th>CLR</th>
+      <th>Principal</th>
+      <th>Interset</th>
         <th>Actions</th>
     </tr>
   </thead>
@@ -56,8 +59,11 @@
     <tr *ngFor="let loan of  loan">
       <td>{{ loan.id}}</td>
       <td>{{ loan.employee.id }}</td>
+      <td>{{loan.forMonth}}</td>
       <td>{{ loan.fullName }}</td>
       <td>{{loan.crassLoanRepayment}}</td>
+      <td>{{loan.principal}}</td>
+      <td>{{loan.interset}}</td>
       <td>
   <button nz-button nzType="primary"  nzSize="small" (click)="getLoanRepaymentgById(loan.employee.id)">
         <i nz-icon nzType="more"></i>Details</button>

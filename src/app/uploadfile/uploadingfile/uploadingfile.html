@@ -49,15 +49,25 @@
       </div>
     </div>
   } @else if (data === 'saving') {
-    <div class="upload-section">
-      <h3>Savings Upload</h3>
+      <div class="upload-section">
+      <h3>Loan Repayments Upload</h3>
+      
+      <div class="form-group">
+        <label>Select Month:</label>
+        <nz-date-picker 
+          [(ngModel)]="forMonth" 
+          nzMode="month" 
+          style="width: 100%; margin-top: 8px;"
+          [nzPlaceHolder]="'Select month'">
+        </nz-date-picker>
+      </div>
       
       <div class="form-group">
         <label>Select CSV File:</label>
         <input 
           type="file" 
           accept=".csv" 
-          (change)="handleChangeLoan($event)" 
+          (change)="handleChange($event)" 
           style="margin-top: 8px; display: block;"
           [disabled]="uploading"
         >
@@ -69,8 +79,8 @@
           nzType="primary" 
           nzSize="small" 
           [nzLoading]="uploading" 
-          (click)="uploadFile()"
-          [disabled]="!selectedFile || uploading"
+          (click)="uploadFile()" 
+          [disabled]="!forMonth || !selectedFile || uploading"
         >
           <i nz-icon nzType="upload"></i> Upload CSV
         </button>
@@ -86,5 +96,5 @@
         </button>
       </div>
     </div>
-  }
+    }
 </div>

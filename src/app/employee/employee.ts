@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { EmployeeService } from '../service/employee-service';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { Employee } from '../saving/model/saving';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -15,11 +15,14 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzContentComponent } from 'ng-zorro-antd/layout';
+import { BaseComponent } from '../core/basecomponenet/basecomponenet';
 
 @Component({
   selector: 'app-employee',
   standalone: true,
   imports: [
+    FormsModule,
     CommonModule,
     ReactiveFormsModule,
     NzTableModule,
@@ -32,33 +35,32 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
     NzDatePickerModule,
     NzSelectModule,
     NzIconModule,
-    NzInputNumberModule,
-    
-  ],
+    NzInputNumberModule
+],
   templateUrl: './employee.html',
   styleUrls: ['./employee.css']
 })
-export class EmployeeComponent implements OnInit {
+export class EmployeeComponent extends BaseComponent<Employee> implements OnInit {
 
   employees: Employee[] = [];
   drawerVisible = false;
-  isEditMode = false;
   currentId?: number;
 
   employeeForm!: FormGroup;
-  loading = false;
+
 
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
+    protected override modal: NzModalService,
     private message: NzMessageService
   ) {
-    
+    super(employeeService,modal)
     }
 
   ngOnInit(): void {
     this.initForm();
-    ///this.loadEmployees();
+    this.loadEmployees();
   }
 
   initForm(): void {
@@ -78,9 +80,12 @@ export class EmployeeComponent implements OnInit {
 
   loadEmployees(): void {
     this.loading = true;
-    this.employeeService.getAll(1, 10).subscribe({
+    this.employeeService.getAll(this.pageIndex, this.pageSize).subscribe({
       next: (data) => {
-        this.employees = data;
+        this.employees = data.content;
+        this.total = data.totalElements;
+        this.pageSize = data.size;
+        this.pageIndex = data.number;
         this.loading = false;
       },
       error: () => {
@@ -92,7 +97,6 @@ export class EmployeeComponent implements OnInit {
 
   openDrawer(employee?: Employee): void {
     this.drawerVisible = true;
- this.initForm();
     if (employee) {
       this.isEditMode = true;
       this.currentId = employee.id;
@@ -136,14 +140,16 @@ export class EmployeeComponent implements OnInit {
       : this.employeeService.create(formValue);
 
     request.subscribe({
-      next: () => {
-        this.message.success(this.isEditMode ? "Updated successfully" : "Created successfully");
+      next: (response) => {
+        this.message.success(this.isEditMode ? "Updated successfully" +response: "Created successfully"+response);
 
         this.drawerVisible = false;
         this.loadEmployees();
       },
-      error: () => {
-        this.message.error("Failed to save employee");
+      error: (err) => {
+        this.message.error("Error" ,err.error.message);
+        console.log("this is message ...",err.error.message)
+        this.drawerVisible=false;
       }
     });
   }

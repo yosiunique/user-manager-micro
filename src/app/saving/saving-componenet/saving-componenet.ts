@@ -215,9 +215,16 @@ uploadFile(){
   this.modal.create({
     nzTitle:'Uploading file',
     nzContent:Uploadingfile ,
-    nzOkText:'',
-    nzCancelText:''
-  })
+    nzData:'saving',
+    nzOkText:null,
+    nzCancelText:null
+  });
+this.modal._afterAllClosed.subscribe({
+next:()=>{
+    this.loadSavings()
+}
+})
+
 
 }
 
@@ -230,7 +237,7 @@ uploadFile(){
   }
 
     reloadPage() {
-    this.selectedFile=null;
+    location.reload();
   }
 
 }

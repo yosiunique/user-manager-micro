@@ -26,3 +26,12 @@ firstOutStanding: 0;
 
       
    }
+
+   export interface Share {
+  id: number;
+  employeeId: number;
+  membershipId: string;
+  fullName: string;
+  totalSaving: number;
+  noOfShare: number;
+}

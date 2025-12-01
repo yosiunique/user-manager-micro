@@ -5,4 +5,7 @@ export interface  LoanRepayment{
     employee:Employee
     fullName: string;
     crassLoanRepayment:number;
+    forMonth:Date;
+     principal:number;
+     interset:number;
 }

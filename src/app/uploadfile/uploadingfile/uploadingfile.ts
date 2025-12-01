@@ -89,6 +89,7 @@ export class Uploadingfile {
         next: (res: any) => this.handleUploadSuccess(res),
         error: (err: any) => this.handleUploadError(err)
       });
+      this.modalRef.destroy();
   }
 
   // Upload file for loan repayments
@@ -110,6 +111,7 @@ export class Uploadingfile {
         next: (res: any) => this.handleUploadSuccess(res),
         error: (err: any) => this.handleUploadError(err)
       });
+      this.modalRef.destroy();
   }
 
 
