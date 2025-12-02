@@ -18,6 +18,7 @@ import { SavingService } from '../../service/saving-service';
 import { LoanRepaymentService } from '../../service/loan-repayment-service';
 import { LoanRepaymentsCrudComponenets } from '../loan-repayments-crud-componenets/loan-repayments-crud-componenets';
 import { Auth } from '../../auth/auth';
+import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
 
 @Component({
   selector: 'app-loan-repayments-componenets',
@@ -109,7 +110,7 @@ export class LoanRepaymentsComponenets extends  BaseComponent<LoanRepayment> imp
   
   
   
-    getLoanRepaymentgById(employeeId: string) {
+    getLoanRepaymentgById(employeeId: number) {
       const modal = this.modal.create({
         nzTitle: 'LoanRepayments Details',
         nzContent: LoanRepaymentsCrudComponenets,
@@ -226,37 +227,84 @@ export class LoanRepaymentsComponenets extends  BaseComponent<LoanRepayment> imp
     }
   
     uploadFile(): void {
-      if (!this.selectedFile) {
-        this.modal.error({ nzContent: 'No file selected' });
-        return;
-      }
+
+
+this.modal.create({
+  nzTitle:'Uploading Loan Repayments',
+  nzContent:Uploadingfile,
+  nzData:'loan-repayment'
+})
+
+
+this.modal._afterAllClosed.subscribe({
+  next:()=>{
+    this.loadLoanRepayments();
+  }
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      // if (!this.selectedFile) {
+      //   this.modal.error({ nzContent: 'No file selected' });
+      //   return;
+      // }
   
-      this.uploading = true;
-      this.loanRepaymentService.importCsv(this.selectedFile).subscribe({
-        next: (res: any) => {
-          this.uploading = false;
-          this.msg.success('File uploaded successfully');
-          // If backend returns imported rows preview, set metadataList:
-          if (Array.isArray(res)) {
-            this.metadataList = res;
-          } else if (res?.metadata) {
-            this.metadataList = res.metadata;
-          }
-          // refresh table
-          this.loadLoanRepayments();
-          this.selectedFile = null;
-        },
-        error: (err) => {
-          console.error('Upload error', err);
-          this.uploading = false;
-          this.msg.error('Upload failed');
-        }
-      });
+      // this.uploading = true;
+      // this.loanRepaymentService.importCsv(this.selectedFile).subscribe({
+      //   next: (res: any) => {
+      //     this.uploading = false;
+      //     this.msg.success('File uploaded successfully');
+      //     // If backend returns imported rows preview, set metadataList:
+      //     if (Array.isArray(res)) {
+      //       this.metadataList = res;
+      //     } else if (res?.metadata) {
+      //       this.metadataList = res.metadata;
+      //     }
+      //     // refresh table
+      //     this.loadLoanRepayments();
+      //     this.selectedFile = null;
+      //   },
+      //   error: (err) => {
+      //     console.error('Upload error', err);
+      //     this.uploading = false;
+      //     this.msg.error('Upload failed');
+      //   }
+      // });
     }
   
 
    reloadPage() {
-  this.selectedFile=null ;
+  location.reload();
     }
 
       haveRole(roleName:string){

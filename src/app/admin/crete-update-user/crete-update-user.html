@@ -59,6 +59,17 @@
       </ng-template>
     </nz-form-item>
 
+
+
+
+
+    <nz-form-item>
+      <nz-form-label [nzSpan]="7" nzRequired nzFor="poheNumber">PhoneNumber</nz-form-label>
+      <nz-form-control [nzSpan]="15" nzHasFeedback nzErrorTip="pls input phone Number ">
+        <input nz-input formControlName="phoneNumber" id="phoneNumber" placeholder="Enter PhoneNumber" />
+      </nz-form-control>
+    </nz-form-item>
+
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired nzFor="attribute">Attribute</nz-form-label>
       <nz-form-control [nzSpan]="15" nzHasFeedback nzErrorTip="Please input the attribute!">

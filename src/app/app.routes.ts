@@ -9,6 +9,8 @@ import { Notfound } from './notfound/notfound/notfound';
 import { SavingComponenet } from './saving/saving-componenet/saving-componenet';
 import { LoanRepaymentsComponenets } from './loan/loan-repayments-componenets/loan-repayments-componenets';
 import { WelcomComponent } from './welcome/welcom-component/welcom-component';
+import { EmployeeComponent } from './employee/employee';
+import { ShareComponent } from './share/share/share';
 
 export const routes: Routes = [
   {path:'',
@@ -47,6 +49,24 @@ export const routes: Routes = [
     path:'admin',
     children:[
       { path: 'users', component: AdminDashboard ,canActivate: [AuthGurd] },
+    ]
+  },
+  {
+    path :'employee',
+    children:[
+      {
+        path:'view',
+        component:EmployeeComponent
+      }
+    ]
+  },
+  {
+    path :'share',
+    children:[
+      {
+        path:'view',
+        component:ShareComponent
+      }
     ]
   }
 

@@ -68,6 +68,7 @@ export class CreteUpdateUser extends BaseComponent<User> implements OnInit {
     firstName: ['', [Validators.required, Validators.minLength(1)]],
     lastName: ['', [Validators.required, Validators.minLength(1)]],
     userName: ['', [Validators.required, Validators.maxLength(50)]],
+    phoneNumber:['',[Validators.required,Validators.maxLength(10)]],
     password: [
       '',
       [
@@ -142,6 +143,7 @@ passwordsMatchValidator(form: FormGroup) {
       fisrtName:data.firstName,
       lastName:data.lastName,
       email:data.email,
+      phoneNumber:data.phoneNumber,
       attribute:data.attribute,   
       reset:true,
      });
@@ -161,11 +163,13 @@ passwordsMatchValidator(form: FormGroup) {
           lastName:response.lastName,
           userName:response.userName,
           attribute:response.attribute,
+          phoneNumber:response.phoneNumber,
           email:response.email,
           reset:true,
         });
         this.validateForm.get('userName')?.disable();
          this.validateForm.removeControl('password');
+         this.validateForm.removeControl('confirmPassword')
          
       },
       error:(error)=>{

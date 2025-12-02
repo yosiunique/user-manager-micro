@@ -12,7 +12,7 @@
     (ngModelChange)="onSearchChange($event)"
     style="width: 320px;"
   />
-  <input type="file" accept=".csv" (change)="handleChange($event)" style="margin-left:8px;" />
+ 
 
   <button nz-button nzType="primary" nzSize="small" [nzLoading]="uploading" (click)="uploadFile()">
     <i nz-icon nzType="upload"></i> Upload CSV
@@ -53,11 +53,11 @@
   <tbody>  
     <tr *ngFor="let save of saving">
       <td>{{ save.id}}</td>
-      <td>{{ save.employeeId }}</td>
+      <td>{{ save.employee.id }}</td>
       <td>{{ save.fullName }}</td>
       <td>{{ save.craSaving}}
       <td>
-  <button nz-button nzType="primary"  nzSize="small" (click)="getsavingById(save.employeeId)">
+  <button nz-button nzType="primary"  nzSize="small" (click)="getsavingById(save.employee.id)">
         <i nz-icon nzType="more"></i>Details</button>
       </td>
     </tr>

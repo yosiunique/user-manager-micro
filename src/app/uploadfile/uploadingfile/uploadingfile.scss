@@ -1,0 +1,146 @@
+// Main container
+.upload-container {
+  padding: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  .upload-card {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #fafafa;
+
+    .title {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #262626;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      i {
+        font-size: 20px;
+        color: #1890ff;
+      }
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 13px;
+      color: #8c8c8c;
+    }
+  }
+
+  .card-body {
+    padding: 24px;
+  }
+
+  .form-section {
+    margin-bottom: 24px;
+
+    nz-form-item {
+      margin-bottom: 16px;
+    }
+
+    .ant-upload {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .file-hint, .file-selected {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      margin-top: 8px;
+      border-radius: 4px;
+      background-color: #fafafa;
+      border: 1px dashed #d9d9d9;
+      transition: all 0.3s ease;
+
+      i {
+        font-size: 20px;
+        color: #8c8c8c;
+      }
+
+      span {
+        flex: 1;
+        color: #262626;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .file-selected {
+      border-color: #91d5ff;
+      background-color: #e6f7ff;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+
+    button {
+      height: 40px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+
+      i {
+        margin-right: 8px;
+        font-size: 14px;
+      }
+
+      &.cancel-btn {
+        color: #8c8c8c;
+        border-color: #d9d9d9;
+
+        &:hover {
+          color: #595959;
+          border-color: #bfbfbf;
+        }
+      }
+    }
+  }
+
+  // Responsive adjustments
+  @media (max-width: 480px) {
+    padding: 12px;
+    
+    .card-header {
+      padding: 16px;
+    }
+
+    .card-body {
+      padding: 16px;
+    }
+  }
+}
+
+// Animation for upload state
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.uploading-spin {
+  animation: spin 1s linear infinite;
+  display: inline-block;
+  margin-right: 8px;
+}

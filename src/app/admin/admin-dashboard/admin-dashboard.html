@@ -36,7 +36,7 @@
     <tr style="background-color: rgb(45, 39, 134);">
       <th>User ID</th>
       <th>Username</th>
-      <!-- <th>Email</th> -->
+      <th>PhoneNumber</th>
       <th>Status</th>
       <th>Roles</th>
       <th>Actions</th>
@@ -47,7 +47,7 @@
     <tr *ngFor="let user of users">
       <td>{{user.id}}</td>
       <td>{{ user.userName }}</td>
-      <!-- <td>{{ user.email }}</td> -->
+      <td>{{ user.phoneNumber }}</td>
       <!-- <td>{{ user.enabled ? 'Enabled' : 'Disabled' }} -->
         <td>
 <nz-switch 

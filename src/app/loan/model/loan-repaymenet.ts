@@ -1,7 +1,11 @@
+import { Employee } from "../../saving/model/saving";
 
 export interface  LoanRepayment{
     id: number;
-    employeeId:string
+    employee:Employee
     fullName: string;
     crassLoanRepayment:number;
+    forMonth:Date;
+     principal:number;
+     interset:number;
 }

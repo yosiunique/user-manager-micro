@@ -40,7 +40,7 @@
   <tbody>  
     <tr *ngFor="let loan of loan">
       <td>{{ loan.id}}</td>
-      <td>{{ loan.employeeId }}</td>
+      <td>{{ loan.employee.employeeId}}</td>
       <td>{{ loan.fullName }}</td>
       <td>{{loan.crassLoanRepayment}}</td>
       <td class="button">

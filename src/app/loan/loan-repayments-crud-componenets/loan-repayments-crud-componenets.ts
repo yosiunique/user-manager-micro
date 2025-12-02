@@ -99,7 +99,7 @@ totalRepayments:number=0;
       next:(data)=>{
         this.loanForm.addControl('id',new FormControl(data.id));
         this.loanForm.patchValue({
-          employeeId: data.employeeId,
+          employeeId: data.employee.employeeId,
           fullName: data.fullName,
           crassLoanRepayment: data.crassLoanRepayment,
         });
