@@ -1,5 +1,6 @@
-<div class="user-form-container" *ngIf="operation.status==='isCreate' || operation.status==='isUpdate' ">
- <nz-card [nzTitle]="operation.status==='isCreate'?'Create New User':operation.status==='isUpdate'?'Update User':'undefined'" style="width: 450px;">
+<nz-card
+  [nzTitle]="operation.status==='isCreate'?'Create New User':operation.status==='isUpdate'?'Update User':'undefined'"
+  class="responsive-card">
   <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
 
     <nz-form-item>
@@ -32,14 +33,16 @@
         <ng-template #passwordErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input your password!</ng-container>
           <ng-container *ngIf="control.hasError('minlength')">Password must be at least 6 characters.</ng-container>
-          <ng-container *ngIf="control.hasError('pattern')">Password must include number, uppercase, lowercase & special character.</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">Password must include number, uppercase, lowercase & special
+            character.</ng-container>
         </ng-template>
       </nz-form-item>
 
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired nzFor="confirmPassword">Confirm Password</nz-form-label>
         <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="confirmPasswordErrorTpl">
-          <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword" placeholder="Re-enter password" />
+          <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword"
+            placeholder="Re-enter password" />
         </nz-form-control>
         <ng-template #confirmPasswordErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>
@@ -91,22 +94,21 @@
   </form>
 </nz-card>
 
-</div>
 
 
 
 <div *ngIf="operation.status==='isRole'">
 
-  <nz-card [nzTitle]="'Assign Role to  '+operation.status" style="width: 450px;">
+  <nz-card [nzTitle]="'Assign Role to User'" class="responsive-card">
     <form nz-form [formGroup]="roleForm" (ngSubmit)="addNewRole()">
-      
-         <nz-form-item>
+
+      <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired nzFor="role">Role</nz-form-label>
         <nz-form-control [nzSpan]="15" nzHasFeedback nzErrorTip="Please input role!">
           <input nz-input formControlName="role" id="role" placeholder="Enter role" />
         </nz-form-control>
       </nz-form-item>
-      
+
       <nz-form-item nz-row class="register-area">
         <nz-form-control [nzSpan]="15" [nzOffset]="7">
           <button nz-button nzType="primary" [disabled]="roleForm.invalid">Create Role </button>
@@ -115,81 +117,65 @@
 
     </form>
   </nz-card>
-<nz-tabs nzType="card">
+  <nz-tabs nzType="card">
     <nz-tab nzTitle="User Roles">
-<nz-table #usersTable
- [nzBordered]="true"
-  [nzData]="roles"  
-  [nzFrontPagination]="false"
-  [nzPageSize]="pageSize"
-  [nzPageSizeOptions]="[5,10,20,30,40,50]"
-  nzShowSizeChanger
-  nzShowPagination
-  [nzTotal]="total"
- (nzPageIndexChange)="onPageChange($event)"
- (nzPageSizeChange)="onPageSizeChange($event)" 
- >
-  
-  <thead>
-    <tr style="background-color: rgb(45, 39, 134);">
-      <th>Role ID</th>
-      <th>Role Name</th>
-      <th>Action</th> </tr>
-  </thead>
-  <tbody>  
-    <tr *ngFor="let role of roles">
-      <td>{{role.id}}</td>
-      <td>{{ role.roleTypes.role }}</td>
-      <td class="button">
-        <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deleteRole(role.id)">
-          <i nz-icon nzType="delete"></i>Remove</button>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
-</nz-tab>
+      <nz-table #usersTable [nzBordered]="true" [nzData]="roles" [nzFrontPagination]="false" [nzPageSize]="pageSize"
+        [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger nzShowPagination [nzTotal]="total"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)">
+
+        <thead>
+          <tr style="background-color: rgb(45, 39, 134);">
+            <th>Role ID</th>
+            <th>Role Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of roles">
+            <td>{{role.id}}</td>
+            <td>{{ role.roleTypes.role }}</td>
+            <td class="button">
+              <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deleteRole(role.id)">
+                <i nz-icon nzType="delete"></i>Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
 
 
 
 
-   <nz-tab nzTitle="List Roles">
-<nz-table #usersTable
- [nzBordered]="true"
-  [nzData]="allRoles"  
-  [nzFrontPagination]="false"
-  [nzPageSize]="pageSize"
-  [nzPageSizeOptions]="[5,10,20,30,40,50]"
-  nzShowSizeChanger
-  nzShowPagination
-  [nzTotal]="total"
- (nzPageIndexChange)="onPageChange($event)"
- (nzPageSizeChange)="onPageSizeChange($event)" 
- >
-  
-  <thead>
-    <tr style="background-color: rgb(45, 39, 134);">
-      <th>Role ID</th>
-      <th>Role Name</th>
-      <th>Action</th> </tr>
-  </thead>
-  <tbody>  
-    <tr *ngFor="let role of allRoles">
-      <td>{{role.id}}</td>
-      <td>{{ role.role}}</td>
-      <td class="button">
-        <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="assignRole(role.id)">
-          <i nz-icon nzType="delete"></i>Assign</button>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
-</nz-tab>
+    <nz-tab nzTitle="List Roles">
+      <nz-table #usersTable [nzBordered]="true" [nzData]="allRoles" [nzFrontPagination]="false" [nzPageSize]="pageSize"
+        [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger nzShowPagination [nzTotal]="total"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)">
 
-</nz-tabs>
+        <thead>
+          <tr style="background-color: rgb(45, 39, 134);">
+            <th>Role ID</th>
+            <th>Role Name</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let role of allRoles">
+            <td>{{role.id}}</td>
+            <td>{{ role.role}}</td>
+            <td class="button">
+              <button nz-button nzType="primary" nzDanger nzSize="small" (click)="assignRole(role.id)">
+                <i nz-icon nzType="delete"></i>Assign</button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </nz-tab>
 
-</div>  
+  </nz-tabs>
 
-<nz-card *ngIf="operation.status==='isReset'" [nzTitle]="'Reset Password'" style="width: 450px;">
+</div>
+
+<nz-card *ngIf="operation.status==='isReset'" [nzTitle]="'Reset Password'" class="responsive-card">
   <form nz-form [formGroup]="resetFromPassword" (ngSubmit)="resetPassword()">
 
     <nz-form-item>
@@ -200,14 +186,16 @@
       <ng-template #passwordErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">Please input new password!</ng-container>
         <ng-container *ngIf="control.hasError('minlength')">Password must be at least 6 characters.</ng-container>
-        <ng-container *ngIf="control.hasError('pattern')">Password must include number, uppercase, lowercase & special character.</ng-container>
+        <ng-container *ngIf="control.hasError('pattern')">Password must include number, uppercase, lowercase & special
+          character.</ng-container>
       </ng-template>
     </nz-form-item>
 
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired nzFor="confirmPassword">Confirm Password</nz-form-label>
       <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="confirmPasswordErrorTpl">
-        <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword" placeholder="Re-enter new password" />
+        <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword"
+          placeholder="Re-enter new password" />
       </nz-form-control>
       <ng-template #confirmPasswordErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>

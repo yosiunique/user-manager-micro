@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { NzIconModule, provideNzIcons } from 'ng-zorro-antd/icon';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NzSliderModule } from 'ng-zorro-antd/slider';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { Auth } from '../../auth/auth';
 import { HttpClient } from '@angular/common/http';
 import { enviroment } from '../../../enviroment/enviroment';
@@ -26,58 +26,58 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
     CommonModule,
     NzLayoutModule,
     NzMenuModule,
-    NzSliderModule,
+    NzDrawerModule,
     NzModalModule,
     NzIconModule,
     RouterModule,
     NzDropDownModule,
     NzCardModule,
-    NzSpaceModule ,
+    NzSpaceModule,
     NzButtonModule,
     NzBreadCrumbModule,
     NzIconModule,
     NzAvatarModule
-    
-],
+
+  ],
   templateUrl: './mainlayout.html',
   styleUrl: './mainlayout.css',
-  providers:[
-     
+  providers: [
+
   ]
 })
-export class Mainlayout  implements OnInit  {
-changePassword() {
-throw new Error('Method not implemented.');
-}
-viewProfile() {
-throw new Error('Method not implemented.');
-}
-  fullName:string='';
-currentPage: any;
+export class Mainlayout implements OnInit {
+  changePassword() {
+    throw new Error('Method not implemented.');
+  }
+  viewProfile() {
+    throw new Error('Method not implemented.');
+  }
+  fullName: string = '';
+  currentPage: any;
 
   ngOnInit(): void {
-  this.userservice.getByUserName(this.auth.getUserName()).subscribe({
+    this.userservice.getByUserName(this.auth.getUserName()).subscribe({
 
-    next:(data)=>{
-     this.fullName=data?.firstName+'  '+data?.lastName;
-     console.log("user data ....",data)
-    },
-    error:(error)=>{
-      console.log("root cause is ...",error)
-    }
-  });
+      next: (data) => {
+        this.fullName = data?.firstName + '  ' + data?.lastName;
+        console.log("user data ....", data)
+      },
+      error: (error) => {
+        console.log("root cause is ...", error)
+      }
+    });
   }
-  constructor(protected auth:Auth, private userservice:Userservice ,modal:NzModalService ) {
+  constructor(protected auth: Auth, private userservice: Userservice, modal: NzModalService) {
   }
-isCollapsed = false ;
-widht=80;
-  
+  isCollapsed = window.innerWidth < 992;
+  widht = 80;
+
   // Method to toggle the sidebar collapse state
   toggleCollapsed(): void {
     this.isCollapsed = !this.isCollapsed;
   }
 
-  logOut(){
+  logOut() {
     this.auth.logout();
   }
 }

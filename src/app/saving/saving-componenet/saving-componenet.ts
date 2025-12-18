@@ -9,9 +9,17 @@ import { CommonModule } from '@angular/common';
 import { NzButtonComponent, NzButtonModule } from 'ng-zorro-antd/button';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+
 import { NzUploadModule } from 'ng-zorro-antd/upload';
-import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { SavingCrudComponenets } from '../saving-crud-componenets/saving-crud-componenets';
 import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
@@ -20,6 +28,7 @@ import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
 
 @Component({
   selector: 'app-saving-componenet',
+  standalone: true,
   imports: [NzTableModule, NzSwitchModule,
     CommonModule,
     NzModalModule,
@@ -29,9 +38,14 @@ import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
     NzUploadModule,
     NzProgressModule,
     NzDividerModule,
-    FormsModule
-
-
+    FormsModule,
+    NzCardModule,
+    NzListModule,
+    NzGridModule,
+    NzAvatarModule,
+    NzPaginationModule,
+    NzTagModule,
+    NzIconModule
   ],
   templateUrl: './saving-componenet.html',
   styleUrl: './saving-componenet.css',
@@ -50,7 +64,7 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
   destroy$ = new Subject<void>();
   private msg = inject(NzMessageService);
   constructor(private savingService: SavingService,
-    private auth:Auth ,
+    private auth: Auth,
     modal: NzModalService
   ) {
     super(savingService, modal);
@@ -209,34 +223,34 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
 
 
 
-uploadFile(){
+  uploadFile() {
 
 
-  this.modal.create({
-    nzTitle:'Uploading file',
-    nzContent:Uploadingfile ,
-    nzData:'saving',
-    nzOkText:null,
-    nzCancelText:null
-  });
-this.modal._afterAllClosed.subscribe({
-next:()=>{
-    this.loadSavings()
-}
-})
+    this.modal.create({
+      nzTitle: 'Uploading file',
+      nzContent: Uploadingfile,
+      nzData: 'saving',
+      nzOkText: null,
+      nzCancelText: null
+    });
+    this.modal._afterAllClosed.subscribe({
+      next: () => {
+        this.loadSavings()
+      }
+    })
 
 
-}
-
-
-
-   haveRole(roleName:string){
-     
- const roles=this.auth.getUserRoles().map((role:any )=>role.roleTypes.role);
- return roles.includes(roleName);
   }
 
-    reloadPage() {
+
+
+  haveRole(roleName: string) {
+
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
+  }
+
+  reloadPage() {
     location.reload();
   }
 

@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '../model/user';
 import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
 import { NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
@@ -12,89 +12,103 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzSwitchModule } from 'ng-zorro-antd/switch';
 import { FormsModule } from '@angular/forms';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { NzListModule } from "ng-zorro-antd/list";
+import { NzCardModule } from "ng-zorro-antd/card";
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 @Component({
   selector: 'app-admin-dashboard',
   imports: [
-    NzTableModule ,
-    NzModalModule ,
-    CommonModule ,
-    NzIconModule ,
-    NzButtonModule ,
-    NzRadioModule,  
+    NzTableModule,
+    NzModalModule,
+    CommonModule,
+    NzIconModule,
+    NzButtonModule,
+    NzRadioModule,
     NzSwitchModule,
-FormsModule,
-
-
-
+    FormsModule,
+    NzListModule,
+    NzCardModule,
+    NzAvatarModule,
+    NzPaginationModule
   ],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css',
 })
-export class AdminDashboard  extends BaseComponent<User>{
+export class AdminDashboard extends BaseComponent<User> {
 
   users: User[] = [];
-   isUserEnabled = true;
+  isUserEnabled = true;
+  searchTerm: string = '';
+  searchSubject = new Subject<string>();
+  destroy$ = new Subject<void>();
 
-  onStatusChange(value: boolean,user:User): void {
-     
-    user.enable=value;
-    this.userService.update(user.id,user).subscribe({
-      next:(data)=>{
-        console.log("user updated successfully",data)
-      } ,
-      error:(error)=>{
-        console.log("failed to update user status",error)
+  onStatusChange(value: boolean, user: User): void {
+
+    user.enable = value;
+    this.userService.update(user.id, user).subscribe({
+      next: (data) => {
+        console.log("user updated successfully", data)
+      },
+      error: (error) => {
+        console.log("failed to update user status", error)
       }
     });
-    
+
     console.log(`User status changed to: ${value ? 'Enabled' : 'Disabled'}`);
   }
 
-  constructor( private userService: Userservice ,
-         modal:NzModalService ,private auth:Auth) {
-    super(userService,modal)
+  constructor(private userService: Userservice,
+    modal: NzModalService, private auth: Auth) {
+    super(userService, modal)
   }
 
   ngOnInit() {
     this.loadUsers();
-    const token=this.auth.getToken();
-    console.log("current token is :",this.auth.getUserRoles());
-   
+    this.setupSearch();
+    const token = this.auth.getToken();
+    console.log("current token is :", this.auth.getUserRoles());
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadUsers() {
-    this.userService.getAll(this.pageIndex ,this.pageSize).subscribe({
-      next:(data)=>{
-        this.users=data.content;
-        this.total=data.totalElements;
-        this.pageSize=data.size;
-        this.pageIndex=data.number;
-console.log("this is the data of ....." ,data)
-this.users=data.content;
+    this.userService.getAll(this.pageIndex, this.pageSize).subscribe({
+      next: (data) => {
+        this.users = data.content;
+        this.total = data.totalElements;
+        this.pageSize = data.size;
+        this.pageIndex = data.number;
+        console.log("this is the data of .....", data)
+        this.users = data.content;
 
       },
-      error:(error)=>{
-        console.log("this is the root cause" ,error)
-      }    
+      error: (error) => {
+        console.log("this is the root cause", error)
+      }
     })
   }
 
   resetPassword(id: number) {
-this.modal.create({
-    nzContent:CreteUpdateUser,
-    nzData:{
-      id:id,
-      status:'isReset'
-    },
-    nzWidth:600,
-     nzStyle:{
-      top: '100px',       // vertical offset from top
-      left: '100px',       // horizontal offset from left
-      right: 'auto',      // remove default centering if needed
-      transform: 'none'
-       }
-   });
+    this.modal.create({
+      nzContent: CreteUpdateUser,
+      nzData: {
+        id: id,
+        status: 'isReset'
+      },
+      nzWidth: 600,
+      nzStyle: {
+        top: '100px',       // vertical offset from top
+        left: '100px',       // horizontal offset from left
+        right: 'auto',      // remove default centering if needed
+        transform: 'none'
+      }
+    });
 
   }
 
@@ -102,46 +116,46 @@ this.modal.create({
   }
 
   deleteUser(id: number) {
-    if(id!==1){
+    if (id !== 1) {
       this.modal.confirm({
-        nzTitle:'Conformation',
-        nzOkText:'Yes',
-        nzOnOk:()=>{
- this.userService.delete(id)
-  .subscribe({
-    next:(data)=>{
-      this.loadUsers();
-     this.modal.confirm({
-      nzTitle:"successfully deleted "+id,
-      nzContent:data
+        nzTitle: 'Conformation',
+        nzOkText: 'Yes',
+        nzOnOk: () => {
+          this.userService.delete(id)
+            .subscribe({
+              next: (data) => {
+                this.loadUsers();
+                this.modal.confirm({
+                  nzTitle: "successfully deleted " + id,
+                  nzContent: data
 
-     })
+                })
+
+              },
+              error: (error) => {
+                this.modal.error({
+                  nzTitle: "failed deleted " + id,
+                  nzContent: error
+
+                })
+              }
+            })
+
+
 
         },
-          error:(error)=>{
-  this.modal.error({
-      nzTitle:"failed deleted "+id,
-      nzContent:error
+        nzCancelText: 'No'
 
-     })
+
+
+      });
+
+
+    } else {
+      this.modal.confirm({
+        nzContent: " Admin Can't be deleted "
+      })
     }
-  })
-
-   
- 
-    },
-  nzCancelText:'No'
-  
-  
-  
-  });
-  
-
-  }else{
-    this.modal.confirm({
-      nzContent:" Admin Can't be deleted "
-    })
-  }
   }
 
   viewHistory(id: number) {
@@ -150,41 +164,41 @@ this.modal.create({
 
   updateUser(id: number) {
 
-this.modal.create({
-    nzTitle:'Update User',
-    nzContent:CreteUpdateUser,
-    nzData:{
-      id:id,
-      status:'isUpdate'
-    },
-    nzWidth:800,
-     nzStyle:{
-      top: '100px',       // vertical offset from top
-      left: '100px',       // horizontal offset from left
-      right: 'auto',      // remove default centering if needed
-      transform: 'none'
-       }
-   })
-  this.loadUsers();
+    this.modal.create({
+      nzTitle: 'Update User',
+      nzContent: CreteUpdateUser,
+      nzData: {
+        id: id,
+        status: 'isUpdate'
+      },
+      nzWidth: 800,
+      nzStyle: {
+        top: '100px',       // vertical offset from top
+        left: '100px',       // horizontal offset from left
+        right: 'auto',      // remove default centering if needed
+        transform: 'none'
+      }
+    })
+    this.loadUsers();
   }
 
   assignRole(id: number) {
     this.modal.create({
-    nzTitle:'Manage Roles',
-    nzContent:CreteUpdateUser,
-    nzData:{
-      id:id,
-      status:'isRole'
-    },
-    nzWidth:800,
-     nzStyle:{
-      top: '100px',       
-      left: '100px',       
-      right: 'auto',     
-      transform: 'none'
-       }
-   })
-   
+      nzTitle: 'Manage Roles',
+      nzContent: CreteUpdateUser,
+      nzData: {
+        id: id,
+        status: 'isRole'
+      },
+      nzWidth: 800,
+      nzStyle: {
+        top: '100px',
+        left: '100px',
+        right: 'auto',
+        transform: 'none'
+      }
+    })
+
 
   }
 
@@ -201,68 +215,65 @@ this.modal.create({
   }
 
 
-  logout(){
-this.auth.logout();
+  logout() {
+    this.auth.logout();
   }
 
 
-  addNewUser(){
+  addNewUser() {
     this.modal.create({
-      nzTitle:'Create New User',
-      nzContent:CreteUpdateUser,
-      nzData:{
-        status:'isCreate'
+      nzTitle: 'Create New User',
+      nzContent: CreteUpdateUser,
+      nzData: {
+        status: 'isCreate'
       },
-       nzWidth:700,
-       nzStyle:{
-      top: '100px',       // vertical offset from top
-      left: '100px',       // horizontal offset from left
-      right: 'auto',      // remove default centering if needed
-      transform: 'none'
-       }
+      nzWidth: 700,
+      nzStyle: {
+        top: '100px',       // vertical offset from top
+        left: '100px',       // horizontal offset from left
+        right: 'auto',      // remove default centering if needed
+        transform: 'none'
+      }
     })
 
-  this.modal.afterAllClose.subscribe({
-    next:()=>{
-this.loadUsers();
-    }
- 
-  });
+    this.modal.afterAllClose.subscribe({
+      next: () => {
+        this.loadUsers();
+      }
 
-  
-
-}
-
-addNewRole(){
+    });
 
 
-this.modal.create({
-      nzTitle:'Create New Role',
-      nzContent:CreteUpdateUser,
-      nzData:{
-        status:'isRole'
+
+  }
+
+  addNewRole() {
+
+
+    this.modal.create({
+      nzTitle: 'Create New Role',
+      nzContent: CreteUpdateUser,
+      nzData: {
+        status: 'isRole'
       },
-       nzWidth:700,
-       nzStyle:{
-      top: '100px',       // vertical offset from top
-      left: '100px',       // horizontal offset from left
-      right: 'auto',      // remove default centering if needed
-      transform: 'none'
-       }
+      nzWidth: 700,
+      nzStyle: {
+        top: '100px',       // vertical offset from top
+        left: '100px',       // horizontal offset from left
+        right: 'auto',      // remove default centering if needed
+        transform: 'none'
+      }
     })
 
-  this.modal.afterAllClose.subscribe({
-    next:()=>{
-this.loadUsers();
-    }
- 
-  });
+    this.modal.afterAllClose.subscribe({
+      next: () => {
+        this.loadUsers();
+      }
+
+    });
 
 
-}
-
-
-
+  }
 
 
 
@@ -274,7 +285,10 @@ this.loadUsers();
 
 
 
-selectedFile?: File;
+
+
+
+  selectedFile?: File;
   progress = 0;
   message = '';
 
@@ -283,11 +297,11 @@ selectedFile?: File;
 
 
 
-onFileSelected(event: any): void {
+  onFileSelected(event: any): void {
     this.selectedFile = event.target.files[0];
   }
 
- 
+
 
   // Optional: generate sample CSV file in browser
   downloadSampleCsv(): void {
@@ -308,24 +322,57 @@ onFileSelected(event: any): void {
 
 
 
-  haveRole(roleName:string){
-     
- const roles=this.auth.getUserRoles().map((role:any )=>role.roleTypes.role);
- return roles.includes(roleName);
+  haveRole(roleName: string) {
+
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
   }
 
 
 
   onPageChange($event: number) {
- this.pageIndex=$event-1;
-  this.loadUsers();
-}
-onPageSizeChange($event: number) {
+    this.pageIndex = $event - 1;
+    this.loadUsers();
+  }
+  onPageSizeChange($event: number) {
 
-  this.pageSize=$event;
-  this.loadUsers();
+    this.pageSize = $event;
+    this.loadUsers();
 
-}
+  }
+
+  onSearchChange(value: string): void {
+    if (!value || value.trim() === '') {
+      this.loadUsers();
+      return;
+    }
+    this.searchSubject.next(value);
+  }
+
+  setupSearch(): void {
+    this.searchSubject.pipe(
+      debounceTime(800),
+      distinctUntilChanged(),
+      switchMap(term => {
+        this.loading = true;
+        this.pageIndex = 0;
+        return this.userService.search(term);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (data: any) => {
+        this.users = data.content;
+        this.total = data.totalElements;
+        this.pageSize = data.size;
+        this.pageIndex = data.number;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error during search:', err);
+        this.loading = false;
+      }
+    });
+  }
 
 
 }

@@ -1,85 +1,29 @@
 <nz-layout class="app-layout">
-  <!-- Sidebar -->
-  <nz-sider 
-    nzCollapsible 
-    [(nzCollapsed)]="isCollapsed" 
-    [nzTrigger]="null" 
-    nzBreakpoint="lg" 
-    [nzCollapsedWidth]="80"
-    [nzWidth]="240"
-    class="app-sider"
-  >
+  <!-- Desktop Sidebar -->
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="null" nzBreakpoint="lg" [nzCollapsedWidth]="0"
+    [nzWidth]="240" class="app-sider desktop-sider">
     <div class="logo-container">
       <div class="logo">
         <img src="/enat.jpeg" alt="Enat Bank" *ngIf="!isCollapsed" class="logo-image">
         <span class="logo-text" *ngIf="!isCollapsed">Enat Bank</span>
-        <img src="/enat.jpeg" alt="Enat" *ngIf="isCollapsed" class="logo-icon">
       </div>
     </div>
-
-    <ul nz-menu nzTheme="dark" nzMode="inline" class="app-menu">
-      <!-- Dashboard -->
-      <li nz-menu-item routerLink="/home/welcome" routerLinkActive="ant-menu-item-selected">
-        <span nz-icon nzType="dashboard"></span>
-        <span>Dashboard</span>
-      </li>
-      
-
-
-      <!-- Employee -->
-      <li nz-submenu nzTitle="Employee" nzIcon="team">
-        <ul>
-          <li nz-menu-item routerLink="/home/employee/view" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="file-text"></span>
-            <span>All Employee </span>
-          </li>
-        </ul>
-      </li>
-    <!-- Share -->
-<li nz-submenu nzTitle="Share"  nzIcon="team">
-  <ul>
-    <li nz-menu-item routerLink="/home/share/view" routerLinkActive="ant-menu-item-selected">
-      <span nz-icon nzType="file-text"></span>
-      <span>All Share</span>
-    </li>
-  </ul>
-</li>
-
-      <!-- Saving -->
-      <li nz-submenu nzTitle="Saving" nzIcon="bank">
-        <ul>
-          <li nz-menu-item routerLink="/home/saving/view" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="file-text"></span>
-            <span>All Savings</span>
-          </li>
-        </ul>
-      </li>
-
-      <!-- Loan -->
-      <li nz-submenu nzTitle="Loan" nzIcon="credit-card">
-        <ul>
-          <li nz-menu-item routerLink="/home/loan-repayment/view" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="file-done"></span>
-            <span>All Loan Repayments</span>
-          </li>
-        </ul>
-      </li>
-
-      <!-- Admin -->
-      <li nz-submenu nzTitle="Administration" nzIcon="setting">
-        <ul>
-          <li nz-menu-item routerLink="/home/admin/users" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="team"></span>
-            <span>Manage Users</span>
-          </li>
-          <!-- <li nz-menu-item routerLink="/home/admin/logs" routerLinkActive="ant-menu-item-selected">
-            <span nz-icon nzType="database"></span>
-            <span>System Logs</span>
-          </li> -->
-        </ul>
-      </li>
-    </ul>
+    <ng-container [ngTemplateOutlet]="menuTemplate"></ng-container>
   </nz-sider>
+
+  <!-- Mobile Drawer -->
+  <nz-drawer [nzVisible]="!isCollapsed" nzPlacement="left" (nzOnClose)="isCollapsed = true" [nzClosable]="false"
+    [nzWidth]="240" [nzBodyStyle]="{ padding: '0', background: '#001529' }" class="mobile-drawer">
+    <div *nzDrawerContent>
+      <div class="logo-container">
+        <div class="logo">
+          <img src="/enat.jpeg" alt="Enat Bank" class="logo-image">
+          <span class="logo-text">Enat Bank</span>
+        </div>
+      </div>
+      <ng-container [ngTemplateOutlet]="menuTemplate"></ng-container>
+    </div>
+  </nz-drawer>
 
   <!-- Main Content -->
   <nz-layout class="site-layout">
@@ -87,32 +31,17 @@
     <nz-header class="app-header">
       <div class="header-content">
         <div class="header-left">
-          <button 
-            nz-button 
-            nzType="text" 
-            class="trigger" 
-            (click)="toggleCollapsed()"
-          >
-        <span nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'">
-          <i nz-icon nzType="bank" nzTheme="outline" ></i>
-        </span>
-        </button>
+          <button nz-button nzType="text" class="trigger" (click)="toggleCollapsed()">
+            <span nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></span>
+          </button>
           <nz-breadcrumb class="breadcrumb">
             <nz-breadcrumb-item>Home</nz-breadcrumb-item>
             <nz-breadcrumb-item>{{ currentPage }}</nz-breadcrumb-item>
           </nz-breadcrumb>
         </div>
-        
+
         <div class="header-right">
           <nz-space [nzSize]="16">
-            <!--if nceeery i will add this features  Notifications -->
-            <!-- <span class="nz-space-item">
-              <button nz-button nzType="text" nzShape="circle" nz-tooltip="Notifications">
-                <span nz-icon nzType="bell" nzTheme="outline"></span>
-              </button>
-            </span> -->
-            
-            <!-- User Profile -->
             <span class="nz-space-item">
               <div class="user-profile" nz-dropdown [nzDropdownMenu]="userMenu">
                 <nz-avatar nzIcon="user" class="user-avatar"></nz-avatar>
@@ -153,3 +82,63 @@
     </nz-footer>
   </nz-layout>
 </nz-layout>
+
+<!-- Menu Template -->
+<ng-template #menuTemplate>
+  <ul nz-menu nzTheme="dark" nzMode="inline" class="app-menu">
+    <li nz-menu-item routerLink="/home/welcome" routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
+      <span nz-icon nzType="dashboard"></span>
+      <span>Dashboard</span>
+    </li>
+
+    <li nz-submenu nzTitle="Employee" nzIcon="team">
+      <ul>
+        <li nz-menu-item routerLink="/home/employee/view" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="file-text"></span>
+          <span>All Employee</span>
+        </li>
+      </ul>
+    </li>
+
+    <li nz-submenu nzTitle="Share" nzIcon="pie-chart">
+      <ul>
+        <li nz-menu-item routerLink="/home/share/view" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="file-text"></span>
+          <span>All Share</span>
+        </li>
+      </ul>
+    </li>
+
+    <li nz-submenu nzTitle="Saving" nzIcon="bank">
+      <ul>
+        <li nz-menu-item routerLink="/home/saving/view" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="file-text"></span>
+          <span>All Savings</span>
+        </li>
+      </ul>
+    </li>
+
+    <li nz-submenu nzTitle="Loan" nzIcon="credit-card">
+      <ul>
+        <li nz-menu-item routerLink="/home/loan-repayment/view" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="file-done"></span>
+          <span>All Loan Repayments</span>
+        </li>
+      </ul>
+    </li>
+
+    <li nz-submenu nzTitle="Administration" nzIcon="setting">
+      <ul>
+        <li nz-menu-item routerLink="/home/admin/users" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="team"></span>
+          <span>Manage Users</span>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</ng-template>

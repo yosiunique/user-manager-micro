@@ -7,51 +7,57 @@
     </button>
   </div>
 
-  <!-- SHARE TABLE -->
-  <nz-table [nzData]="shares" [nzLoading]="loading" nzBordered>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Employee ID</th>
-        <th>Membership ID</th>
-        <th>Full Name</th>
-        <th>Total Saving</th>
-        <th>No. of Share</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
+  <!-- SHARE CARDS (Responsive Layout) -->
+  <div class="share-cards-container">
+    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+      <nz-list-item *ngFor="let share of shares">
+        <nz-card [nzBordered]="true" class="share-card" [nzActions]="[actionEdit, actionDelete]">
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="share.fullName"
+            [nzDescription]="'Membership: ' + share.membershipId"></nz-card-meta>
 
-    <tbody>
-      <tr *ngFor="let share of shares">
-        <td>{{ share.id }}</td>
-        <td>{{ share.employeeId }}</td>
-        <td>{{ share.membershipId }}</td>
-        <td>{{ share.fullName }}</td>
-        <td>{{ share.totalSaving }}</td>
-        <td>{{ share.noOfShare }}</td>
+          <div class="card-extra-content">
+            <div class="info-row">
+              <span class="label">Employee ID:</span>
+              <span class="value">{{ share.employeeId }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Total Saving:</span>
+              <span class="value">{{ share.totalSaving | number }}</span>
+            </div>
+            <div class="info-row highlight">
+              <span class="label">Shares:</span>
+              <span class="value">{{ share.noOfShare }}</span>
+            </div>
+          </div>
 
-        <td>
-          <button nz-button nzType="link" (click)="openDrawer(share)">
-            <i nz-icon nzType="edit"></i>
-          </button>
+          <ng-template #avatarTemplate>
+            <nz-avatar [nzIcon]="'pie-chart'" class="share-avatar"></nz-avatar>
+          </ng-template>
 
-          <button nz-button nzDanger nzType="text" (click)="deleteShare(share.id)">
-            <i nz-icon nzType="delete"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
+          <ng-template #actionEdit>
+            <span nz-icon nzType="edit" (click)="openDrawer(share)" nz-tooltip="Edit"></span>
+          </ng-template>
+          <ng-template #actionDelete>
+            <span nz-icon nzType="delete" class="delete-icon" (click)="deleteShare(share.id)"
+              nz-tooltip="Delete"></span>
+          </ng-template>
+        </nz-card>
+      </nz-list-item>
+    </nz-list>
+
+    <div class="pagination-wrapper" *ngIf="total > 0">
+      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+        nzShowSizeChanger></nz-pagination>
+    </div>
+  </div>
 
   <!-- ======================================================
         SHARE DRAWER FORM
        ====================================================== -->
-  <nz-drawer
-    [nzVisible]="drawerVisible"
-    nzPlacement="right"
-    [nzWidth]="480"
-    [nzTitle]="isEditMode ? 'Edit Share' : 'Add Share'"
-    (nzOnClose)="closeDrawer()">
+  <nz-drawer [nzVisible]="drawerVisible" nzPlacement="right" [nzWidth]="'min(480px, 100vw)'"
+    [nzTitle]="isEditMode ? 'Edit Share' : 'Add Share'" (nzOnClose)="closeDrawer()">
+
 
     <div class="drawer-content">
 

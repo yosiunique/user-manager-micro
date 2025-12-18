@@ -1,42 +1,28 @@
 @if (!authService.isLoggedIn()) {
 <div class="office-auth-container">
-  
+
   <!-- Login Section -->
   <div *ngIf="!reset" class="office-auth-card">
     <div class="office-logo">
       <h1>Enat Bank</h1>
     </div>
-    
+
     <!-- <div class="auth-header">
       <h2>Employee Login</h2>
       <p>Enter your credentials to access the system</p>
     </div> -->
-    
+
     <form (ngSubmit)="login()" class="office-auth-form">
       <div class="form-group">
         <label for="username">Username</label>
-        <input 
-          type="text" 
-          id="username"
-          [(ngModel)]="userName" 
-          name="username" 
-          required 
-          placeholder="Enter your employee ID"
-          class="office-form-input"
-        />
+        <input type="text" id="username" [(ngModel)]="userName" name="username" required
+          placeholder="Enter your employee ID" class="office-form-input" />
       </div>
 
       <div class="form-group">
         <label for="password">Password</label>
-        <input 
-          type="password" 
-          id="password"
-          [(ngModel)]="password" 
-          name="password" 
-          required 
-          placeholder="Enter your password"
-          class="office-form-input"
-        />
+        <input type="password" id="password" [(ngModel)]="password" name="password" required
+          placeholder="Enter your password" class="office-form-input" />
       </div>
 
       <button type="submit" class="office-auth-button">Login to System</button>
@@ -62,51 +48,54 @@
     <div class="office-logo">
       <h1>Enat Bank</h1>
     </div>
-    
+
     <div class="auth-header">
       <h2>Password Reset</h2>
       <p>Set a new password for your account</p>
     </div>
-    
-   <form nz-form [formGroup]="newRestFrom" (ngSubmit)="resetNow()" class="office-auth-form">
 
-  <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired nzFor="userName">Employee ID / Username</nz-form-label>
-    <nz-form-control [nzSpan]="15" nzHasFeedback>
-      <input nz-input type="text" formControlName="userName" id="userName" placeholder="Enter your employee ID" />
-    </nz-form-control>
-  </nz-form-item>
+    <form nz-form [formGroup]="newRestFrom" (ngSubmit)="resetNow()" class="office-auth-form" nzLayout="vertical">
 
-  <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired nzFor="password">New Password</nz-form-label>
-    <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="passwordErrorTpl">
-      <input nz-input type="password" formControlName="password" id="password" placeholder="Create new password" />
-    </nz-form-control>
-    <ng-template #passwordErrorTpl let-control>
-      <ng-container *ngIf="control.hasError('required')">Please input new password!</ng-container>
-      <ng-container *ngIf="control.hasError('minlength')">Password must be at least 6 characters.</ng-container>
-      <ng-container *ngIf="control.hasError('pattern')">Password must include number, uppercase, lowercase & special character.</ng-container>
-    </ng-template>
-  </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="userName">Employee ID / Username</nz-form-label>
+        <nz-form-control nzHasFeedback>
+          <input nz-input type="text" formControlName="userName" id="userName" placeholder="Enter your employee ID" />
+        </nz-form-control>
+      </nz-form-item>
 
-  <nz-form-item>
-    <nz-form-label [nzSpan]="7" nzRequired nzFor="reenter">Confirm Password</nz-form-label>
-    <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="confirmPasswordErrorTpl">
-      <input nz-input type="password" formControlName="reenter" id="reenter" placeholder="Re-enter new password" />
-    </nz-form-control>
-    <ng-template #confirmPasswordErrorTpl let-control>
-      <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>
-      <ng-container *ngIf="newRestFrom.hasError('passwordMismatch')">Passwords do not match!</ng-container>
-    </ng-template>
-  </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="password">New Password</nz-form-label>
+        <nz-form-control nzHasFeedback [nzErrorTip]="passwordErrorTpl">
+          <input nz-input type="password" formControlName="password" id="password" placeholder="Create new password" />
+        </nz-form-control>
+        <ng-template #passwordErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Please input new password!</ng-container>
+          <ng-container *ngIf="control.hasError('minlength')">Password must be at least 6 characters.</ng-container>
+          <ng-container *ngIf="control.hasError('pattern')">Password must include number, uppercase, lowercase & special
+            character.</ng-container>
+        </ng-template>
+      </nz-form-item>
 
-  <nz-form-item nz-row class="register-area">
-    <nz-form-control [nzSpan]="15" [nzOffset]="7">
-      <button nz-button nzType="primary" [disabled]="newRestFrom.invalid">Update Password</button>
-    </nz-form-control>
-  </nz-form-item>
+      <nz-form-item>
+        <nz-form-label nzRequired nzFor="reenter">Confirm Password</nz-form-label>
+        <nz-form-control nzHasFeedback [nzErrorTip]="confirmPasswordErrorTpl">
+          <input nz-input type="password" formControlName="reenter" id="reenter" placeholder="Re-enter new password" />
+        </nz-form-control>
+        <ng-template #confirmPasswordErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>
+          <ng-container *ngIf="newRestFrom.hasError('passwordMismatch')">Passwords do not match!</ng-container>
+        </ng-template>
+      </nz-form-item>
 
-</form>
+      <nz-form-item nz-row class="register-area">
+        <nz-form-control>
+          <button nz-button nzType="primary" [disabled]="newRestFrom.invalid" style="width: 100%">Update
+            Password</button>
+        </nz-form-control>
+      </nz-form-item>
+
+
+    </form>
 
     <div class="office-auth-footer">
       <a href="#" (click)="reset = false; $event.preventDefault()" class="office-auth-link">

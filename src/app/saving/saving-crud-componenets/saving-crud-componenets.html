@@ -8,7 +8,7 @@
         <h2 class="text-success fw-bold">{{ totalSaving | number }} </h2>
       </div>
 
-    </div> 
+    </div>
   </nz-card>
 
   <!-- Remove All Button -->
@@ -18,62 +18,87 @@
     </button>
   </div>
 
-  <!-- Saving Table -->
-  <nz-table
-    #usersTable
-    [nzBordered]="true"
-    [nzData]="saving"
-    [nzLoading]="loading"
-    [nzFrontPagination]="false"
-    [nzPageSize]="pageSize"
-    [nzPageSizeOptions]="[5,10,20,30,40,50]"
-    nzShowSizeChanger
-    nzShowPagination
-    [nzTotal]="total"
-    (nzPageIndexChange)="onPageChange($event)"
-    (nzPageSizeChange)="onPageSizeChange($event)"
-  >
-    <thead>
-      <tr style="background: #2e3192; color: white;">
-        <th>ID</th>
-        <th>Employee ID</th>
-        <th>Full Name</th>
-        <th>CRA Saving</th>
-        <th width="180">Actions</th>
-      </tr>
-    </thead>
+  <!-- Desktop View -->
+  <div class="desktop-view">
+    <nz-table #usersTable [nzBordered]="true" [nzData]="saving" [nzLoading]="loading" [nzFrontPagination]="false"
+      [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger nzShowPagination
+      [nzTotal]="total" (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '700px' }">
+      <thead>
+        <tr style="background: #2e3192; color: white;">
+          <th>ID</th>
+          <th>Employee ID</th>
+          <th>Full Name</th>
+          <th>CRA Saving</th>
+          <th width="180">Actions</th>
+        </tr>
+      </thead>
 
-    <tbody>
-      <tr *ngFor="let save of saving; trackBy: trackByFn">
-        <td>{{ save.id }}</td>
-        <td>{{ save.employee.id }}</td>
-        <td>{{ save.fullName }}</td>
-        <td>{{ save.craSaving }}</td>
+      <tbody>
+        <tr *ngFor="let save of saving; trackBy: trackByFn">
+          <td>{{ save.id }}</td>
+          <td>{{ save.employee.id }}</td>
+          <td>{{ save.fullName }}</td>
+          <td>{{ save.craSaving }}</td>
 
-        <td class="button">
-          <button nz-button nzType="default" nzSize="small"
-            class="me-1"
-            (click)="updateSaving(true, save.id)">
-            <i nz-icon nzType="edit"></i> Update
-          </button> 
+          <td class="button">
+            <button nz-button nzType="default" nzSize="small" class="me-1" (click)="updateSaving(true, save.id)">
+              <i nz-icon nzType="edit"></i> Update
+            </button>
 
-          <button nz-button nzType="primary" nzDanger nzSize="small"
-            (click)="deletebyId(save.id)">
-            <i nz-icon nzType="delete"></i> Remove
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
+            <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deletebyId(save.id)">
+              <i nz-icon nzType="delete"></i> Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- Mobile View -->
+  <div class="mobile-view">
+    <nz-list [nzLoading]="loading" [nzDataSource]="saving">
+      <nz-list-item *ngFor="let save of saving; trackBy: trackByFn">
+        <nz-card [nzBordered]="true" class="saving-mobile-card">
+          <div class="card-header">
+            <div class="id-badge">ID: {{ save.id }}</div>
+            <div class="amount-badge">{{ save.craSaving | number }} ETB</div>
+          </div>
+          <div class="card-body">
+            <div class="info-row">
+              <span class="label">FullName:</span>
+              <span class="value">{{ save.fullName }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Emp ID:</span>
+              <span class="value">{{ save.employee.id }}</span>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button nz-button nzType="default" nzSize="small" (click)="updateSaving(true, save.id)">
+              <i nz-icon nzType="edit"></i> Edit
+            </button>
+            <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deletebyId(save.id)">
+              <i nz-icon nzType="delete"></i> Delete
+            </button>
+          </div>
+        </nz-card>
+      </nz-list-item>
+    </nz-list>
+
+    <div class="pagination-wrapper" *ngIf="total > 0">
+      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)" nzSimpleMode>
+      </nz-pagination>
+    </div>
+  </div>
 </div>
 
 
 
-<div *ngIf="id.status === 'create' || (id.status==='update' && updateForm)"
-     class="p-4">
+<div *ngIf="id.status === 'create' || (id.status==='update' && updateForm)" class="p-4">
 
-  <nz-card nzTitle="{{ id.status === 'create' ? 'Create Saving Record' : 'Update Saving Record' }}"
-           class="shadow-lg">
+  <nz-card nzTitle="{{ id.status === 'create' ? 'Create Saving Record' : 'Update Saving Record' }}" class="shadow-lg">
 
     <form nz-form nzLayout="vertical" [formGroup]="savingForm" (ngSubmit)="submitForm()">
 
@@ -94,15 +119,14 @@
       <nz-form-item>
         <nz-form-label [nzRequired]="true">CRA Saving</nz-form-label>
         <nz-form-control [nzErrorTip]="'Amount must be positive'">
-          <input nz-input type="number" formControlName="craSaving"
-                 placeholder="Enter CRA Saving" />
+          <input nz-input type="number" formControlName="craSaving" placeholder="Enter CRA Saving" />
         </nz-form-control>
       </nz-form-item>
 
       <!-- Buttons -->
       <nz-form-item>
         <div class="mt-3 d-flex justify-content-end">
-          
+
 
           <button nz-button nzType="primary" type="submit">
             {{ id.status === 'create' ? 'Create Saving' : 'Update Saving' }}
