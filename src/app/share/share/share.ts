@@ -17,6 +17,10 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
 import { Share } from '../../saving/model/saving';
 import { ShareService } from '../../service/share-service';
+import { NzListModule } from "ng-zorro-antd/list";
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 
 
 @Component({
@@ -36,7 +40,12 @@ import { ShareService } from '../../service/share-service';
     NzDatePickerModule,
     NzSelectModule,
     NzIconModule,
-    NzInputNumberModule
+    NzInputNumberModule,
+    NzListModule,
+    NzCardModule,
+    NzPaginationModule,
+    NzAvatarModule
+
   ],
   templateUrl: './share.html',
   styleUrls: ['./share.css'],
@@ -91,6 +100,17 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
     });
   }
 
+  onPageChange(index: number): void {
+    this.pageIndex = index - 1;
+    this.loadShares();
+  }
+
+  onPageSizeChange(size: number): void {
+    this.pageSize = size;
+    this.pageIndex = 0;
+    this.loadShares();
+  }
+
   openDrawer(share?: Share): void {
     this.drawerVisible = true;
 
@@ -119,7 +139,7 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
     }
 
     const formValue: Share = { ...this.shareForm.value };
- console.log("this is share forms ...",formValue)
+    console.log("this is share forms ...", formValue)
     const request = this.isEditMode && this.currentId
       ? this.shareService.update(this.currentId, formValue)
       : this.shareService.create(formValue);

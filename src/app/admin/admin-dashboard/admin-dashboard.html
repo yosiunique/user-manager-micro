@@ -1,108 +1,119 @@
+<div class="admin-container" *ngIf="haveRole('Admin')">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <h2>User Management</h2>
+    </div>
 
+    <div class="toolbar-center">
+      <input nz-input placeholder="Search User" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
+        class="search-input" />
+    </div>
 
+    <div class="toolbar-right">
+      <button nz-button nzType="primary" (click)="addNewUser()">
+        <i nz-icon nzType="plus"></i> <span class="btn-text">New User</span>
+      </button>
+      <button nz-button nzType="default" (click)="addNewRole()">
+        <i nz-icon nzType="plus"></i> <span class="btn-text">New Role</span>
+      </button>
+    </div>
+  </div>
 
-<nz-table #usersTable
- [nzBordered]="true"
-  [nzData]="users"  
-  [nzFrontPagination]="false"
-  [nzPageSize]="pageSize"
-  [nzPageSizeOptions]="[5,10,20,30,40,50]"
-  nzShowSizeChanger
-  nzShowPagination
-  [nzTotal]="total"
- (nzPageIndexChange)="onPageChange($event)"
- (nzPageSizeChange)="onPageSizeChange($event)"
+  <!-- Desktop Table (Visible on large screens) -->
+  <div class="desktop-view">
+    <nz-table #usersTable [nzBordered]="true" [nzData]="users" [nzFrontPagination]="false" [nzPageSize]="pageSize"
+      [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger nzShowPagination [nzTotal]="total"
+      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '1000px' }">
+      <thead>
+        <tr style="background-color: rgb(45, 39, 134);">
+          <th nzWidth="80px">User ID</th>
+          <th>Username</th>
+          <th nzWidth="150px">PhoneNumber</th>
+          <th nzWidth="120px">Status</th>
+          <th nzWidth="150px">Roles</th>
+          <th nzWidth="300px">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users">
+          <td>{{ user.id }}</td>
+          <td>{{ user.userName }}</td>
+          <td>{{ user.phoneNumber }}</td>
+          <td>
+            <nz-switch [ngModel]="user.enable" (ngModelChange)="onStatusChange($event, user)"
+              [nzCheckedChildren]="'Enabled'" [nzUnCheckedChildren]="'Disabled'" nzSize="small"></nz-switch>
+          </td>
+          <td>
+            <button nz-button nzType="link" nzSize="small" (click)="assignRole(user.id)">
+              <i nz-icon nzType="edit"></i> Manage Role
+            </button>
+          </td>
+          <td>
+            <div class="action-buttons">
+              <button nz-button nzType="default" nzSize="small" (click)="resetPassword(user.id)" class="reset-btn">
+                <i nz-icon nzType="reset"></i> Reset
+              </button>
+              <button nz-button nzType="default" nzSize="small" (click)="updateUser(user.id)" class="edit-btn">
+                <i nz-icon nzType="edit"></i> Edit
+              </button>
+              <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deleteUser(user.id)">
+                <i nz-icon nzType="delete"></i> Delete
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
 
+  <!-- Mobile View (Visible on small screens) -->
+  <div class="mobile-view">
+    <nz-list [nzLoading]="loading" [nzDataSource]="users">
+      <nz-list-item *ngFor="let user of users">
+        <nz-card [nzBordered]="true" class="user-mobile-card">
+          <div class="card-header">
+            <nz-avatar nzIcon="user" class="user-avatar"></nz-avatar>
+            <div class="header-info">
+              <h3>{{ user.userName }}</h3>
+              <span class="user-id">ID: {{ user.id }}</span>
+            </div>
+            <nz-switch [ngModel]="user.enable" (ngModelChange)="onStatusChange($event, user)"
+              nzSize="small"></nz-switch>
+          </div>
 
-  *ngIf="haveRole('Admin')" 
- >
-  
-  <thead>
-      <th (click)="addNewUser()" >
-                <button nz-button nzType="primary" nzSize="small"  >    
- <i nz-icon nzType="plus" nzTheme="outline" ></i>
-        New User
-                </button> 
+          <div class="card-body">
+            <div class="info-row">
+              <span class="label">Phone:</span>
+              <span class="value">{{ user.phoneNumber }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Roles:</span>
+              <button nz-button nzType="link" nzSize="small" (click)="assignRole(user.id)">
+                Manage Roles
+              </button>
+            </div>
+          </div>
 
-       </th>
+          <div class="card-actions">
+            <button nz-button nzType="default" (click)="resetPassword(user.id)" class="reset-btn">
+              <i nz-icon nzType="reset"></i>
+            </button>
+            <button nz-button nzType="default" (click)="updateUser(user.id)" class="edit-btn">
+              <i nz-icon nzType="edit"></i>
+            </button>
+            <button nz-button nzType="primary" nzDanger (click)="deleteUser(user.id)">
+              <i nz-icon nzType="delete"></i>
+            </button>
+          </div>
+        </nz-card>
+      </nz-list-item>
+    </nz-list>
 
-          <th (click)="addNewRole()" >
-                <button nz-button nzType="primary" nzSize="small"  >    
- <i nz-icon nzType="plus" nzTheme="outline" ></i>
-        New Role
-                </button> 
-
-       </th>
-    <tr style="background-color: rgb(45, 39, 134);">
-      <th>User ID</th>
-      <th>Username</th>
-      <th>PhoneNumber</th>
-      <th>Status</th>
-      <th>Roles</th>
-      <th>Actions</th>
-   
-    </tr>
-  </thead>
-  <tbody>  
-    <tr *ngFor="let user of users">
-      <td>{{user.id}}</td>
-      <td>{{ user.userName }}</td>
-      <td>{{ user.phoneNumber }}</td>
-      <!-- <td>{{ user.enabled ? 'Enabled' : 'Disabled' }} -->
-        <td>
-<nz-switch 
-  [ngModel]="user.enable" 
-  (ngModelChange)="onStatusChange($event,user)"
-  [nzCheckedChildren]="'Enabled'" 
-  [nzUnCheckedChildren]="'Disabled'"
-  nzSize="small"
-></nz-switch>
-
-
-      </td>
-      <td>
-  <button nz-button nzType="primary"  nzSize="small" (click)="assignRole(user.id)">
-        <i nz-icon nzType="edit"></i>Manage Role</button>
-      </td>
-      <td class="button">
-        <button nz-button nzType="default" nzSize="small" (click)="resetPassword(user.id)" style="background-color: hsl(197, 100%, 50%);">
-         <i nz-icon nzType="reset"></i>Reset</button>
-          <button nz-button nzType="default" nzWarn nzSize="small" (click)="updateUser(user.id)" style="background-color: yellow;">
-        <i nz-icon nzType="edit"></i> Edit</button>
-        <button nz-button nzType="primary" nzDanger nzSize="small"  (click)="deleteUser(user.id)">
-          <i nz-icon nzType="delete"></i>Delete</button>
-        
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <div class="pagination-wrapper" *ngIf="total > 0">
+      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)" nzSimpleMode>
+      </nz-pagination>
+    </div>
+  </div>
+</div>

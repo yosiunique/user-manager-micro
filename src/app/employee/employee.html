@@ -1,68 +1,81 @@
 <div class="employee-container">
 
-  <div class="header">
-    <h2>Employee Management</h2>
-    <button nz-button nzType="primary" (click)="openDrawer()">
-      <i nz-icon nzType="plus"></i> Add Employee
-    </button>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button nz-button nzType="primary" (click)="openDrawer()">
+        <i nz-icon nzType="plus"></i> Add Employee
+      </button>
+    </div>
+
+    <div class="toolbar-center">
+      <input nz-input placeholder="Search Employee" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
+        class="search-input" />
+    </div>
+
+    <div class="toolbar-right">
+      <button nz-button nzType="default" (click)="loadEmployees()">
+        <i nz-icon nzType="reload"></i> Refresh
+      </button>
+    </div>
   </div>
 
-  <!-- EMPLOYEE TABLE -->
-  <nz-table [nzData]="employees" [nzLoading]="loading" nzBordered>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Employee ID</th>
-        <th>Full Name</th>
-        <th>Effective Date</th>
-        <th>Status</th>
-        <th>Outstanding</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
+  <!-- EMPLOYEE CARDS (Card-based Layout) -->
+  <div class="employee-cards-container">
+    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+      <nz-list-item *ngFor="let employee of employees">
+        <nz-card [nzBordered]="true" class="employee-card" [nzActions]="[actionEdit, actionDelete]">
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="employee.employeeFullName"
+            [nzDescription]="'ID: ' + employee.employeeId"></nz-card-meta>
 
-    <tbody>
-      <tr *ngFor="let employee of employees">
-        
-        <td>{{ employee.id }}</td>
-        <td>{{ employee.employeeId }}</td>
-        <td>{{ employee.employeeFullName }}</td>
-        <td>{{ employee.effectiveDate | date }}</td>
+          <div class="card-extra-content">
+            <div class="info-row">
+              <span class="label">Date:</span>
+              <span class="value">{{ employee.effectiveDate | date:'mediumDate' }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Balance:</span>
+              <span class="value">{{ employee.outStanding | number }}</span>
+            </div>
+            <div class="status-tag">
+              <nz-tag [nzColor]="employee.status === 'ACTIVE' ? 'green' : 'volcano'">
+                {{ employee.status }}
+              </nz-tag>
+            </div>
+          </div>
 
-        <td>
-          <nz-tag [nzColor]="employee.status === 'ACTIVE' ? 'green' : 'volcano'">
-            {{ employee.status }}
-          </nz-tag>
-        </td>
+          <ng-template #avatarTemplate>
+            <nz-avatar [nzText]="employee.employeeFullName[0]" class="user-avatar"></nz-avatar>
+          </ng-template>
 
-        <td>{{ employee.outStanding }}</td>
+          <ng-template #actionEdit>
+            <span nz-icon nzType="edit" (click)="openDrawer(employee)" nz-tooltip="Edit"></span>
+          </ng-template>
+          <ng-template #actionDelete>
+            <span nz-icon nzType="delete" class="delete-icon" (click)="deleteEmployee(employee.id)"
+              nz-tooltip="Delete"></span>
+          </ng-template>
+        </nz-card>
+      </nz-list-item>
+    </nz-list>
 
-        <td>
-          <button nz-button nzType="link" (click)="openDrawer(employee)">
-            <i nz-icon nzType="edit"></i>
-          </button>
+    <div class="pagination-wrapper" *ngIf="total > 0">
+      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+        nzShowSizeChanger></nz-pagination>
+    </div>
+  </div>
 
-          <button nz-button nzDanger nzType="text" (click)="deleteEmployee(employee.id)">
-            <i nz-icon nzType="delete"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </nz-table>
 
   <!-- ======================================================
         DRAWER (FIXED VERSION)
        ====================================================== -->
-  <nz-drawer
-    [nzVisible]="drawerVisible"
-    nzPlacement="right"
-    [nzWidth]="480"
-    [nzTitle]="isEditMode ? 'Edit Employee' : 'Add Employee'"
-    (nzOnClose)="closeDrawer()">
+  <nz-drawer [nzVisible]="drawerVisible" nzPlacement="right" [nzWidth]="'min(480px, 100vw)'"
+    [nzTitle]="isEditMode ? 'Edit Employee' : 'Add Employee'" (nzOnClose)="closeDrawer()">
+
 
     <div class="drawer-content">
 
-      <form nz-form  *nzDrawerContent   [formGroup]="employeeForm">
+      <form nz-form *nzDrawerContent [formGroup]="employeeForm">
 
         <nz-form-item>
           <nz-form-label nzRequired>Employee ID</nz-form-label>
@@ -138,21 +151,16 @@
           </nz-form-control>
         </nz-form-item>
 
-         <div style="text-align: right; margin-top: 20px;">
-        <button nz-button (click)="closeDrawer()">Cancel</button>
-        <button nz-button nzType="primary" (click)="submitForm()">Save</button>
-      </div>
+        <div style="text-align: right; margin-top: 20px;">
+          <button nz-button (click)="closeDrawer()">Cancel</button>
+          <button nz-button nzType="primary" (click)="submitForm()">Save</button>
+        </div>
       </form>
 
-     
+
 
     </div>
 
   </nz-drawer>
 
 </div>
-
-
-
-
-

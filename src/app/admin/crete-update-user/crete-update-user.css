@@ -1,14 +1,44 @@
 .user-form-container {
   display: flex;
   justify-content: center;
-  padding-top: 50px;
+  padding: 24px;
+}
+
+.responsive-card {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .reset-button {
   margin-left: 8px;
 }
 
-/* Optional: To adjust the control alignment slightly */
-.register-area .ant-form-item-control {
-  text-align: left;
+@media (max-width: 768px) {
+  .user-form-container {
+    padding: 12px;
+  }
+
+  .responsive-card {
+    padding: 12px;
+  }
+
+  /* Make labels stack on top of inputs on mobile */
+  ::ng-deep .ant-form-item-label {
+    width: 100% !important;
+    text-align: left !important;
+    padding-bottom: 4px !important;
+  }
+
+  ::ng-deep .ant-form-item-control {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
+
+.button {
+  display: flex;
+  gap: 8px;
 }

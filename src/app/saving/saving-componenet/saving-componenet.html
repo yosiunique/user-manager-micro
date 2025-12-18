@@ -1,67 +1,65 @@
 <div *ngIf="haveRole('saving')">
-<div class="toolbar" style="display:flex; gap:12px; align-items:center; margin-bottom:12px;">
-  <button nz-button nzType="primary" nzSize="small" (click)="createSaving()">
-    <i nz-icon nzType="plus" nzTheme="outline"></i>
-    New Saving
-  </button>
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <button nz-button nzType="primary" (click)="createSaving()">
+        <i nz-icon nzType="plus" nzTheme="outline"></i>
+        New Saving
+      </button>
+    </div>
 
-  <input
-    nz-input
-    placeholder="Search Employee ID"
-    [(ngModel)]="searchTerm"
-    (ngModelChange)="onSearchChange($event)"
-    style="width: 320px;"
-  />
- 
+    <div class="toolbar-center">
+      <input nz-input placeholder="Search Employee ID" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
+        class="search-input" />
+    </div>
 
-  <button nz-button nzType="primary" nzSize="small" [nzLoading]="uploading" (click)="uploadFile()">
-    <i nz-icon nzType="upload"></i> Upload CSV
-  </button>
+    <div class="toolbar-right">
+      <button nz-button nzType="primary" [nzLoading]="uploading" (click)="uploadFile()">
+        <i nz-icon nzType="upload"></i> Upload CSV
+      </button>
 
-  <button nz-button nzType="default" nzSize="small" (click)="reloadPage()">
-    <i nz-icon nzType="reload"></i> Refresh
-  </button>
-</div>
+      <button nz-button nzType="default" (click)="reloadPage()">
+        <i nz-icon nzType="reload"></i> Refresh
+      </button>
+    </div>
+  </div>
+
+  <div class="saving-cards-container">
+    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+      <nz-list-item *ngFor="let save of saving">
+        <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.fullName"
+            [nzDescription]="'Saving ID: ' + save.id"></nz-card-meta>
+
+          <div class="card-extra-content">
+            <div class="info-row">
+              <span class="label">Employee ID:</span>
+              <span class="value">{{ save.employee.id }}</span>
+            </div>
+            <div class="info-row highlight">
+              <span class="label">CRA Saving:</span>
+              <span class="value">{{ save.craSaving | number }} ETB</span>
+            </div>
+          </div>
+
+          <ng-template #avatarTemplate>
+            <nz-avatar [nzIcon]="'bank'" class="bank-avatar"></nz-avatar>
+          </ng-template>
+
+          <ng-template #actionDetails>
+            <button nz-button nzType="link" (click)="getsavingById(save.employee.id)">
+              <i nz-icon nzType="eye"></i> View Details
+            </button>
+          </ng-template>
+        </nz-card>
+      </nz-list-item>
+    </nz-list>
+
+    <div class="pagination-wrapper" *ngIf="total > 0">
+      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+        nzShowSizeChanger></nz-pagination>
+    </div>
+  </div>
 
 
-
-
-
-<nz-table #usersTable
- [nzBordered]="true"
-  [nzData]="saving" 
-  [nzLoading]="loading" 
-  [nzFrontPagination]="false"
-  [nzPageSize]="pageSize"
-  [nzPageSizeOptions]="[5,10,20,30,40,50]"
-  nzShowSizeChanger
-  nzShowPagination
-  [nzTotal]="total"
- (nzPageIndexChange)="onPageChange($event)"
- (nzPageSizeChange)="onPageSizeChange($event)"
- >
-  
-  <thead>
-    <tr style="background-color: rgb(45, 39, 134);">
-      <th>Saving  ID</th>
-      <th>Employee ID</th>
-      <th>fullName</th>
-      <th>CS</th>
-        <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>  
-    <tr *ngFor="let save of saving">
-      <td>{{ save.id}}</td>
-      <td>{{ save.employee.id }}</td>
-      <td>{{ save.fullName }}</td>
-      <td>{{ save.craSaving}}
-      <td>
-  <button nz-button nzType="primary"  nzSize="small" (click)="getsavingById(save.employee.id)">
-        <i nz-icon nzType="more"></i>Details</button>
-      </td>
-    </tr>
-
-  </tbody>
-</nz-table>
 </div>
