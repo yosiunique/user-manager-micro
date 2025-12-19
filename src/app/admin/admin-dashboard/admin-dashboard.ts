@@ -118,7 +118,7 @@ export class AdminDashboard extends BaseComponent<User> {
   deleteUser(id: number) {
     if (id !== 1) {
       this.modal.confirm({
-        nzTitle: 'Conformation',
+        nzTitle: 'Are you sure you want to delete this user?',
         nzOkText: 'Yes',
         nzOnOk: () => {
           this.userService.delete(id)

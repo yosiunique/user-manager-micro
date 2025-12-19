@@ -21,6 +21,9 @@ import { NzListModule } from "ng-zorro-antd/list";
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
+import { ActivatedRoute } from '@angular/router';
+import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { Auth } from '../../auth/auth';
 
 
 @Component({
@@ -55,21 +58,75 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
   shares: Share[] = [];
   drawerVisible = false;
   currentId?: number;
-
+  myShare?: Share;
+  employeeId?: number;
   shareForm!: FormGroup;
+  searchTerm: string = '';
+  searchSubject = new Subject<string>();
+  destroy$ = new Subject<void>();
 
   constructor(
     private fb: FormBuilder,
     private shareService: ShareService,
     protected override modal: NzModalService,
-    private message: NzMessageService
+    protected auth: Auth,
+    private message: NzMessageService,
+    private route: ActivatedRoute
   ) {
     super(shareService, modal);
   }
 
   ngOnInit(): void {
     this.initForm();
-    this.loadShares();
+    this.route.queryParams.subscribe(params => {
+      const employeeId = params['employeeId'];
+      if (employeeId) {
+        this.getByEmployyeeId(employeeId)
+      } else {
+        this.loadShares();
+        this.searchTerm = employeeId;
+        this.searchSubject.next(employeeId);
+      }
+    });
+    this.setupSearch();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  onSearchChange(value: string): void {
+    if (!value || value.trim() === '') {
+      this.loadShares();
+      return;
+    }
+    this.searchSubject.next(value);
+  }
+
+  setupSearch(): void {
+    this.searchSubject.pipe(
+      debounceTime(800),
+      distinctUntilChanged(),
+      switchMap(term => {
+        this.loading = true;
+        this.pageIndex = 0;
+        return this.shareService.search(term);
+      }),
+      takeUntil(this.destroy$)
+    ).subscribe({
+      next: (data: any) => {
+        this.shares = data.content;
+        this.total = data.totalElements;
+        this.pageSize = data.size;
+        this.pageIndex = data.number;
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error during search:', err);
+        this.loading = false;
+      }
+    });
   }
 
   initForm(): void {
@@ -168,6 +225,29 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
       }
     });
   }
+
+
+  getByEmployyeeId(employeeId: number) {
+    this.shareService.getById(employeeId).subscribe({
+      next: (response) => {
+        this.myShare = response;
+
+      },
+      error: (err) => {
+        this.message.error(err.error?.message || "Operation failed");
+      }
+    });
+  }
+
+
+  haveRole(roleName: string) {
+
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
+  }
+
+
+
 }
 
 

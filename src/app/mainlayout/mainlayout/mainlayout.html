@@ -91,7 +91,7 @@
       <span>Dashboard</span>
     </li>
 
-    <li nz-submenu nzTitle="Employee" nzIcon="team">
+    <li *ngIf="haveRole('Admin')" nz-submenu nzTitle="Employee" nzIcon="team">
       <ul>
         <li nz-menu-item routerLink="/home/employee/view" routerLinkActive="ant-menu-item-selected"
           (click)="isCollapsed = true">
@@ -103,41 +103,62 @@
 
     <li nz-submenu nzTitle="Share" nzIcon="pie-chart">
       <ul>
-        <li nz-menu-item routerLink="/home/share/view" routerLinkActive="ant-menu-item-selected"
-          (click)="isCollapsed = true">
+        <li *ngIf="haveRole('Admin')" nz-menu-item routerLink="/home/share/view"
+          routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="file-text"></span>
           <span>All Share</span>
+        </li>
+
+        <li *ngIf="haveRole('Employee')" nz-menu-item [routerLink]="['/home/share/view']"
+          [queryParams]="{ employeeId: userAttribute }" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="user"></span>
+          <span>My Profile</span>
         </li>
       </ul>
     </li>
 
     <li nz-submenu nzTitle="Saving" nzIcon="bank">
       <ul>
-        <li nz-menu-item routerLink="/home/saving/view" routerLinkActive="ant-menu-item-selected"
-          (click)="isCollapsed = true">
+        <li *ngIf="haveRole('Admin')" nz-menu-item routerLink="/home/saving/view"
+          routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="file-text"></span>
           <span>All Savings</span>
+        </li>
+        <li *ngIf="haveRole('Employee')" nz-menu-item [routerLink]="['/home/saving/view']"
+          [queryParams]="{ employeeId: userAttribute }" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="user"></span>
+          <span>My Savings</span>
         </li>
       </ul>
     </li>
 
     <li nz-submenu nzTitle="Loan" nzIcon="credit-card">
       <ul>
-        <li nz-menu-item routerLink="/home/loan-repayment/view" routerLinkActive="ant-menu-item-selected"
-          (click)="isCollapsed = true">
-          <span nz-icon nzType="file-done"></span>
+        <li *ngIf="haveRole('Admin')" nz-menu-item routerLink="/home/loan-repayment/view"
+          routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
+          <span nz-icon nzType="user"></span>
           <span>All Loan Repayments</span>
         </li>
+        <li *ngIf="haveRole('Employee')" nz-menu-item [routerLink]="['/home/loan-repayment/view']"
+          [queryParams]="{ employeeId: userAttribute }" routerLinkActive="ant-menu-item-selected"
+          (click)="isCollapsed = true">
+          <span nz-icon nzType="user"></span>
+          <span>My Loan Repayments</span>
+        </li>
+
       </ul>
     </li>
 
     <li nz-submenu nzTitle="Administration" nzIcon="setting">
       <ul>
-        <li nz-menu-item routerLink="/home/admin/users" routerLinkActive="ant-menu-item-selected"
-          (click)="isCollapsed = true">
+        <li *ngIf="haveRole('Admin')" nz-menu-item routerLink="/home/admin/users"
+          routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="team"></span>
           <span>Manage Users</span>
         </li>
+
       </ul>
     </li>
   </ul>

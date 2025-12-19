@@ -25,6 +25,7 @@ import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzContentComponent } from 'ng-zorro-antd/layout';
 import { BaseComponent } from '../core/basecomponenet/basecomponenet';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-employee',
@@ -71,14 +72,23 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     protected override modal: NzModalService,
-    private message: NzMessageService
+    private message: NzMessageService,
+    private route: ActivatedRoute
   ) {
     super(employeeService, modal)
   }
 
   ngOnInit(): void {
     this.initForm();
-    this.loadEmployees();
+    this.route.queryParams.subscribe(params => {
+      const employeeId = params['employeeId'];
+      if (employeeId) {
+        this.searchTerm = employeeId;
+        this.searchSubject.next(employeeId);
+      } else {
+        this.loadEmployees();
+      }
+    });
     this.setupSearch();
   }
 

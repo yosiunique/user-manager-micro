@@ -63,3 +63,44 @@
 
 
 </div>
+
+<div *ngIf="!haveRole('Admin') && haveRole('Employee')">
+
+  <div class="saving-cards-container">
+    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+      <nz-list-item *ngFor="let save of mySaving">
+        <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.fullName"
+            [nzDescription]="'Saving ID: ' + save.id"></nz-card-meta>
+
+          <div class="card-extra-content">
+            <div class="info-row">
+              <span class="label">Employee ID:</span>
+              <span class="value">{{ save.employee.id }}</span>
+            </div>
+            <div class="info-row highlight">
+              <span class="label">CRA Saving:</span>
+              <span class="value">{{ save.craSaving | number }} ETB</span>
+            </div>
+          </div>
+
+          <ng-template #avatarTemplate>
+            <nz-avatar [nzIcon]="'bank'" class="bank-avatar"></nz-avatar>
+          </ng-template>
+
+          <ng-template #actionDetails>
+            <button nz-button nzType="link" (click)="getsavingById(save.employee.id)">
+              <i nz-icon nzType="eye"></i> View Details
+            </button>
+          </ng-template>
+        </nz-card>
+      </nz-list-item>
+    </nz-list>
+
+    <div class="pagination-wrapper" *ngIf="total > 0">
+      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+        nzShowSizeChanger></nz-pagination>
+    </div>
+  </div>
+</div>

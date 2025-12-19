@@ -46,16 +46,12 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
   ]
 })
 export class Mainlayout implements OnInit {
-  changePassword() {
-    throw new Error('Method not implemented.');
-  }
-  viewProfile() {
-    throw new Error('Method not implemented.');
-  }
   fullName: string = '';
   currentPage: any;
+  userAttribute: string = '';
 
   ngOnInit(): void {
+    this.userAttribute = this.auth.getUserAttribute();
     this.userservice.getByUserName(this.auth.getUserName()).subscribe({
 
       next: (data) => {
@@ -80,4 +76,22 @@ export class Mainlayout implements OnInit {
   logOut() {
     this.auth.logout();
   }
+
+
+
+
+
+
+
+
+
+  haveRole(roleName: string) {
+
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
+  }
+
+
+
+
 }

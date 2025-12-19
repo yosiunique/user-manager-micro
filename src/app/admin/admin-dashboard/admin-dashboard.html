@@ -11,10 +11,12 @@
 
     <div class="toolbar-right">
       <button nz-button nzType="primary" (click)="addNewUser()">
-        <i nz-icon nzType="plus"></i> <span class="btn-text">New User</span>
+        <i nz-icon nzType="plus"></i>
+        <span class="btn-text">New User</span>
       </button>
       <button nz-button nzType="default" (click)="addNewRole()">
-        <i nz-icon nzType="plus"></i> <span class="btn-text">New Role</span>
+        <i nz-icon nzType="plus"></i>
+        <span class="btn-text">New Role</span>
       </button>
     </div>
   </div>
@@ -52,7 +54,7 @@
           <td>
             <div class="action-buttons">
               <button nz-button nzType="default" nzSize="small" (click)="resetPassword(user.id)" class="reset-btn">
-                <i nz-icon nzType="reset"></i> Reset
+                <i nz-icon nzType="undo"></i> Reset
               </button>
               <button nz-button nzType="default" nzSize="small" (click)="updateUser(user.id)" class="edit-btn">
                 <i nz-icon nzType="edit"></i> Edit
@@ -97,7 +99,7 @@
 
           <div class="card-actions">
             <button nz-button nzType="default" (click)="resetPassword(user.id)" class="reset-btn">
-              <i nz-icon nzType="reset"></i>
+              <i nz-icon nzType="key"></i>Reset
             </button>
             <button nz-button nzType="default" (click)="updateUser(user.id)" class="edit-btn">
               <i nz-icon nzType="edit"></i>

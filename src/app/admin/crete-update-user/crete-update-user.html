@@ -1,6 +1,6 @@
 <nz-card
   [nzTitle]="operation.status==='isCreate'?'Create New User':operation.status==='isUpdate'?'Update User':'undefined'"
-  class="responsive-card">
+  class="responsive-card" *ngIf="operation.status==='isCreate' || operation.status==='isUpdate'">
   <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
 
     <nz-form-item>

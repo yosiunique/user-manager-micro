@@ -22,6 +22,8 @@ import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SavingService } from '../../service/saving-service';
 import { LoanRepaymentService } from '../../service/loan-repayment-service';
+import { SharedService } from '../../core/sharedService/shared-service';
+import { Auth } from '../../auth/auth';
 
 @Component({
   selector: 'app-loan-repayments-crud-componenets',
@@ -61,6 +63,8 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
     private fb: FormBuilder,
     private msg: NzMessageService,
     private modalRef: NzModalRef,
+    private dataService: SharedService,
+    protected auth: Auth,
     modal: NzModalService,
     @Inject(NZ_MODAL_DATA) protected id: any
   ) {
@@ -87,6 +91,7 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
     this.loanRepaymentService.getLoanRepaymentByEmployeeId(this.id.id, this.pageIndex, this.pageSize).subscribe({
 
       next: (data) => {
+        this.dataService.setLoanRepayById(data);
         this.loan = data.content;
         this.pageIndex = data.number;
         this.total = data.totalElements;
@@ -251,7 +256,11 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
   }
 
 
+  haveRole(roleName: string) {
 
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
+  }
 
 
 }
