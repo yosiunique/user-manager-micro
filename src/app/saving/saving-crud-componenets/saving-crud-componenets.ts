@@ -21,6 +21,8 @@ import { NzStatisticModule } from "ng-zorro-antd/statistic";
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { Auth } from '../../auth/auth';
+import { SharedService } from '../../core/sharedService/shared-service';
 
 
 @Component({
@@ -51,27 +53,7 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
   styleUrl: './saving-crud-componenets.css',
 })
 export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment> implements OnInit {
-  calculateAverageSavings(): string | number {
-    throw new Error('Method not implemented.');
-  }
-  calculateTotalSavings(): string | number {
-    throw new Error('Method not implemented.');
-  }
-  createSaving() {
-    throw new Error('Method not implemented.');
-  }
-  onSearchChange($event: any) {
-    throw new Error('Method not implemented.');
-  }
-  handleChange($event: NzUploadChangeParam) {
-    throw new Error('Method not implemented.');
-  }
-  uploadFile() {
-    throw new Error('Method not implemented.');
-  }
-  reloadPage() {
-    throw new Error('Method not implemented.');
-  }
+
   saving: SavingAndLoanRepayment[] = [];
   searchControl = new FormControl('search');
   savingForm !: FormGroup;
@@ -81,10 +63,13 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
   searchTerm: any;
   employeeId: string = ''
   uploading: unknown;
+
   constructor(private savingService: SavingService,
     private fb: FormBuilder,
     private msg: NzMessageService,
+    protected auth: Auth,
     private modalRef: NzModalRef,
+    private sharedService: SharedService,
     modal: NzModalService,
     @Inject(NZ_MODAL_DATA) protected id: any
   ) {
@@ -111,6 +96,7 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
     this.savingService.getsavingByEmployeeId(this.id.id, this.pageIndex, this.pageSize).subscribe({
 
       next: (data) => {
+        this.sharedService.setSavingByEmployeeId(data);
         this.saving = data.content;
         this.pageIndex = data.number;
         this.total = data.totalElements;
@@ -277,40 +263,27 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
   }
 
 
-  // // Component methods
-  // getProgressCircleValue(): string {
-  //   const total = this.getTotalSaving();
-  //   const circumference = 2 * Math.PI * 52;
-  //   const progress = total > 0 ? (total / 100000) * 100 : 0; // Adjust divisor as needed
-  //   const dasharray = `${(progress / 100) * circumference} ${circumference}`;
-  //   return dasharray;
-  // }
 
-  // getAverageSaving(): number {
-  //   if (!this.saving || this.saving.length === 0) return 0;
-  //   const total = this.getTotalSaving();
-  //   return total / this.saving.length;
-  // }
 
   trackByFn(index: number, item: any): number {
     return item.id;
   }
 
-  // exportToExcel(): void {
-  //   // Implement Excel export functionality
-  //   console.log('Exporting to Excel...');
-  // }
+
 
   cancelForm(): void {
-    // Implement form cancellation
+
     this.savingForm.reset();
-    // Additional cancellation logic
+
   }
 
 
-  // ssumSaving(craSaving:number):number{
-  // return craSaving=craSaving+craSaving;
-  // }
+
+  haveRole(roleName: string) {
+
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
+  }
 
 
 }

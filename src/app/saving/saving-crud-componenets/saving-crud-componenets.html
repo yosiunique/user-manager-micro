@@ -13,7 +13,8 @@
 
   <!-- Remove All Button -->
   <div class="mb-2 text-end">
-    <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deleteAll()">
+    <button *ngIf="haveRole('Admin') || haveRole('saving')" nz-button nzType="primary" nzDanger nzSize="small"
+      (click)="deleteAll()">
       <i nz-icon nzType="delete"></i> Remove All
     </button>
   </div>
@@ -41,7 +42,7 @@
           <td>{{ save.fullName }}</td>
           <td>{{ save.craSaving }}</td>
 
-          <td class="button">
+          <td class="button" *ngIf="haveRole('Admin') || haveRole('saving')">
             <button nz-button nzType="default" nzSize="small" class="me-1" (click)="updateSaving(true, save.id)">
               <i nz-icon nzType="edit"></i> Update
             </button>
@@ -74,7 +75,7 @@
               <span class="value">{{ save.employee.id }}</span>
             </div>
           </div>
-          <div class="card-actions">
+          <div class="card-actions" *ngIf="haveRole('Admin') || haveRole('saving')">
             <button nz-button nzType="default" nzSize="small" (click)="updateSaving(true, save.id)">
               <i nz-icon nzType="edit"></i> Edit
             </button>

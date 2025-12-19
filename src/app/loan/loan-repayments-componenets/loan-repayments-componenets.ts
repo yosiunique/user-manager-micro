@@ -27,6 +27,8 @@ import { LoanRepaymentService } from '../../service/loan-repayment-service';
 import { LoanRepaymentsCrudComponenets } from '../loan-repayments-crud-componenets/loan-repayments-crud-componenets';
 import { Auth } from '../../auth/auth';
 import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
+import { ActivatedRoute } from '@angular/router';
+import { SharedService } from '../../core/sharedService/shared-service';
 
 @Component({
   selector: 'app-loan-repayments-componenets',
@@ -56,28 +58,39 @@ import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
 export class LoanRepaymentsComponenets extends BaseComponent<LoanRepayment> implements OnInit {
 
 
-
-
-
-
   loan: LoanRepayment[] = [];
+  myLoan: LoanRepayment[] = [];
   searchControl = new FormControl('search');
   searchTerm: string = '';
 
   metadataList: any[] = [];
   selectedFile: File | null = null;
-  uploading = false
+  uploading = false;
+  employeeId?: number;
   searchSubject = new Subject<string>();
   destroy$ = new Subject<void>();
   private msg = inject(NzMessageService);
   constructor(private loanRepaymentService: LoanRepaymentService,
     modal: NzModalService,
-    private auth: Auth
+    private auth: Auth,
+    private dataService: SharedService,
+    private route: ActivatedRoute
   ) {
     super(loanRepaymentService, modal);
   }
   ngOnInit(): void {
-    this.loadLoanRepayments();
+    this.route.queryParams.subscribe(params => {
+      const employeeId = params['employeeId'];
+      if (employeeId) {
+        this.employeeId = employeeId;
+        this.getLoanRepaymentgById(employeeId);
+
+      } else {
+        this.loadLoanRepayments();
+        this.searchSubject.next(employeeId);
+      }
+    });
+
     this.setupSearch();
 
   }
@@ -136,15 +149,35 @@ export class LoanRepaymentsComponenets extends BaseComponent<LoanRepayment> impl
       },
       nzWidth: 3000,
       nzStyle: {
-        // top: '100px',       // vertical offset from top
-        // left: '100px',       // horizontal offset from left
-        // right: 'auto',      // remove default centering if needed
-        // transform: 'none'
+
       }
     });
 
     this.modal._afterAllClosed.subscribe(() => {
-      this.loadLoanRepayments();
+      if (this.employeeId) {
+        this.dataService.loanRepayById$.subscribe({
+          next: (data: any) => {
+
+            this.myLoan = data.content
+            this.pageIndex = data.number;
+            this.pageSize = data.size;
+            this.total = data.totalElements;
+            this.loading = false;
+            this.destroy$.next();
+            this.destroy$.complete();
+
+            console.log("myLoan", this.myLoan)
+
+
+
+
+
+          },
+
+        })
+      } else {
+        this.loadLoanRepayments();
+      }
     });
 
   }
@@ -257,65 +290,6 @@ export class LoanRepaymentsComponenets extends BaseComponent<LoanRepayment> impl
         this.loadLoanRepayments();
       }
     })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // if (!this.selectedFile) {
-    //   this.modal.error({ nzContent: 'No file selected' });
-    //   return;
-    // }
-
-    // this.uploading = true;
-    // this.loanRepaymentService.importCsv(this.selectedFile).subscribe({
-    //   next: (res: any) => {
-    //     this.uploading = false;
-    //     this.msg.success('File uploaded successfully');
-    //     // If backend returns imported rows preview, set metadataList:
-    //     if (Array.isArray(res)) {
-    //       this.metadataList = res;
-    //     } else if (res?.metadata) {
-    //       this.metadataList = res.metadata;
-    //     }
-    //     // refresh table
-    //     this.loadLoanRepayments();
-    //     this.selectedFile = null;
-    //   },
-    //   error: (err) => {
-    //     console.error('Upload error', err);
-    //     this.uploading = false;
-    //     this.msg.error('Upload failed');
-    //   }
-    // });
   }
 
 

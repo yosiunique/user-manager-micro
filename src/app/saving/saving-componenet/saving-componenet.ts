@@ -25,6 +25,8 @@ import { debounceTime, distinctUntilChanged, Subject, switchMap, takeUntil } fro
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Auth } from '../../auth/auth';
 import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
+import { ActivatedRoute } from '@angular/router';
+import { SharedService } from '../../core/sharedService/shared-service';
 
 @Component({
   selector: 'app-saving-componenet',
@@ -56,7 +58,8 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
   saving: SavingAndLoanRepayment[] = [];
   searchControl = new FormControl('search');
   searchTerm: string = '';
-
+  employeeId?: number;
+  mySaving: SavingAndLoanRepayment[] = []
   metadataList: any[] = [];
   selectedFile: File | null = null;
   uploading = false
@@ -65,12 +68,24 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
   private msg = inject(NzMessageService);
   constructor(private savingService: SavingService,
     private auth: Auth,
-    modal: NzModalService
+    modal: NzModalService,
+    private dataService: SharedService,
+    private route: ActivatedRoute
   ) {
     super(savingService, modal);
   }
   ngOnInit(): void {
-    this.loadSavings();
+    this.route.queryParams.subscribe(params => {
+      const employeeId = params['employeeId'];
+      if (employeeId) {
+        this.employeeId = employeeId;
+        this.searchTerm = employeeId;
+        this.searchSubject.next(employeeId);
+        this.getsavingById(this.employeeId as number)
+      } else {
+        this.loadSavings();
+      }
+    });
     this.setupSearch();
 
   }
@@ -129,15 +144,26 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
       },
       nzWidth: 3000,
       nzStyle: {
-        // top: '100px',       // vertical offset from top
-        // left: '100px',       // horizontal offset from left
-        // right: 'auto',      // remove default centering if needed
-        // transform: 'none'
+
       }
     });
 
     this.modal._afterAllClosed.subscribe(() => {
-      this.loadSavings();
+
+      if (this.employeeId) {
+        this.dataService.savingByEmployeeId$.subscribe((data: any) => {
+          this.mySaving = data.content;
+          this.pageIndex = data.number;
+          this.total = data.totalElements;
+          this.pageSize = data.size;
+
+          console.log("my saving", this.mySaving)
+        });
+      } else {
+
+        this.loadSavings();
+      }
+
     });
 
   }
@@ -193,7 +219,7 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
         this.pageIndex = 0;
         return this.savingService.getsavingByEmployeeId(term, this.pageIndex, this.pageSize);
       }),
-      takeUntil(this.destroy$)        // 🧹 clean up on destroy
+      takeUntil(this.destroy$)        //  clean up on destroy
     ).subscribe({
       next: (data) => {
         this.saving = data.content;
