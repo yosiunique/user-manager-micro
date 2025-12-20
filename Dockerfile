@@ -3,7 +3,7 @@ FROM node:18-alpine as builder
 RUN npm install -g @angular/cli
 RUN npm install -g npm@8.5.3
 WORKDIR /usr/src/app
-ARG config=production
+ARG config=staging
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
