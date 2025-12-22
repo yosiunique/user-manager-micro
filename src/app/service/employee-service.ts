@@ -17,12 +17,9 @@ export class EmployeeService extends BaseService<Employee> {
 
   }
 
-  importCsv(file: File, forMonth: Date) {
+  importCsv(file: File) {
     const formData = new FormData();
     formData.append('file', file);
-    const formattedDate = forMonth.toISOString().split('T')[0];
-    formData.append('forMonth', formattedDate);
-
     let headers = new HttpHeaders();
     const token = localStorage.getItem('jwtToken');
 

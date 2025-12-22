@@ -131,7 +131,7 @@ export class Uploadingfile {
     }
 
     this.uploading = true;
-    this.employeeService.importCsv(this.selectedFile, this.forMonth)
+    this.employeeService.importCsv(this.selectedFile)
       .pipe(finalize(() => (this.uploading = false)))
       .subscribe({
         next: (res: any) => this.handleUploadSuccess(res),
