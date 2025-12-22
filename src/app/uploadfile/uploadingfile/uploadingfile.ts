@@ -16,8 +16,8 @@ import { EmployeeService } from '../../service/employee-service';
   standalone: true,
   imports: [
     CommonModule,
-    NzModalModule ,
-    NzInputModule , 
+    NzModalModule,
+    NzInputModule,
     NzButtonModule,
     NzDatePickerModule,
     FormsModule
@@ -33,7 +33,7 @@ export class Uploadingfile {
   private loanRepaymentService = inject(LoanRepaymentService);
   private modalRef = inject(NzModalRef);
   protected data: any = inject(NZ_MODAL_DATA);
-  protected   employeeService=inject(EmployeeService)
+  protected employeeService = inject(EmployeeService)
   selectedFile: File | null = null;
   uploading: boolean = false;
   metadataList: any;
@@ -92,7 +92,7 @@ export class Uploadingfile {
         next: (res: any) => this.handleUploadSuccess(res),
         error: (err: any) => this.handleUploadError(err)
       });
-      this.modalRef.destroy();
+    this.modalRef.destroy();
   }
 
   // Upload file for loan repayments
@@ -101,7 +101,7 @@ export class Uploadingfile {
       this.msg.error('Please select a file');
       return;
     }
-    
+
     if (!this.forMonth) {
       this.msg.error('Please select a month');
       return;
@@ -114,27 +114,30 @@ export class Uploadingfile {
         next: (res: any) => this.handleUploadSuccess(res),
         error: (err: any) => this.handleUploadError(err)
       });
-      this.modalRef.destroy();
+    this.modalRef.destroy();
   }
 
 
 
-uploadFileEmployee() {
-
-  if(!this.selectedFile || !this.forMonth)
-  {
-    return ;
-  }
-
-
-  this.employeeService.importCsv(this.selectedFile ,this.forMonth).subscribe({
-    next:()=>{
-      console.log("file successfull imporeted !")
+  uploadFileEmployee(): void {
+    if (!this.selectedFile) {
+      this.msg.error('Please select a file');
+      return;
     }
-  })
 
+    if (!this.forMonth) {
+      this.msg.error('Please select a month');
+      return;
+    }
 
-}
+    this.uploading = true;
+    this.employeeService.importCsv(this.selectedFile, this.forMonth)
+      .pipe(finalize(() => (this.uploading = false)))
+      .subscribe({
+        next: (res: any) => this.handleUploadSuccess(res),
+        error: (err: any) => this.handleUploadError(err)
+      });
+  }
 
 
 

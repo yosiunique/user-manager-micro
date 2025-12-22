@@ -9,29 +9,31 @@ import { enviroment } from '../../enviroment/enviroment';
 })
 export class EmployeeService extends BaseService<Employee> {
 
-  constructor (http:HttpClient) {
-    super(http,`${enviroment.HOST}/employee`);
+  constructor(http: HttpClient) {
+    super(http, `${enviroment.HOST}/employee`);
   }
-  
+
   getAllEmployees() {
-   
+
   }
 
-importCsv(file: File, forMonth: Date) {
-  const formData = new FormData();
-  formData.append('file', file);
+  importCsv(file: File, forMonth: Date) {
+    const formData = new FormData();
+    formData.append('file', file);
+    const formattedDate = forMonth.toISOString().split('T')[0];
+    formData.append('forMonth', formattedDate);
 
-  let headers = new HttpHeaders();
-  const token = localStorage.getItem('jwtToken');
+    let headers = new HttpHeaders();
+    const token = localStorage.getItem('jwtToken');
 
-  if (token) {
-    headers = headers.set('Authorization', `Bearer ${token}`);
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return this.http.post<Employee[]>(
+      `${enviroment.HOST}/employee/import-csv`,
+      formData,
+      { headers }
+    );
   }
-
-  return this.http.post<Employee[]>(
-    `${enviroment.HOST}/employee/import-csv`,
-    formData,
-    { headers }
-  );
-}
 }
