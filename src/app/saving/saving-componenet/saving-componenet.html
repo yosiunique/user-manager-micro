@@ -70,7 +70,7 @@
     <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
       <nz-list-item *ngFor="let save of mySaving">
         <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.fullName"
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.employee.employeeFullName"
             [nzDescription]="'Saving ID: ' + save.id"></nz-card-meta>
 
           <div class="card-extra-content">

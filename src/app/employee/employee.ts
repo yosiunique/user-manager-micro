@@ -26,6 +26,7 @@ import { NzContentComponent } from 'ng-zorro-antd/layout';
 import { BaseComponent } from '../core/basecomponenet/basecomponenet';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { Uploadingfile } from '../uploadfile/uploadingfile/uploadingfile';
 
 @Component({
   selector: 'app-employee',
@@ -244,4 +245,25 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
       }
     });
   }
+
+  importCsv() {
+
+    this.modal.create({
+      nzTitle: 'Uploading file',
+      nzContent: Uploadingfile,
+      nzData: 'employee',
+      nzOkText: null,
+      nzCancelText: null
+    });
+   
+    
+     this.modal._afterAllClosed.subscribe({
+      next: () => {
+        this.loadEmployees()
+      }});
+
+
+  }
+
+
 }

@@ -16,5 +16,17 @@ export class EmployeeService extends BaseService<Employee> {
   getAllEmployees() {
    
   }
-  
+
+importCsv(file: File, forMonth: Date) {
+    const formData = new FormData();
+    formData.append("file", file);
+    // Format the date as 'yyyy-MM-dd' which is what Java's LocalDate expects
+    const formattedDate = forMonth.toISOString().split('T')[0];
+    formData.append("forMonth", formattedDate);
+    
+    const token = localStorage.getItem('jwtToken');
+    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+    
+    return this.http.post<Employee[]>(`${enviroment.HOST}/employee/import-csv`, formData, { headers });
+  }
 }

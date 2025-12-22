@@ -103,7 +103,7 @@
 
     <li nz-submenu nzTitle="Share" nzIcon="pie-chart">
       <ul>
-        <li *ngIf="haveRole('Admin')" nz-menu-item routerLink="/home/share/view"
+        <li *ngIf="haveRole('Admin')|| haveRole('share')" nz-menu-item routerLink="/home/share/view"
           routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="file-text"></span>
           <span>All Share</span>
@@ -120,7 +120,7 @@
 
     <li nz-submenu nzTitle="Saving" nzIcon="bank">
       <ul>
-        <li *ngIf="haveRole('Admin')" nz-menu-item routerLink="/home/saving/view"
+        <li *ngIf="haveRole('Admin')|| haveRole('saving')" nz-menu-item routerLink="/home/saving/view"
           routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="file-text"></span>
           <span>All Savings</span>
@@ -136,7 +136,7 @@
 
     <li nz-submenu nzTitle="Loan" nzIcon="credit-card">
       <ul>
-        <li *ngIf="haveRole('Admin')" nz-menu-item routerLink="/home/loan-repayment/view"
+        <li *ngIf="haveRole('Admin')|| haveRole('loan')" nz-menu-item routerLink="/home/loan-repayment/view"
           routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="user"></span>
           <span>All Loan Repayments</span>

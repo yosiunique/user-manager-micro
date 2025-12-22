@@ -24,6 +24,7 @@ import { SavingService } from '../../service/saving-service';
 import { LoanRepaymentService } from '../../service/loan-repayment-service';
 import { SharedService } from '../../core/sharedService/shared-service';
 import { Auth } from '../../auth/auth';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 
 @Component({
   selector: 'app-loan-repayments-crud-componenets',
@@ -45,7 +46,8 @@ import { Auth } from '../../auth/auth';
     NzCardModule,
     NzListModule,
     NzPaginationModule,
-    NzIconModule
+    NzIconModule ,
+    NzDatePickerModule  
   ],
   templateUrl: './loan-repayments-crud-componenets.html',
   styleUrl: './loan-repayments-crud-componenets.css',
@@ -74,8 +76,17 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
 
     this.loadLoanRepayments();
     this.loanForm = this.fb.group({
-      employeeId: ['', [Validators.required, Validators.maxLength(10)]],
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      employee: this.fb.group({
+        employeeId: [
+          0,
+          [
+            Validators.required,
+            // Validators.pattern('^[0-9]+$')
+          ]
+        ],
+      }),
+      // fullName: ['', [Validators.required, Validators.minLength(3)]],
+      forMonth:['',[Validators.required]],
       crassLoanRepayment: [0, [Validators.required, Validators.min(0)]],
     });
 

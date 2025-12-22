@@ -79,7 +79,15 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
 
     this.loadSavings();
     this.savingForm = this.fb.group({
-      employeeId: ['', [Validators.required, Validators.maxLength(10)]],
+     employee: this.fb.group({
+        employeeId: [
+          0,
+          [
+            Validators.required,
+            // Validators.pattern('^[0-9]+$')
+          ]
+        ],
+      }),
       fullName: ['', [Validators.required, Validators.minLength(3)]],
       craSaving: [0, [Validators.required, Validators.min(0)]],
     });

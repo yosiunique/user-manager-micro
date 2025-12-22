@@ -9,6 +9,7 @@ import { LoanRepaymentService } from '../../service/loan-repayment-service';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { EmployeeService } from '../../service/employee-service';
 
 @Component({
   selector: 'app-uploadingfile',
@@ -25,17 +26,19 @@ import { finalize } from 'rxjs';
   styleUrls: ['./uploadingfile.css'],
 })
 export class Uploadingfile {
+
   private modal = inject(NzModalService);
   private savingService = inject(SavingService);
   private msg = inject(NzMessageService);
   private loanRepaymentService = inject(LoanRepaymentService);
   private modalRef = inject(NzModalRef);
   protected data: any = inject(NZ_MODAL_DATA);
-  
+  protected   employeeService=inject(EmployeeService)
   selectedFile: File | null = null;
   uploading: boolean = false;
   metadataList: any;
   forMonth: Date | null = null;
+
 
 
   // Handle file selection from input
@@ -116,7 +119,22 @@ export class Uploadingfile {
 
 
 
+uploadFileEmployee() {
 
+  if(!this.selectedFile || !this.forMonth)
+  {
+    return ;
+  }
+
+
+  this.employeeService.importCsv(this.selectedFile ,this.forMonth).subscribe({
+    next:()=>{
+      console.log("file successfull imporeted !")
+    }
+  })
+
+
+}
 
 
 

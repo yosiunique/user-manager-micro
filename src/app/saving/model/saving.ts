@@ -1,37 +1,37 @@
-   
-   export interface SavingAndLoanRepayment {
- 
-    id: number;
-    employee:Employee;
-    fullName: string;
-    craSaving:number;
-   }
 
-   export interface Employee{
-    
-    id:number;
-employeeId:number;
-     employeeFullName:string;
-  effectiveDate:Date;
- outStanding:number;
-efectiveDate:Date;
-status:any;
+export interface SavingAndLoanRepayment {
 
- loanId:number;
- annualInterest:number;
- emi:number;
- period:number;
-firstOutStanding: 0;
+   id: number;
+   employee: Employee;
+   fullName: string;
+   craSaving: number;
+}
+
+export interface Employee {
+
+   id: number;
+   employeeId: number;
+   employeeFullName: string;
+   effectiveDate: Date;
+   outStanding: number;
+   efectiveDate: Date;
+   status: any;
+
+   loanId: number;
+   annualInterest: number;
+   emi: number;
+   period: number;
+   firstOutStanding: 0;
 
 
-      
-   }
 
-   export interface Share {
-  id: number;
-  employeeId: number;
-  membershipId: string;
-  fullName: string;
-  totalSaving: number;
-  noOfShare: number;
+}
+
+export interface Share {
+   id: number;
+   employeeId: number;
+   membershipId: string;
+   fullName: string;
+   totalSaving: number;
+   noOfShare: number;
 }

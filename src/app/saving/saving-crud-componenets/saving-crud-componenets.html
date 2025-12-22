@@ -39,7 +39,7 @@
         <tr *ngFor="let save of saving; trackBy: trackByFn">
           <td>{{ save.id }}</td>
           <td>{{ save.employee.id }}</td>
-          <td>{{ save.fullName }}</td>
+          <td>{{ save.employee.employeeFullName  }}</td>
           <td>{{ save.craSaving }}</td>
 
           <td class="button" *ngIf="haveRole('Admin') || haveRole('saving')">
@@ -68,7 +68,7 @@
           <div class="card-body">
             <div class="info-row">
               <span class="label">FullName:</span>
-              <span class="value">{{ save.fullName }}</span>
+              <span class="value">{{ save.employee.employeeFullName }}</span>
             </div>
             <div class="info-row">
               <span class="label">Emp ID:</span>
@@ -103,12 +103,23 @@
 
     <form nz-form nzLayout="vertical" [formGroup]="savingForm" (ngSubmit)="submitForm()">
 
-      <nz-form-item>
-        <nz-form-label [nzRequired]="true">Employee ID</nz-form-label>
-        <nz-form-control [nzErrorTip]="'Employee ID is required'">
-          <input nz-input formControlName="employeeId" placeholder="Enter Employee ID" />
-        </nz-form-control>
-      </nz-form-item>
+     <nz-form-item>
+  <nz-form-label [nzRequired]="true">Employee ID</nz-form-label>
+
+  <nz-form-control [nzErrorTip]="'Employee ID is required'">
+
+    <div formGroupName="employee">
+      <input
+        nz-input
+        type="number"
+        formControlName="employeeId"
+        placeholder="Enter Employee ID"
+      />
+    </div>
+
+  </nz-form-control>
+</nz-form-item>
+
 
       <nz-form-item>
         <nz-form-label [nzRequired]="true">Full Name</nz-form-label>

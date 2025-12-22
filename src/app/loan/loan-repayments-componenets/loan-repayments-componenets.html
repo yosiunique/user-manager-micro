@@ -29,7 +29,7 @@
     <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
       <nz-list-item *ngFor="let l of loan">
         <nz-card [nzBordered]="true" class="loan-card" [nzActions]="[actionDetails]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.fullName"
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.employee.employeeFullName"
             [nzDescription]="'Repayment ID: ' + l.id"></nz-card-meta>
 
           <div class="card-extra-content">
@@ -77,7 +77,7 @@
     <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
       <nz-list-item *ngFor="let l of myLoan">
         <nz-card [nzBordered]="true" class="loan-card" [nzActions]="[actionDetails]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.fullName"
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.employee.employeeFullName"
             [nzDescription]="'Repayment ID: ' + l.id"></nz-card-meta>
 
           <div class="card-extra-content">
