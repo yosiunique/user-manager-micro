@@ -124,12 +124,6 @@ export class Uploadingfile {
       this.msg.error('Please select a file');
       return;
     }
-
-    if (!this.forMonth) {
-      this.msg.error('Please select a month');
-      return;
-    }
-
     this.uploading = true;
     this.employeeService.importCsv(this.selectedFile)
       .pipe(finalize(() => (this.uploading = false)))
