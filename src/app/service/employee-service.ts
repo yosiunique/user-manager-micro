@@ -30,7 +30,7 @@ export class EmployeeService extends BaseService<Employee> {
     return this.http.post<Employee[]>(
       `${enviroment.HOST}/employee/import-csv`,
       formData,
-      { headers }
+      { headers: headers }
     );
   }
 }
