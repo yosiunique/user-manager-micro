@@ -5,39 +5,29 @@ import { catchError, Observable, throwError } from "rxjs";
 
 export class BaseService<T> {
 
-    constructor(protected http:HttpClient ,protected baseUrl:string){
+  constructor(protected http: HttpClient, protected baseUrl: string) {
 
-    }
+  }
 
   /***
    * get all methods 
    */
-getAll(pageIndex: number, pageSize: number) {
-  const params = new HttpParams()
-    .set('page', `${pageIndex}`)
-    .set('size', `${pageSize}`);
+  getAll(pageIndex: number, pageSize: number) {
+    const params = new HttpParams()
+      .set('page', `${pageIndex}`)
+      .set('size', `${pageSize}`);
 
-  const token = localStorage.getItem('jwtToken');
+    return this.http.get<any>(`${this.baseUrl}`, { params })
+      .pipe(catchError(this.handleError));
+  }
 
-  // Create headers properly
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+  /**
+   * get by id 
+   */
 
-  return this.http.get<any>(`${this.baseUrl}`, { params, headers })
-    .pipe(catchError(this.handleError));
-}
-
-/**
- * get by id 
- */
-
-  getById(id: number) :Observable<any>{
-
-  const token = localStorage.getItem('jwtToken');
-
-  // Create headers properly
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-   return  this.http.get<any>(`${this.baseUrl}/${id}`,{headers}).
-    pipe(catchError(this.handleError))
+  getById(id: number): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/${id}`).
+      pipe(catchError(this.handleError))
   }
 
 
@@ -45,16 +35,10 @@ getAll(pageIndex: number, pageSize: number) {
    * create new data 
    * 
    */
-   create(t:T) {
- 
-    console.log("passed Data" ,t );
- const token = localStorage.getItem('jwtToken');
-
-  // Create headers properly
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-
+  create(t: T) {
+    console.log("passed Data", t);
     return this.http
-      .post(this.baseUrl, t,{headers,responseType:'text'})
+      .post(this.baseUrl, t, { responseType: 'text' })
       .pipe(catchError(this.handleError));
   }
 
@@ -62,15 +46,11 @@ getAll(pageIndex: number, pageSize: number) {
  *  update
  */
 
-  update(id:number , t:T) {
-   console.log("passed Data" ,t );
- const token = localStorage.getItem('jwtToken');
-
-  // Create headers properly
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+  update(id: number, t: T) {
+    console.log("passed Data", t);
     return this.http
       .put(
-        `${this.baseUrl}/${id}`,t ,{headers ,responseType:'text'}
+        `${this.baseUrl}/${id}`, t, { responseType: 'text' }
       )
       .pipe(catchError(this.handleError));
   }
@@ -80,16 +60,16 @@ getAll(pageIndex: number, pageSize: number) {
    * search values 
    */
 
-  search(searchValue:any) {
-    console.log("searching values...",searchValue)
-    const pageIndex=0;
-    const pageSize=10;
+  search(searchValue: any) {
+    console.log("searching values...", searchValue)
+    const pageIndex = 0;
+    const pageSize = 10;
     const params = new HttpParams()
-      .set('name',`${searchValue}`)
-      .set('page',`${pageIndex}`)
-      .set('size',`${pageSize}`);
+      .set('name', `${searchValue}`)
+      .set('page', `${pageIndex}`)
+      .set('size', `${pageSize}`);
 
-    return this.http.get<T>(`${this.baseUrl}/search`, {params});
+    return this.http.get<T>(`${this.baseUrl}/search`, { params });
   }
 
   /** 
@@ -97,13 +77,9 @@ getAll(pageIndex: number, pageSize: number) {
    * searching values 
   */
 
-  delete(id:number) {
-   
-    
- const token = localStorage.getItem('jwtToken');
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
+  delete(id: number) {
     return this.http
-      .delete(`${this.baseUrl}/${id}`,{headers})
+      .delete(`${this.baseUrl}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
@@ -111,7 +87,7 @@ getAll(pageIndex: number, pageSize: number) {
 
 
 
-  protected  handleError(error: HttpErrorResponse): Observable<any> {
+  protected handleError(error: HttpErrorResponse): Observable<any> {
     let errorMessage = 'An unknown error occurred!';
     if (error.error instanceof ErrorEvent) {
       // Client-side or network error
@@ -125,7 +101,7 @@ getAll(pageIndex: number, pageSize: number) {
   }
 
 
-  
+
 
 }
 

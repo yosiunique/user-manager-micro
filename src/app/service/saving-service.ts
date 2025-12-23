@@ -9,7 +9,7 @@ import { SavingAndLoanRepayment } from '../saving/model/saving';
 })
 export class SavingService extends BaseService<SavingAndLoanRepayment> {
 
-  constructor( http: HttpClient) {
+  constructor(http: HttpClient) {
     super(http, `${enviroment.HOST}/saving-and-loan-repayments`);
   }
 
@@ -19,38 +19,24 @@ export class SavingService extends BaseService<SavingAndLoanRepayment> {
     // Format the date as 'yyyy-MM-dd' which is what Java's LocalDate expects
     const formattedDate = forMonth.toISOString().split('T')[0];
     formData.append("forMonth", formattedDate);
-    
-    const token = localStorage.getItem('jwtToken');
-    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-    
-    return this.http.post<any[]>(`${enviroment.HOST}/saving-and-loan-repayments/import-csv`, formData, { headers });
+
+    return this.http.post<any[]>(`${enviroment.HOST}/saving-and-loan-repayments/import-csv`, formData);
   }
-  getsavingByEmployeeId(employeeId:string ,pageIndex :number , pageSize:number  )
-  
-  {
-    const token = localStorage.getItem('jwtToken');
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-    return this.http.get<any>(`${enviroment.HOST}/saving-and-loan-repayments/search-by-employee-id/${employeeId}?page=${pageIndex}&size=${pageSize}`,{headers});
+  getsavingByEmployeeId(employeeId: string, pageIndex: number, pageSize: number) {
+    return this.http.get<any>(`${enviroment.HOST}/saving-and-loan-repayments/search-by-employee-id/${employeeId}?page=${pageIndex}&size=${pageSize}`);
   }
-  deleteByEmployeeId(employeeId:string){
-    const token = localStorage.getItem('jwtToken');
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-    return this.http.delete(`${enviroment.HOST}/saving-and-loan-repayments/delete-by-employee-id/${employeeId}`,{headers,responseType:'text'});
+  deleteByEmployeeId(employeeId: string) {
+    return this.http.delete(`${enviroment.HOST}/saving-and-loan-repayments/delete-by-employee-id/${employeeId}`, { responseType: 'text' });
   }
 
- 
 
-   findTotalByEmployeeId(employeeId:string){
-    const token = localStorage.getItem('jwtToken');
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-    return this.http.get(`${enviroment.HOST}/saving-and-loan-repayments/total-cra-saving/${employeeId}`,{headers,responseType:'text'});
+
+  findTotalByEmployeeId(employeeId: string) {
+    return this.http.get(`${enviroment.HOST}/saving-and-loan-repayments/total-cra-saving/${employeeId}`, { responseType: 'text' });
   }
-  countAllSaving(){
-    const token = localStorage.getItem('jwtToken');
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-
-   return this.http.get(`${enviroment.HOST}/saving-and-loan-repayments/count`,{headers});
+  countAllSaving() {
+    return this.http.get(`${enviroment.HOST}/saving-and-loan-repayments/count`);
   }
 
-  
+
 }

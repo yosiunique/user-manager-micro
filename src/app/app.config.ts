@@ -2,7 +2,7 @@ import { ApplicationConfig, importProvidersFrom, provideBrowserGlobalErrorListen
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { provideHttpClient, HTTP_INTERCEPTORS, withInterceptorsFromDi } from '@angular/common/http';
 import { JwtInterceptor } from './auth/jwt.interceptor';
 import { NZ_ICONS, provideNzIcons } from 'ng-zorro-antd/icon';
 import {
@@ -35,14 +35,12 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptorsFromDi()),
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     provideNzIcons(icons),
     importProvidersFrom(FormsModule),
     importProvidersFrom(ReactiveFormsModule),
     provideAnimationsAsync(),
-    provideNzI18n(en_US),
-
-
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true }
+    provideNzI18n(en_US)
   ]
 };

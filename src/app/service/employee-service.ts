@@ -20,15 +20,10 @@ export class EmployeeService extends BaseService<Employee> {
   importCsv(file: File) {
     const formData = new FormData();
     formData.append('file', file);
-    const token = localStorage.getItem('jwtToken');
-
-  // Create headers properly
-  const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
 
     return this.http.post<Employee[]>(
       `${enviroment.HOST}/employee/import-csv`,
-      formData,
-      { headers}
+      formData
     );
   }
 }
