@@ -5,8 +5,8 @@
       <button nz-button nzType="primary" (click)="openDrawer()">
         <i nz-icon nzType="plus"></i> Add Employee
       </button>
-        <button nz-button nzType="primary" (click)="importCsv()">
-        <i nz-icon nzType="upload"></i> Import  Employee
+      <button nz-button nzType="primary" (click)="importCsv()">
+        <i nz-icon nzType="upload"></i> Import Employee
       </button>
     </div>
 
@@ -22,65 +22,117 @@
     </div>
   </div>
 
-  <!-- EMPLOYEE CARDS (Card-based Layout) -->
-  <div class="employee-cards-container">
-    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
-      <nz-list-item *ngFor="let employee of employees">
-        <nz-card [nzBordered]="true" class="employee-card" [nzActions]="[actionEdit, actionDelete]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="employee.employeeFullName"
-            [nzDescription]="'ID: ' + employee.employeeId"></nz-card-meta>
+  <!-- EMPLOYEE DESKTOP VIEW (Table) -->
+  <div class="desktop-view">
+    <nz-table #employeeTable [nzData]="employees" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
+      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '1200px' }" [nzBordered]="true" nzSize="middle">
+      <thead>
+        <tr>
+          <th nzWidth="100px">ID</th>
+          <th nzLeft>Full Name</th>
+          <th>Effective Date</th>
+          <th>Outstanding</th>
+          <th>EMI</th>
+          <th>Interest %</th>
+          <th>Period</th>
+          <th>Total Loan</th>
+          <th>Status</th>
+          <th nzRight nzWidth="120px">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let employee of employeeTable.data">
+          <td>{{ employee.employeeId }}</td>
+          <td nzLeft><strong>{{ employee.employeeFullName }}</strong></td>
+          <td>{{ employee.effectiveDate | date:'mediumDate' }}</td>
+          <td>{{ employee.outStanding | number }}</td>
+          <td>{{ employee.emi | number }}</td>
+          <td>{{ employee.annualInterest }}%</td>
+          <td>{{ employee.period }}</td>
+          <td>{{ employee.firstOutStanding | number }}</td>
+          <td>
+            <nz-tag [nzColor]="employee.status === 'ACTIVE' ? 'green' : 'volcano'">
+              {{ employee.status }}
+            </nz-tag>
+          </td>
+          <td nzRight>
+            <div class="action-buttons">
+              <button nz-button nzType="text" (click)="openDrawer(employee)" nz-tooltip="Edit">
+                <i nz-icon nzType="edit" style="color: #1890ff;"></i>
+              </button>
+              <button nz-button nzType="text" (click)="deleteEmployee(employee.id)" nz-tooltip="Delete">
+                <i nz-icon nzType="delete" style="color: #ff4d4f;"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
 
-          <div class="card-extra-content">
-            <div class="info-row">
-              <span class="label">Date:</span>
-              <span class="value">{{ employee.effectiveDate | date:'mediumDate' }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">OutStanding:</span>
-              <span class="value">{{ employee.outStanding | number }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">EMI:</span>
-              <span class="value">{{ employee.emi | number }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">AnnualInterset</span>
-              <span class="value">{{ employee.annualInterest }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">Period</span>
-              <span class="value">{{ employee.period }}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">Total Loan Was</span>
-              <span class="value">{{ employee.firstOutStanding }}</span>
-            </div>
-            <div class="status-tag">
-              <nz-tag [nzColor]="employee.status === 'ACTIVE' ? 'green' : 'volcano'">
-                {{ employee.status }}
-              </nz-tag>
-            </div>
-          </div>
+  <!-- EMPLOYEE MOBILE VIEW (Cards) -->
+  <div class="mobile-view">
+    <div class="employee-cards-container">
+      <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+        <nz-list-item *ngFor="let employee of employees">
+          <nz-card [nzBordered]="true" class="employee-card" [nzActions]="[actionEdit, actionDelete]">
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="employee.employeeFullName"
+              [nzDescription]="'ID: ' + employee.employeeId"></nz-card-meta>
 
-          <ng-template #avatarTemplate>
-            <nz-avatar [nzText]="employee.employeeFullName[0]" class="user-avatar"></nz-avatar>
-          </ng-template>
+            <div class="card-extra-content">
+              <div class="info-row">
+                <span class="label">Date:</span>
+                <span class="value">{{ employee.effectiveDate | date:'mediumDate' }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">OutStanding:</span>
+                <span class="value">{{ employee.outStanding | number }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">EMI:</span>
+                <span class="value">{{ employee.emi | number }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">AnnualInterset</span>
+                <span class="value">{{ employee.annualInterest }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Period</span>
+                <span class="value">{{ employee.period }}</span>
+              </div>
+              <div class="info-row">
+                <span class="label">Total Loan Was</span>
+                <span class="value">{{ employee.firstOutStanding }}</span>
+              </div>
+              <div class="status-tag">
+                <nz-tag [nzColor]="employee.status === 'ACTIVE' ? 'green' : 'volcano'">
+                  {{ employee.status }}
+                </nz-tag>
+              </div>
+            </div>
 
-          <ng-template #actionEdit>
-            <span nz-icon nzType="edit" (click)="openDrawer(employee)" nz-tooltip="Edit"></span>
-          </ng-template>
-          <ng-template #actionDelete>
-            <span nz-icon nzType="delete" class="delete-icon" (click)="deleteEmployee(employee.id)"
-              nz-tooltip="Delete"></span>
-          </ng-template>
-        </nz-card>
-      </nz-list-item>
-    </nz-list>
+            <ng-template #avatarTemplate>
+              <nz-avatar [nzText]="employee.employeeFullName[0]" class="user-avatar"></nz-avatar>
+            </ng-template>
 
-    <div class="pagination-wrapper" *ngIf="total > 0">
-      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
-        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-        nzShowSizeChanger></nz-pagination>
+            <ng-template #actionEdit>
+              <span nz-icon nzType="edit" (click)="openDrawer(employee)" nz-tooltip="Edit"></span>
+            </ng-template>
+            <ng-template #actionDelete>
+              <span nz-icon nzType="delete" class="delete-icon" (click)="deleteEmployee(employee.id)"
+                nz-tooltip="Delete"></span>
+            </ng-template>
+          </nz-card>
+        </nz-list-item>
+      </nz-list>
+
+      <div class="pagination-wrapper" *ngIf="total > 0">
+        <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+          (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+          [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger></nz-pagination>
+      </div>
     </div>
   </div>
 

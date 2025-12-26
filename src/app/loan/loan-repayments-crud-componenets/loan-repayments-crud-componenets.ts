@@ -22,6 +22,7 @@ import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { SavingService } from '../../service/saving-service';
 import { LoanRepaymentService } from '../../service/loan-repayment-service';
+import { EmployeeService } from '../../service/employee-service';
 import { SharedService } from '../../core/sharedService/shared-service';
 import { Auth } from '../../auth/auth';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
@@ -46,8 +47,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     NzCardModule,
     NzListModule,
     NzPaginationModule,
-    NzIconModule ,
-    NzDatePickerModule  
+    NzIconModule,
+    NzDatePickerModule
   ],
   templateUrl: './loan-repayments-crud-componenets.html',
   styleUrl: './loan-repayments-crud-componenets.css',
@@ -60,8 +61,10 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
   updateId!: number;
   employeeId: string = '';
   totalRepayments: number = 0;
+  employeeOutstanding: number = 0;
 
   constructor(private loanRepaymentService: LoanRepaymentService,
+    private employeeService: EmployeeService,
     private fb: FormBuilder,
     private msg: NzMessageService,
     private modalRef: NzModalRef,
@@ -86,7 +89,7 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
         ],
       }),
       // fullName: ['', [Validators.required, Validators.minLength(3)]],
-      forMonth:['',[Validators.required]],
+      forMonth: ['', [Validators.required]],
       crassLoanRepayment: [0, [Validators.required, Validators.min(0)]],
     });
 
@@ -99,6 +102,7 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
   loadLoanRepayments() {
     this.employeeId = this.id.id;
     this.getTotalTotalRepaymets();
+    this.getEmployeeOutstanding();
     this.loanRepaymentService.getLoanRepaymentByEmployeeId(this.id.id, this.pageIndex, this.pageSize).subscribe({
 
       next: (data) => {
@@ -255,6 +259,17 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
       }
     });
     return this.totalRepayments;
+  }
+
+  getEmployeeOutstanding() {
+    this.employeeService.getById(Number(this.employeeId)).subscribe({
+      next: (data: any) => {
+        this.employeeOutstanding = data.outStanding;
+      },
+      error: (error) => {
+        console.error("Failed to fetch employee outstanding", error);
+      }
+    });
   }
 
 

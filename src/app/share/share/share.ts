@@ -24,6 +24,7 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { Auth } from '../../auth/auth';
+import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
 
 
 @Component({
@@ -156,6 +157,31 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
       }
     });
   }
+
+  uploadFileShare() {
+
+
+    this.modal.create({
+      nzTitle: 'Uploading file',
+      nzContent: Uploadingfile,
+      nzData: 'share',
+      nzOkText: null,
+      nzCancelText: null
+    });
+
+
+    this.modal._afterAllClosed.subscribe({
+      next: () => {
+        this.loadShares()
+      }
+    });
+
+
+  }
+
+
+
+
 
   onPageChange(index: number): void {
     this.pageIndex = index - 1;

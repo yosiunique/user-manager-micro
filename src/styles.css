@@ -1,2 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
 @import "ng-zorro-antd/ng-zorro-antd.min.css";
+
+@media (min-width: 992px) {
+    .mobile-view {
+        display: none !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .desktop-view {
+        display: none !important;
+    }
+}

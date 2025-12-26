@@ -32,19 +32,19 @@
   <div class="stats-section">
     <nz-row nzGutter="[16, 16]">
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Total Savings" [nzValue]="totalSavings" nzPrefix="" nzSuffix="ETB"
+        <nz-statistic nzTitle="Total Savings" [nzValue]="isNumber(totalSavings)" nzPrefix="" nzSuffix="ETB"
           [nzValueStyle]="{ color: '#52c41a' }"></nz-statistic>
       </nz-col>
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Active Loans" nzSuffix="ETB" [nzValue]="activeLoans"
+        <nz-statistic nzTitle="Active Loans" nzSuffix="ETB" [nzValue]="isNumber(activeLoans)"
           [nzValueStyle]="{ color: '#1890ff' }">ETB</nz-statistic>
       </nz-col>
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Total Users" nzSuffix="Users" [nzValue]="totalUsers"
+        <nz-statistic nzTitle="Total Users" nzSuffix="Users" [nzValue]="isNumber(totalUsers)"
           [nzValueStyle]="{ color: '#faad14' }">Users</nz-statistic>
       </nz-col>
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Pending Actions" [nzValue]="pendingActions"
+        <nz-statistic nzTitle="Pending Actions" [nzValue]="isNumber(pendingActions)"
           [nzValueStyle]="{ color: '#722ed1' }"></nz-statistic>
       </nz-col>
     </nz-row>

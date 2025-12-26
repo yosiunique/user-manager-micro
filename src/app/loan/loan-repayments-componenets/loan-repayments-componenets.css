@@ -24,6 +24,26 @@
     width: 100%;
 }
 
+@media (max-width: 576px) {
+    .pagination-wrapper {
+        justify-content: center;
+    }
+}
+
+/* Desktop Table Styles */
+.ant-table-thead>tr>th {
+    background-color: #1a365d !important;
+    color: white !important;
+}
+
+.desktop-view {
+    margin-top: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
 @media (max-width: 768px) {
     .toolbar {
         flex-direction: column;

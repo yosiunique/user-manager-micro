@@ -23,41 +23,75 @@
     </div>
   </div>
 
-  <div class="saving-cards-container">
-    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
-      <nz-list-item *ngFor="let save of saving">
-        <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.fullName"
-            [nzDescription]="'Saving ID: ' + save.id"></nz-card-meta>
-
-          <div class="card-extra-content">
-            <div class="info-row">
-              <span class="label">Employee ID:</span>
-              <span class="value">{{ save.employee.id }}</span>
-            </div>
-            <div class="info-row highlight">
-              <span class="label">CRA Saving:</span>
-              <span class="value">{{ save.craSaving | number }} ETB</span>
-            </div>
-          </div>
-
-          <ng-template #avatarTemplate>
-            <nz-avatar [nzIcon]="'bank'" class="bank-avatar"></nz-avatar>
-          </ng-template>
-
-          <ng-template #actionDetails>
+  <div class="desktop-view">
+    <nz-table #savingTable [nzData]="saving" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
+      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '1000px' }" [nzBordered]="true" nzSize="middle">
+      <thead>
+        <tr>
+          <th nzWidth="100px">ID</th>
+          <th>Full Name</th>
+          <th>Employee ID</th>
+          <th>CRA Saving</th>
+          <th nzWidth="150px">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let save of savingTable.data">
+          <td>{{ save.id }}</td>
+          <td><strong>{{ save.employee.employeeFullName }}</strong></td>
+          <td>{{ save.employee.id }}</td>
+          <td>
+            <span style="font-weight: 600; color: #2d2786;">{{ save.craSaving | number }} ETB</span>
+          </td>
+          <td>
             <button nz-button nzType="link" (click)="getsavingById(save.employee.id)">
               <i nz-icon nzType="eye"></i> View Details
             </button>
-          </ng-template>
-        </nz-card>
-      </nz-list-item>
-    </nz-list>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
 
-    <div class="pagination-wrapper" *ngIf="total > 0">
-      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
-        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-        nzShowSizeChanger></nz-pagination>
+  <div class="mobile-view">
+    <div class="saving-cards-container">
+      <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+        <nz-list-item *ngFor="let save of saving">
+          <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.fullName"
+              [nzDescription]="'Saving ID: ' + save.id"></nz-card-meta>
+
+            <div class="card-extra-content">
+              <div class="info-row">
+                <span class="label">Employee ID:</span>
+                <span class="value">{{ save.employee.id }}</span>
+              </div>
+              <div class="info-row highlight">
+                <span class="label">CRA Saving:</span>
+                <span class="value">{{ save.craSaving | number }} ETB</span>
+              </div>
+            </div>
+
+            <ng-template #avatarTemplate>
+              <nz-avatar [nzIcon]="'bank'" class="bank-avatar"></nz-avatar>
+            </ng-template>
+
+            <ng-template #actionDetails>
+              <button nz-button nzType="link" (click)="getsavingById(save.employee.id)">
+                <i nz-icon nzType="eye"></i> View Details
+              </button>
+            </ng-template>
+          </nz-card>
+        </nz-list-item>
+      </nz-list>
+
+      <div class="pagination-wrapper" *ngIf="total > 0">
+        <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+          (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+          nzShowSizeChanger></nz-pagination>
+      </div>
     </div>
   </div>
 
@@ -66,41 +100,75 @@
 
 <div *ngIf="!haveRole('Admin') && haveRole('Employee')">
 
-  <div class="saving-cards-container">
-    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
-      <nz-list-item *ngFor="let save of mySaving">
-        <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.employee.employeeFullName"
-            [nzDescription]="'Saving ID: ' + save.id"></nz-card-meta>
-
-          <div class="card-extra-content">
-            <div class="info-row">
-              <span class="label">Employee ID:</span>
-              <span class="value">{{ save.employee.id }}</span>
-            </div>
-            <div class="info-row highlight">
-              <span class="label">CRA Saving:</span>
-              <span class="value">{{ save.craSaving | number }} ETB</span>
-            </div>
-          </div>
-
-          <ng-template #avatarTemplate>
-            <nz-avatar [nzIcon]="'bank'" class="bank-avatar"></nz-avatar>
-          </ng-template>
-
-          <ng-template #actionDetails>
+  <div class="desktop-view">
+    <nz-table #mySavingTable [nzData]="mySaving" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
+      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
+      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '1000px' }" [nzBordered]="true" nzSize="middle">
+      <thead>
+        <tr>
+          <th nzWidth="100px">ID</th>
+          <th>Full Name</th>
+          <th>Employee ID</th>
+          <th>CRA Saving</th>
+          <th nzWidth="150px">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let save of mySavingTable.data">
+          <td>{{ save.id }}</td>
+          <td><strong>{{ save.employee.employeeFullName }}</strong></td>
+          <td>{{ save.employee.id }}</td>
+          <td>
+            <span style="font-weight: 600; color: #2d2786;">{{ save.craSaving | number }} ETB</span>
+          </td>
+          <td>
             <button nz-button nzType="link" (click)="getsavingById(save.employee.id)">
               <i nz-icon nzType="eye"></i> View Details
             </button>
-          </ng-template>
-        </nz-card>
-      </nz-list-item>
-    </nz-list>
+          </td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
 
-    <div class="pagination-wrapper" *ngIf="total > 0">
-      <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
-        (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-        nzShowSizeChanger></nz-pagination>
+  <div class="mobile-view">
+    <div class="saving-cards-container">
+      <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+        <nz-list-item *ngFor="let save of mySaving">
+          <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="save.employee.employeeFullName"
+              [nzDescription]="'Saving ID: ' + save.id"></nz-card-meta>
+
+            <div class="card-extra-content">
+              <div class="info-row">
+                <span class="label">Employee ID:</span>
+                <span class="value">{{ save.employee.id }}</span>
+              </div>
+              <div class="info-row highlight">
+                <span class="label">CRA Saving:</span>
+                <span class="value">{{ save.craSaving | number }} ETB</span>
+              </div>
+            </div>
+
+            <ng-template #avatarTemplate>
+              <nz-avatar [nzIcon]="'bank'" class="bank-avatar"></nz-avatar>
+            </ng-template>
+
+            <ng-template #actionDetails>
+              <button nz-button nzType="link" (click)="getsavingById(save.employee.id)">
+                <i nz-icon nzType="eye"></i> View Details
+              </button>
+            </ng-template>
+          </nz-card>
+        </nz-list-item>
+      </nz-list>
+
+      <div class="pagination-wrapper" *ngIf="total > 0">
+        <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
+          (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
+          nzShowSizeChanger></nz-pagination>
+      </div>
     </div>
   </div>
 </div>

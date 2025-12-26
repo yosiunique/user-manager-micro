@@ -10,6 +10,7 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { EmployeeService } from '../../service/employee-service';
+import { ShareService } from '../../service/share-service';
 
 @Component({
   selector: 'app-uploadingfile',
@@ -33,6 +34,7 @@ export class Uploadingfile {
   private loanRepaymentService = inject(LoanRepaymentService);
   private modalRef = inject(NzModalRef);
   protected data: any = inject(NZ_MODAL_DATA);
+  protected shareService = inject(ShareService);
   protected employeeService = inject(EmployeeService)
   selectedFile: File | null = null;
   uploading: boolean = false;
@@ -133,6 +135,20 @@ export class Uploadingfile {
       });
   }
 
+  uploadFileShare() {
+
+    if (!this.selectedFile) {
+      this.msg.error('Please select a file');
+      return;
+    }
+    this.uploading = true;
+    this.shareService.importCsv(this.selectedFile)
+      .pipe(finalize(() => (this.uploading = false)))
+      .subscribe({
+        next: (res: any) => this.handleUploadSuccess(res),
+        error: (err: any) => this.handleUploadError(err)
+      });
+  }
 
 
   // Removed unused method

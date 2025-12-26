@@ -82,5 +82,18 @@ export class WelcomComponent implements OnInit {
   navigateToLoans(): void {
     this.router.navigate(['home/loan-repayment/view']);
   }
+
+
+  isNumber(num: number) {
+    if (num) {
+      return num;
+    }
+    return 0;
+
+  }
+
+
+
+
 }
 

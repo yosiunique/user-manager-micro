@@ -2,22 +2,25 @@
 
   <!-- Summary Card -->
   <nz-card nzTitle="Employee Saving Summary" class="mb-3 shadow-sm">
-    <div class="flex justify-between">
-      <div>
+    <div class="summary-grid">
+      <div class="summary-item">
         <h3 class="m-0 text-primary">Total Saving:</h3>
-        <h2 class="text-success fw-bold">{{ totalSaving | number }} </h2>
+        <h2 class="text-success fw-bold">{{ totalSaving | number }} ETB</h2>
       </div>
-
+      <div class="summary-item">
+        <h3 class="m-0 text-primary">Employee Outstanding:</h3>
+        <h2 class="text-danger fw-bold">{{ employeeOutstanding | number }} ETB</h2>
+      </div>
     </div>
   </nz-card>
 
   <!-- Remove All Button -->
-  <div class="mb-2 text-end">
+  <!-- <div class="mb-2 text-end">
     <button *ngIf="haveRole('Admin') || haveRole('saving')" nz-button nzType="primary" nzDanger nzSize="small"
       (click)="deleteAll()">
       <i nz-icon nzType="delete"></i> Remove All
     </button>
-  </div>
+  </div> -->
 
   <!-- Desktop View -->
   <div class="desktop-view">
@@ -39,17 +42,17 @@
         <tr *ngFor="let save of saving; trackBy: trackByFn">
           <td>{{ save.id }}</td>
           <td>{{ save.employee.id }}</td>
-          <td>{{ save.employee.employeeFullName  }}</td>
+          <td>{{ save.employee.employeeFullName }}</td>
           <td>{{ save.craSaving }}</td>
 
           <td class="button" *ngIf="haveRole('Admin') || haveRole('saving')">
-            <button nz-button nzType="default" nzSize="small" class="me-1" (click)="updateSaving(true, save.id)">
+            <button nz-button nzType="primary" nzSize="small" class="me-1" (click)="updateSaving(true, save.id)">
               <i nz-icon nzType="edit"></i> Update
             </button>
-
+            <!-- 
             <button nz-button nzType="primary" nzDanger nzSize="small" (click)="deletebyId(save.id)">
               <i nz-icon nzType="delete"></i> Remove
-            </button>
+            </button> -->
           </td>
         </tr>
       </tbody>
@@ -103,22 +106,17 @@
 
     <form nz-form nzLayout="vertical" [formGroup]="savingForm" (ngSubmit)="submitForm()">
 
-     <nz-form-item>
-  <nz-form-label [nzRequired]="true">Employee ID</nz-form-label>
+      <nz-form-item>
+        <nz-form-label [nzRequired]="true">Employee ID</nz-form-label>
 
-  <nz-form-control [nzErrorTip]="'Employee ID is required'">
+        <nz-form-control [nzErrorTip]="'Employee ID is required'">
 
-    <div formGroupName="employee">
-      <input
-        nz-input
-        type="number"
-        formControlName="employeeId"
-        placeholder="Enter Employee ID"
-      />
-    </div>
+          <div formGroupName="employee">
+            <input nz-input type="number" formControlName="employeeId" placeholder="Enter Employee ID" />
+          </div>
 
-  </nz-form-control>
-</nz-form-item>
+        </nz-form-control>
+      </nz-form-item>
 
 
       <nz-form-item>

@@ -14,6 +14,17 @@
   margin-bottom: 24px;
 }
 
+.summary-grid {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.summary-item {
+  flex: 1;
+  min-width: 200px;
+}
+
 .summary-header {
   display: flex;
   justify-content: space-between;

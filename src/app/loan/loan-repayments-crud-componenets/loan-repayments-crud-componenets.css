@@ -10,6 +10,17 @@
     }
 }
 
+.summary-grid {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.summary-item {
+    flex: 1;
+    min-width: 200px;
+}
+
 /* Mobile Card Styles for Loan */
 .loan-mobile-card {
     width: 100%;

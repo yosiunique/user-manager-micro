@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
 import { NZ_MODAL_DATA, NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
 import { SavingService } from '../../service/saving-service';
+import { EmployeeService } from '../../service/employee-service';
 import { SavingAndLoanRepayment } from '../model/saving';
 import { CommonModule } from '@angular/common';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -63,8 +64,10 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
   searchTerm: any;
   employeeId: string = ''
   uploading: unknown;
+  employeeOutstanding: number = 0;
 
   constructor(private savingService: SavingService,
+    private employeeService: EmployeeService,
     private fb: FormBuilder,
     private msg: NzMessageService,
     protected auth: Auth,
@@ -79,7 +82,7 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
 
     this.loadSavings();
     this.savingForm = this.fb.group({
-     employee: this.fb.group({
+      employee: this.fb.group({
         employeeId: [
           0,
           [
@@ -101,6 +104,7 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
   loadSavings() {
     this.employeeId = this.id.id;
     this.getTotalSaving();
+    this.getEmployeeOutstanding();
     this.savingService.getsavingByEmployeeId(this.id.id, this.pageIndex, this.pageSize).subscribe({
 
       next: (data) => {
@@ -268,6 +272,17 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
     });
 
 
+  }
+
+  getEmployeeOutstanding() {
+    this.employeeService.getById(Number(this.employeeId)).subscribe({
+      next: (data: any) => {
+        this.employeeOutstanding = data.outStanding;
+      },
+      error: (error) => {
+        console.error("Failed to fetch employee outstanding", error);
+      }
+    });
   }
 
 
