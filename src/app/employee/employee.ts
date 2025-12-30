@@ -27,6 +27,7 @@ import { BaseComponent } from '../core/basecomponenet/basecomponenet';
 import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Uploadingfile } from '../uploadfile/uploadingfile/uploadingfile';
+import { Auth } from '../auth/auth';
 
 @Component({
   selector: 'app-employee',
@@ -74,7 +75,8 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
     private employeeService: EmployeeService,
     protected override modal: NzModalService,
     private message: NzMessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected auth: Auth
   ) {
     super(employeeService, modal)
   }
@@ -102,14 +104,7 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
     this.employeeForm = this.fb.group({
       employeeId: ['', Validators.required],
       employeeFullName: ['', Validators.required],
-      effectiveDate: ['', Validators.required],
-      status: ['ACTIVE', Validators.required],
-      outStanding: [0, Validators.required],
-      emi: [0, Validators.required],
-      loanId: ['', Validators.required],
-      annualInterest: [0, Validators.required],
-      period: [1, Validators.required],
-      firstOutStanding: [0, Validators.required]
+      membershipId: ['', Validators.required]
     });
   }
 
@@ -183,18 +178,12 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
 
       this.employeeForm.patchValue({
         ...employee,
-        effectiveDate: employee.effectiveDate ? new Date(employee.effectiveDate) : null
       });
 
     } else {
       this.isEditMode = false;
       this.currentId = undefined;
-      this.employeeForm.reset({
-        status: 'ACTIVE',
-        period: 1,
-        outStanding: 0,
-        firstOutStanding: 0
-      });
+      this.employeeForm.reset();
     }
   }
 
@@ -209,10 +198,7 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
     }
 
     const formValue: Employee = {
-      ...this.employeeForm.value,
-      effectiveDate: this.employeeForm.value.effectiveDate
-        ? new Date(this.employeeForm.value.effectiveDate)
-        : null
+      ...this.employeeForm.value
     };
 
     const request = this.isEditMode && this.currentId
@@ -255,14 +241,22 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
       nzOkText: null,
       nzCancelText: null
     });
-   
-    
-     this.modal._afterAllClosed.subscribe({
+
+
+    this.modal._afterAllClosed.subscribe({
       next: () => {
         this.loadEmployees()
-      }});
+      }
+    });
 
 
+  }
+
+
+  haveRole(roleName: string) {
+
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
   }
 
 

@@ -3,11 +3,15 @@
   <nz-card nzTitle="Employee Loan Repayments Summary" class="mb-3 shadow-sm">
     <div class="summary-grid">
       <div class="summary-item">
-        <h3 class="m-0 text-primary">Total Loan Repayments:</h3>
-        <h2 class="text-success fw-bold">{{ totalRepayments | number }} ETB</h2>
+        <h3 class="m-0 text-primary">Principal:</h3>
+        <h2 class="text-success fw-bold">{{ principal | number }} ETB</h2>
       </div>
       <div class="summary-item">
-        <h3 class="m-0 text-primary">Employee Outstanding:</h3>
+        <h3 class="m-0 text-primary">Interset:</h3>
+        <h2 class="text-success fw-bold">{{ interset | number }} ETB</h2>
+      </div>
+      <div class="summary-item">
+        <h3 class="m-0 text-primary">Loan Outstanding:</h3>
         <h2 class="text-danger fw-bold">{{ employeeOutstanding | number }} ETB</h2>
       </div>
     </div>
@@ -41,8 +45,8 @@
       <tbody>
         <tr *ngFor="let loan of loan">
           <td>{{ loan.forMonth}}</td>
-          <td>{{ loan.employee.employeeId}}</td>
-          <td>{{ loan.employee.employeeFullName }}</td>
+          <td>{{ loan.loan.employee.employeeId}}</td>
+          <td>{{ loan.loan.employee.employeeFullName }}</td>
           <td>{{loan.crassLoanRepayment}}</td>
           <td>{{loan.principal}}</td>
           <td>{{loan.interset}}</td>
@@ -69,11 +73,11 @@
           <div class="card-body">
             <div class="info-row">
               <span class="label">FullName:</span>
-              <span class="value">{{ record.employee.employeeFullName }}</span>
+              <span class="value">{{ record.loan.employee.employeeFullName }}</span>
             </div>
             <div class="info-row">
               <span class="label">Emp ID:</span>
-              <span class="value">{{ record.employee.employeeId }}</span>
+              <span class="value">{{ record.loan.employee.employeeId }}</span>
             </div>
             <div class="info-row">
               <span class="label">Principal:</span>
@@ -112,8 +116,10 @@
 
       <nz-form-control [nzErrorTip]="'Employee ID is required'">
 
-        <div formGroupName="employee">
-          <input nz-input type="number" formControlName="employeeId" placeholder="Enter Employee ID" />
+        <div formGroupName="loan">
+          <div formGroupName="employee">
+            <input nz-input type="number" formControlName="employeeId" placeholder="Enter Employee ID" />
+          </div>
         </div>
 
       </nz-form-control>

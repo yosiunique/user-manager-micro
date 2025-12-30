@@ -43,14 +43,14 @@
       </thead>
       <tbody>
         <tr *ngFor="let l of loanTable.data">
-          <td>{{ l.id }}</td>
-          <td><strong>{{ l.employee.employeeFullName }}</strong></td>
-          <td>{{ l.employee.id }}</td>
+          <td>{{ l.loan.id }}</td>
+          <td><strong>{{ l.loan.employee.employeeFullName }}</strong></td>
+          <td>{{ l.loan.employee.employeeId }}</td>
           <td>{{ l.forMonth }}</td>
           <td>{{ l.principal | number }} ETB</td>
           <td>{{ l.interset | number }} ETB</td>
           <td>
-            <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.employee.id)">
+            <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.loan.employee.employeeId)">
               <i nz-icon nzType="eye"></i> Details
             </button>
           </td>
@@ -64,13 +64,13 @@
       <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
         <nz-list-item *ngFor="let l of loan">
           <nz-card [nzBordered]="true" class="loan-card" [nzActions]="[actionDetails]">
-            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.employee.employeeFullName"
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.loan.employee.employeeFullName"
               [nzDescription]="'Repayment ID: ' + l.id"></nz-card-meta>
 
             <div class="card-extra-content">
               <div class="info-row">
                 <span class="label">Employee ID:</span>
-                <span class="value">{{ l.employee.id }}</span>
+                <span class="value">{{ l.loan.employee.employeeId }}</span>
               </div>
               <div class="info-row">
                 <span class="label">Month:</span>
@@ -91,7 +91,7 @@
             </ng-template>
 
             <ng-template #actionDetails>
-              <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.employee.id)">
+              <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.loan.employee.employeeId)">
                 <i nz-icon nzType="eye"></i> View Details
               </button>
             </ng-template>
@@ -128,13 +128,13 @@
       <tbody>
         <tr *ngFor="let l of myLoanTable.data">
           <td>{{ l.id }}</td>
-          <td><strong>{{ l.employee.employeeFullName }}</strong></td>
-          <td>{{ l.employee.id }}</td>
+          <td><strong>{{ l.loan.employee.employeeFullName }}</strong></td>
+          <td>{{ l.loan.employee.employeeId }}</td>
           <td>{{ l.forMonth }}</td>
           <td>{{ l.principal | number }} ETB</td>
           <td>{{ l.interset | number }} ETB</td>
           <td>
-            <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.employee.id)">
+            <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.loan.employee.id)">
               <i nz-icon nzType="eye"></i> Details
             </button>
           </td>
@@ -148,13 +148,13 @@
       <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
         <nz-list-item *ngFor="let l of myLoan">
           <nz-card [nzBordered]="true" class="loan-card" [nzActions]="[actionDetails]">
-            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.employee.employeeFullName"
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="l.loan.employee.employeeFullName"
               [nzDescription]="'Repayment ID: ' + l.id"></nz-card-meta>
 
             <div class="card-extra-content">
               <div class="info-row">
                 <span class="label">Employee ID:</span>
-                <span class="value">{{ l.employee.id }}</span>
+                <span class="value">{{ l.loan.employee.employeeId }}</span>
               </div>
               <div class="info-row">
                 <span class="label">Month:</span>
@@ -175,7 +175,7 @@
             </ng-template>
 
             <ng-template #actionDetails>
-              <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.employee.id)">
+              <button nz-button nzType="link" (click)="getLoanRepaymentgById(l.loan.employee.employeeId)">
                 <i nz-icon nzType="eye"></i> View Details
               </button>
             </ng-template>

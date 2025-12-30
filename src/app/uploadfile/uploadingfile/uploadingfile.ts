@@ -87,8 +87,13 @@ export class Uploadingfile {
       return;
     }
 
+    if (!this.forMonth) {
+      this.msg.error('Please select a month');
+      return;
+    }
+
     this.uploading = true;
-    this.savingService.importCsv(this.selectedFile, new Date()) // Using current date for savings as fallback
+    this.savingService.importCsv(this.selectedFile, this.forMonth)
       .pipe(finalize(() => (this.uploading = false)))
       .subscribe({
         next: (res: any) => this.handleUploadSuccess(res),

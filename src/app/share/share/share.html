@@ -1,10 +1,18 @@
 <div class="share-container">
 
   <div class="header">
-    <h2>Share Management</h2>
-    <button *ngIf="haveRole('Admin')" nz-button nzType="primary" (click)="openDrawer()">
-      <i nz-icon nzType="plus"></i> Add Share
-    </button>
+    <div class="header-left">
+      <h2>Share Management</h2>
+    </div>
+    <div class="header-center">
+      <input nz-input placeholder="Search Employee ID" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
+        class="search-input" />
+    </div>
+    <div class="header-right">
+      <button *ngIf="haveRole('Admin')" nz-button nzType="primary" (click)="openDrawer()">
+        <i nz-icon nzType="plus"></i> Add Share
+      </button>
+    </div>
   </div>
 
   <!-- SHARE CARDS (Responsive Layout) -->
@@ -28,11 +36,11 @@
       <tbody>
         <tr *ngFor="let share of shareTable.data">
           <td>{{ share.id }}</td>
-          <td><strong>{{ share.fullName }}</strong></td>
-          <td>{{ share.membershipId }}</td>
-          <td>{{ share.employeeId }}</td>
-          <td>{{ share.totalSaving | number }} ETB</td>
-          <td>{{ share.noOfShare }}</td>
+          <td><strong>{{ share?.employee?.employeeFullName }}</strong></td>
+          <td>{{ share?.employee?.membershipId }}</td>
+          <td>{{ share?.employee?.employeeId }}</td>
+          <td>{{ share?.totalSaving | number }} ETB</td>
+          <td>{{ share?.noOfShare }}</td>
           <td>
             <div class="action-buttons">
               <button nz-button nzType="text" (click)="openDrawer(share)" nz-tooltip="Edit">
@@ -54,21 +62,21 @@
       <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
         <nz-list-item *ngFor="let share of shares">
           <nz-card [nzBordered]="true" class="share-card" [nzActions]="[actionEdit, actionDelete]">
-            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="share.fullName"
-              [nzDescription]="'Membership: ' + share.membershipId"></nz-card-meta>
+            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="share?.employee?.employeeFullName ?? ''"
+              [nzDescription]="'Membership: ' + share?.employee?.membershipId"></nz-card-meta>
 
             <div class="card-extra-content">
               <div class="info-row">
                 <span class="label">Employee ID:</span>
-                <span class="value">{{ share.employeeId }}</span>
+                <span class="value">{{ share?.employee?.employeeId ?? '' }}</span>
               </div>
               <div class="info-row">
                 <span class="label">Total Saving:</span>
-                <span class="value">{{ share.totalSaving | number }}</span>
+                <span class="value">{{ share?.totalSaving | number }}</span>
               </div>
               <div class="info-row highlight">
                 <span class="label">Shares:</span>
-                <span class="value">{{ share.noOfShare }}</span>
+                <span class="value">{{ share?.noOfShare }}</span>
               </div>
             </div>
 
@@ -108,26 +116,15 @@
       <form nz-form *nzDrawerContent [formGroup]="shareForm">
         <button nz-button nzType="primary" *ngIf="haveRole('creator')" (click)="uploadFileShare()">Upload Share</button>
 
-        <nz-form-item>
-          <nz-form-label nzRequired>Employee ID</nz-form-label>
-          <nz-form-control>
-            <input nz-input type="number" formControlName="employeeId">
-          </nz-form-control>
-        </nz-form-item>
+        <div formGroupName="employee">
+          <nz-form-item>
+            <nz-form-label nzRequired>Employee ID</nz-form-label>
+            <nz-form-control>
+              <input nz-input type="number" formControlName="employeeId">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
 
-        <nz-form-item>
-          <nz-form-label nzRequired>Membership ID</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="membershipId">
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label nzRequired>Full Name</nz-form-label>
-          <nz-form-control>
-            <input nz-input formControlName="fullName">
-          </nz-form-control>
-        </nz-form-item>
 
         <nz-form-item>
           <nz-form-label>Total Saving</nz-form-label>
@@ -174,9 +171,9 @@
       <tbody>
         <tr>
           <td>{{ myShare.id }}</td>
-          <td><strong>{{ myShare.fullName }}</strong></td>
-          <td>{{ myShare.membershipId }}</td>
-          <td>{{ myShare.employeeId }}</td>
+          <td><strong>{{ myShare.employee.employeeFullName }}</strong></td>
+          <td>{{ myShare.employee.membershipId }}</td>
+          <td>{{ myShare.employee.employeeId }}</td>
           <td>{{ myShare.totalSaving | number }} ETB</td>
           <td>{{ myShare.noOfShare }}</td>
         </tr>
@@ -188,13 +185,13 @@
     <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
       <nz-list-item>
         <nz-card [nzBordered]="true" class="share-card" [nzActions]="[actionEdit, actionDelete]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="myShare?.fullName || 'N/A'"
-            [nzDescription]="'Membership: ' + myShare?.membershipId"></nz-card-meta>
+          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="myShare?.employee?.employeeFullName || 'N/A'"
+            [nzDescription]="'Membership: ' + myShare?.employee?.membershipId"></nz-card-meta>
 
           <div class="card-extra-content">
             <div class="info-row">
               <span class="label">Employee ID:</span>
-              <span class="value">{{ myShare?.employeeId }}</span>
+              <span class="value">{{ myShare?.employee?.employeeId }}</span>
             </div>
             <div class="info-row">
               <span class="label">Total Saving:</span>

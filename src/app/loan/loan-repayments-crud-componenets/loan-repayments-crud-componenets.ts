@@ -62,6 +62,8 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
   employeeId: string = '';
   totalRepayments: number = 0;
   employeeOutstanding: number = 0;
+  principal: number = 0;
+  interset: number = 0;
 
   constructor(private loanRepaymentService: LoanRepaymentService,
     private employeeService: EmployeeService,
@@ -79,14 +81,16 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
 
     this.loadLoanRepayments();
     this.loanForm = this.fb.group({
-      employee: this.fb.group({
-        employeeId: [
-          0,
-          [
-            Validators.required,
-            // Validators.pattern('^[0-9]+$')
-          ]
-        ],
+      loan: this.fb.group({
+        employee: this.fb.group({
+          employeeId: [
+            0,
+            [
+              Validators.required,
+              // Validators.pattern('^[0-9]+$')
+            ]
+          ],
+        }),
       }),
       // fullName: ['', [Validators.required, Validators.minLength(3)]],
       forMonth: ['', [Validators.required]],
@@ -104,19 +108,32 @@ export class LoanRepaymentsCrudComponenets extends BaseComponent<LoanRepayment> 
     this.getTotalTotalRepaymets();
     this.getEmployeeOutstanding();
     this.loanRepaymentService.getLoanRepaymentByEmployeeId(this.id.id, this.pageIndex, this.pageSize).subscribe({
-
       next: (data) => {
         this.dataService.setLoanRepayById(data);
         this.loan = data.content;
         this.pageIndex = data.number;
         this.total = data.totalElements;
         this.pageSize = data.size;
+        this.sumPrincipalsAndInterest(this.loan);
         console.log("saving data loaded successfully", data)
       },
       error: (error) => {
         console.log("failed to load loan data", error)
       }
     });
+  }
+
+
+
+  sumPrincipalsAndInterest(loan: LoanRepayment[]) {
+
+    this.employeeOutstanding = loan[0].loan.outStanding;
+    loan.forEach((loan) => {
+      this.principal += loan.principal;
+      this.interset += loan.interset;
+    });
+
+
   }
 
   updateLoansRepayments(update: boolean, id: number) {

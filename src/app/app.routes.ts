@@ -11,67 +11,79 @@ import { LoanRepaymentsComponenets } from './loan/loan-repayments-componenets/lo
 import { WelcomComponent } from './welcome/welcom-component/welcom-component';
 import { EmployeeComponent } from './employee/employee';
 import { ShareComponent } from './share/share/share';
+import { LoanComponent } from './loan/loan/loan';
 
 export const routes: Routes = [
-  {path:'',
-    redirectTo:'/login',
-    pathMatch:'full'
-  },
-  { path: 'login', component: Login  },
-  
-  { path: 'home', children:[
   {
-    path:'',component:Mainlayout,canActivate:[AuthGurd],
+    path: '',
+    redirectTo: '/login',
+    pathMatch: 'full'
   },
-  {
-    path:'welcome',
-    component:WelcomComponent
-  },
-  {
-    path:'saving',
-    children:[
-      {
-        path:'view',
-        component:SavingComponenet,canActivate:[AuthGurd]
-      }
-    ]
-  },
-  {
-    path:'loan-repayment',
-    children:[
-     {
-      path:'view',
-      component:LoanRepaymentsComponenets ,canActivate:[AuthGurd]
-     }
-    ]
-  },
-  {
-    path:'admin',
-    children:[
-      { path: 'users', component: AdminDashboard ,canActivate: [AuthGurd] },
-    ]
-  },
-  {
-    path :'employee',
-    children:[
-      {
-        path:'view',
-        component:EmployeeComponent
-      }
-    ]
-  },
-  {
-    path :'share',
-    children:[
-      {
-        path:'view',
-        component:ShareComponent
-      }
-    ]
-  }
+  { path: 'login', component: Login },
 
-  ],canActivate:[AuthGurd]
-},
-   
-  { path: '**', component:Notfound  }
+  {
+    path: 'home', children: [
+      {
+        path: '', component: Mainlayout, canActivate: [AuthGurd],
+      },
+      {
+        path: 'welcome',
+        component: WelcomComponent
+      },
+      {
+        path: 'saving',
+        children: [
+          {
+            path: 'view',
+            component: SavingComponenet, canActivate: [AuthGurd]
+          }
+        ]
+      },
+      {
+        path: 'loan-repayment',
+        children: [
+          {
+            path: 'view',
+            component: LoanRepaymentsComponenets, canActivate: [AuthGurd]
+          }
+        ]
+      },
+      {
+        path: 'admin',
+        children: [
+          { path: 'users', component: AdminDashboard, canActivate: [AuthGurd] },
+        ]
+      },
+      {
+        path: 'loan',
+        children: [
+          {
+            path: 'view',
+            component: LoanComponent, canActivate: [AuthGurd]
+          }
+        ]
+      },
+      {
+        path: 'employee',
+        children: [
+          {
+            path: 'view',
+            component: EmployeeComponent
+          }
+        ]
+      },
+      {
+        path: 'share',
+        children: [
+          {
+            path: 'view',
+            component: ShareComponent
+          }
+        ]
+      }
+
+    ], canActivate: [AuthGurd]
+  },
+
+  { path: '**', component: Notfound }
 ];

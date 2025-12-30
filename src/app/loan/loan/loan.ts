@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzModalModule, NzModalService } from 'ng-zorro-antd/modal';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
@@ -15,8 +14,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
-import { Share } from '../../saving/model/saving';
-import { ShareService } from '../../service/share-service';
+import { Loan } from '../../saving/model/saving';
+import { LoanService } from '../../service/loan-service';
 import { NzListModule } from "ng-zorro-antd/list";
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
@@ -26,9 +25,8 @@ import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } fro
 import { Auth } from '../../auth/auth';
 import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
 
-
 @Component({
-  selector: 'app-share',
+  selector: 'app-loan',
   standalone: true,
   imports: [
     FormsModule,
@@ -49,32 +47,31 @@ import { Uploadingfile } from '../../uploadfile/uploadingfile/uploadingfile';
     NzCardModule,
     NzPaginationModule,
     NzAvatarModule
-
   ],
-  templateUrl: './share.html',
-  styleUrls: ['./share.css'],
+  templateUrl: './loan.html',
+  styleUrls: ['./loan.css'],
 })
-export class ShareComponent extends BaseComponent<Share> implements OnInit {
+export class LoanComponent extends BaseComponent<Loan> implements OnInit {
 
-  shares: Share[] = [];
+  loans: Loan[] = [];
   drawerVisible = false;
-  currentId?: number;
-  myShare?: Share;
-  employeeId?: number;
-  shareForm!: FormGroup;
+  id?: number;
+  myLoan?: Loan;
+  loanForm!: FormGroup;
   searchTerm: string = '';
   searchSubject = new Subject<string>();
   destroy$ = new Subject<void>();
+  avatarTemplate: TemplateRef<void> | null | undefined;
 
   constructor(
     private fb: FormBuilder,
-    private shareService: ShareService,
+    private loanService: LoanService,
     protected override modal: NzModalService,
     protected auth: Auth,
     private message: NzMessageService,
     private route: ActivatedRoute
   ) {
-    super(shareService, modal);
+    super(loanService, modal);
   }
 
   ngOnInit(): void {
@@ -82,9 +79,9 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
     this.route.queryParams.subscribe(params => {
       const employeeId = params['employeeId'];
       if (employeeId) {
-        this.getByEmployyeeId(employeeId)
+        this.getByEmployeeId(employeeId)
       } else {
-        this.loadShares();
+        this.loadLoans();
       }
     });
     this.setupSearch();
@@ -97,7 +94,7 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
 
   onSearchChange(value: string): void {
     if (!value || value.trim() === '') {
-      this.loadShares();
+      this.loadLoans();
       return;
     }
     this.searchSubject.next(value);
@@ -110,12 +107,12 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
       switchMap(term => {
         this.loading = true;
         this.pageIndex = 0;
-        return this.shareService.search(term);
+        return this.loanService.search(term);
       }),
       takeUntil(this.destroy$)
     ).subscribe({
       next: (data: any) => {
-        this.shares = data.content;
+        this.loans = data.content;
         this.total = data.totalElements;
         this.pageSize = data.size;
         this.pageIndex = data.number;
@@ -129,83 +126,65 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
   }
 
   initForm(): void {
-    this.shareForm = this.fb.group({
+    this.loanForm = this.fb.group({
+      loanId: ['', Validators.required],
       employee: this.fb.group({
         employeeId: ['', Validators.required]
       }),
-
-      totalSaving: [0, Validators.required],
-      noOfShare: [0, Validators.required],
+      effectiveDate: [null, Validators.required],
+      outStanding: [0, Validators.required],
+      status: ['ACTIVE', Validators.required],
+      emi: [0, Validators.required],
+      annualInterest: [0, Validators.required],
+      period: [0, Validators.required],
+      firstOutStanding: [0, Validators.required]
     });
   }
 
-  loadShares(): void {
+  loadLoans(): void {
     this.loading = true;
-
-    this.shareService.getAll(this.pageIndex, this.pageSize).subscribe({
+    this.loanService.getAll(this.pageIndex, this.pageSize).subscribe({
       next: (data) => {
-        this.shares = data.content;
+        this.loans = data.content;
         this.total = data.totalElements;
         this.pageSize = data.size;
         this.pageIndex = data.number;
         this.loading = false;
       },
       error: () => {
-        this.message.error('Failed to load shares');
+        this.message.error('Failed to load loans');
         this.loading = false;
       }
     });
   }
 
-  uploadFileShare() {
-
-
-    this.modal.create({
-      nzTitle: 'Uploading file',
-      nzContent: Uploadingfile,
-      nzData: 'share',
-      nzOkText: null,
-      nzCancelText: null
-    });
-
-
-    this.modal._afterAllClosed.subscribe({
-      next: () => {
-        this.loadShares()
-      }
-    });
-
-
-  }
-
-
-
-
-
   onPageChange(index: number): void {
     this.pageIndex = index - 1;
-    this.loadShares();
+    this.loadLoans();
   }
 
   onPageSizeChange(size: number): void {
     this.pageSize = size;
     this.pageIndex = 0;
-    this.loadShares();
+    this.loadLoans();
   }
 
-  openDrawer(share?: Share): void {
+  openDrawer(loan?: Loan): void {
     this.drawerVisible = true;
-
-    if (share) {
+    if (loan) {
       this.isEditMode = true;
-      this.currentId = share.id;
-      this.shareForm.patchValue(share);
+      this.id = loan.id;
+      this.loanForm.patchValue(loan);
     } else {
       this.isEditMode = false;
-      this.currentId = undefined;
-      this.shareForm.reset({
-        totalSaving: 0,
-        noOfShare: 0
+      this.id = undefined;
+      this.loanForm.reset({
+        status: 'ACTIVE',
+        outStanding: 0,
+        emi: 0,
+        annualInterest: 0,
+        period: 0,
+        firstOutStanding: 0
       });
     }
   }
@@ -215,35 +194,35 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
   }
 
   submitForm(): void {
-    if (this.shareForm.invalid) {
+    if (this.loanForm.invalid) {
       this.message.error("Please fill all required fields");
       return;
     }
 
-    const formValue: Share = { ...this.shareForm.value };
-    console.log("this is share forms ...", formValue)
-    const request = this.isEditMode && this.currentId
-      ? this.shareService.update(this.currentId, formValue)
-      : this.shareService.create(formValue);
+    const formValue: Loan = { ...this.loanForm.value };
+
+    // Convert ID for delete logic if needed, but Loan ID is string
+    const request = this.isEditMode && this.id
+      ? this.loanService.update(this.id, formValue)
+      : this.loanService.create(formValue);
 
     request.subscribe({
-      next: (response) => {
-        this.message.success(this.isEditMode ? "Share updated" : "Share created");
+      next: () => {
+        this.message.success(this.isEditMode ? "Loan updated" : "Loan created");
         this.drawerVisible = false;
-        this.loadShares();
+        this.loadLoans();
       },
       error: (err) => {
         this.message.error(err.error?.message || "Operation failed");
-        this.drawerVisible = false;
       }
     });
   }
 
-  deleteShare(id: number): void {
-    this.shareService.delete(id).subscribe({
+  deleteLoan(id: number): void {
+    this.loanService.delete(id).subscribe({
       next: () => {
-        this.message.success('Share deleted');
-        this.loadShares();
+        this.message.success('Loan deleted');
+        this.loadLoans();
       },
       error: () => {
         this.message.error('Delete failed');
@@ -251,12 +230,10 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
     });
   }
 
-
-  getByEmployyeeId(employeeId: number) {
-    this.shareService.getById(employeeId).subscribe({
+  getByEmployeeId(employeeId: string) {
+    this.loanService.getById(employeeId).subscribe({
       next: (response) => {
-        this.myShare = response;
-
+        this.myLoan = response;
       },
       error: (err) => {
         this.message.error(err.error?.message || "Operation failed");
@@ -264,15 +241,24 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
     });
   }
 
-
   haveRole(roleName: string) {
-
-    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
-    return roles.includes(roleName);
+    return this.auth.getUserRoles().some((role: any) => role.roleTypes.role === roleName);
   }
 
+  uploadFileLoan() {
+    this.modal.create({
+      nzTitle: 'Uploading Loan File',
+      nzContent: Uploadingfile,
+      nzData: 'loan',
+      nzOkText: null,
+      nzCancelText: null
+    });
 
+    this.modal._afterAllClosed.subscribe({
+      next: () => {
+        this.loadLoans();
+      }
+    });
+  }
 
 }
-
-

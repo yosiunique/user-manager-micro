@@ -87,11 +87,10 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
           0,
           [
             Validators.required,
-            // Validators.pattern('^[0-9]+$')
           ]
         ],
       }),
-      fullName: ['', [Validators.required, Validators.minLength(3)]],
+      forMonth: [null, [Validators.required]],
       craSaving: [0, [Validators.required, Validators.min(0)]],
     });
 
@@ -129,8 +128,10 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
       next: (data) => {
         this.savingForm.addControl('id', new FormControl(data.id));
         this.savingForm.patchValue({
-          employeeId: data.employee.id,
-          fullName: data.fullName,
+          employee: {
+            employeeId: data.employee.id
+          },
+          forMonth: data.forMonth,
           craSaving: data.craSaving,
         });
         console.log("saving record loaded for update", data)

@@ -33,6 +33,7 @@
           <th>ID</th>
           <th>Employee ID</th>
           <th>Full Name</th>
+          <th>For Month</th>
           <th>CRA Saving</th>
           <th width="180">Actions</th>
         </tr>
@@ -43,6 +44,7 @@
           <td>{{ save.id }}</td>
           <td>{{ save.employee.id }}</td>
           <td>{{ save.employee.employeeFullName }}</td>
+          <td>{{ save.forMonth | date: 'MMMM yyyy' }}</td>
           <td>{{ save.craSaving }}</td>
 
           <td class="button" *ngIf="haveRole('Admin') || haveRole('saving')">
@@ -76,6 +78,10 @@
             <div class="info-row">
               <span class="label">Emp ID:</span>
               <span class="value">{{ save.employee.id }}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Month:</span>
+              <span class="value">{{ save.forMonth | date: 'MMMM yyyy' }}</span>
             </div>
           </div>
           <div class="card-actions" *ngIf="haveRole('Admin') || haveRole('saving')">
@@ -120,9 +126,10 @@
 
 
       <nz-form-item>
-        <nz-form-label [nzRequired]="true">Full Name</nz-form-label>
-        <nz-form-control [nzErrorTip]="'Full Name must be at least 3 characters'">
-          <input nz-input formControlName="fullName" placeholder="Enter Full Name" />
+        <nz-form-label [nzRequired]="true">Select Month</nz-form-label>
+        <nz-form-control [nzErrorTip]="'Month is required'">
+          <nz-date-picker nzMode="month" formControlName="forMonth" style="width: 100%;"
+            nzPlaceHolder="Select Month"></nz-date-picker>
         </nz-form-control>
       </nz-form-item>
 
