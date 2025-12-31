@@ -9,6 +9,8 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { Userservice } from '../../service/userservice';
 import { LoanRepaymentService } from '../../service/loan-repayment-service';
 import { SavingService } from '../../service/saving-service';
+import { Auth } from '../../auth/auth';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-welcom-component',
@@ -17,7 +19,7 @@ import { SavingService } from '../../service/saving-service';
     NzFormModule,
     NzStatisticModule,
     NzCardModule,
-
+    CommonModule,
     NzButtonModule,
     NzGridModule,
     NzIconModule
@@ -39,6 +41,7 @@ export class WelcomComponent implements OnInit {
   private usersService = inject(Userservice);
   private loanService = inject(LoanRepaymentService);
   private savingService = inject(SavingService);
+  private auth = inject(Auth)
   constructor(private router: Router) { }
 
   ngOnInit(): void {
@@ -91,6 +94,14 @@ export class WelcomComponent implements OnInit {
     return 0;
 
   }
+
+
+  haveRole(roleName: string) {
+
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
+  }
+
 
 
 

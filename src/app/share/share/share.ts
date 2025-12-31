@@ -97,6 +97,8 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
 
   onSearchChange(value: string): void {
     if (!value || value.trim() === '') {
+      this.searchTerm = '';
+      this.pageIndex = 0;
       this.loadShares();
       return;
     }
@@ -110,16 +112,13 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
       switchMap(term => {
         this.loading = true;
         this.pageIndex = 0;
-        return this.shareService.search(term);
+        this.searchTerm = term;
+        return this.shareService.searchShares(term, this.pageIndex, this.pageSize);
       }),
       takeUntil(this.destroy$)
     ).subscribe({
       next: (data: any) => {
-        this.shares = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleShareSuccess(data);
       },
       error: (err) => {
         console.error('Error during search:', err);
@@ -141,20 +140,27 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
 
   loadShares(): void {
     this.loading = true;
+    const request = this.searchTerm && this.searchTerm.trim() !== ''
+      ? this.shareService.searchShares(this.searchTerm, this.pageIndex, this.pageSize)
+      : this.shareService.getAll(this.pageIndex, this.pageSize);
 
-    this.shareService.getAll(this.pageIndex, this.pageSize).subscribe({
+    request.subscribe({
       next: (data) => {
-        this.shares = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleShareSuccess(data);
       },
       error: () => {
         this.message.error('Failed to load shares');
         this.loading = false;
       }
     });
+  }
+
+  private handleShareSuccess(data: any): void {
+    this.shares = data.content;
+    this.total = data.totalElements;
+    this.pageSize = data.size;
+    this.pageIndex = data.number;
+    this.loading = false;
   }
 
   uploadFileShare() {
@@ -240,14 +246,24 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
   }
 
   deleteShare(id: number): void {
-    this.shareService.delete(id).subscribe({
-      next: () => {
-        this.message.success('Share deleted');
-        this.loadShares();
+    this.modal.confirm({
+      nzTitle: 'Are you sure you want to delete this share?',
+      nzContent: '<b style="color: red;">This action cannot be undone.</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.shareService.delete(id).subscribe({
+          next: () => {
+            this.message.success('Share deleted');
+            this.loadShares();
+          },
+          error: () => {
+            this.message.error('Delete failed');
+          }
+        });
       },
-      error: () => {
-        this.message.error('Delete failed');
-      }
+      nzCancelText: 'No'
     });
   }
 

@@ -94,18 +94,28 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
 
 
   loadSavings() {
-    this.savingService.getAll(this.pageIndex, this.pageSize).subscribe({
+    this.loading = true;
+    const request = this.searchTerm && this.searchTerm.trim() !== ''
+      ? this.savingService.getsavingByEmployeeId(this.searchTerm, this.pageIndex, this.pageSize)
+      : this.savingService.getAll(this.pageIndex, this.pageSize);
+
+    request.subscribe({
       next: (data) => {
-        this.saving = data.content;
-        this.pageIndex = data.number;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        console.log("saving data loaded successfully", data)
+        this.handleSavingSuccess(data);
       },
       error: (error) => {
-        console.log("failed to load saving data", error)
+        console.error("Failed to load saving data", error);
+        this.loading = false;
       }
     });
+  }
+
+  private handleSavingSuccess(data: any): void {
+    this.saving = data.content;
+    this.total = data.totalElements;
+    this.pageSize = data.size;
+    this.pageIndex = data.number;
+    this.loading = false;
   }
 
 
@@ -203,7 +213,9 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
 
 
   onSearchChange(value: string): void {
-    if (value.length === 0 || value.trim() === '' || value == null || value === undefined) {
+    if (!value || value.trim() === '') {
+      this.searchTerm = '';
+      this.pageIndex = 0;
       this.loadSavings();
       return;
     }
@@ -217,16 +229,13 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
       switchMap(term => {
         this.loading = true;
         this.pageIndex = 0;
+        this.searchTerm = term;
         return this.savingService.getsavingByEmployeeId(term, this.pageIndex, this.pageSize);
       }),
-      takeUntil(this.destroy$)        //  clean up on destroy
+      takeUntil(this.destroy$)
     ).subscribe({
       next: (data) => {
-        this.saving = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleSavingSuccess(data);
         console.log('search results:', data);
       },
       error: (err) => {

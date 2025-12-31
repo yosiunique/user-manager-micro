@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { EmployeeService } from '../../service/employee-service';
 import { ShareService } from '../../service/share-service';
+import { LoanService } from '../../service/loan-service';
 
 @Component({
   selector: 'app-uploadingfile',
@@ -35,7 +36,8 @@ export class Uploadingfile {
   private modalRef = inject(NzModalRef);
   protected data: any = inject(NZ_MODAL_DATA);
   protected shareService = inject(ShareService);
-  protected employeeService = inject(EmployeeService)
+  protected employeeService = inject(EmployeeService);
+  protected loanService = inject(LoanService);
   selectedFile: File | null = null;
   uploading: boolean = false;
   metadataList: any;
@@ -99,7 +101,6 @@ export class Uploadingfile {
         next: (res: any) => this.handleUploadSuccess(res),
         error: (err: any) => this.handleUploadError(err)
       });
-    this.modalRef.destroy();
   }
 
   // Upload file for loan repayments
@@ -121,7 +122,6 @@ export class Uploadingfile {
         next: (res: any) => this.handleUploadSuccess(res),
         error: (err: any) => this.handleUploadError(err)
       });
-    this.modalRef.destroy();
   }
 
 
@@ -148,6 +148,20 @@ export class Uploadingfile {
     }
     this.uploading = true;
     this.shareService.importCsv(this.selectedFile)
+      .pipe(finalize(() => (this.uploading = false)))
+      .subscribe({
+        next: (res: any) => this.handleUploadSuccess(res),
+        error: (err: any) => this.handleUploadError(err)
+      });
+  }
+
+  uploadFileLoanActual() {
+    if (!this.selectedFile) {
+      this.msg.error('Please select a file');
+      return;
+    }
+    this.uploading = true;
+    this.loanService.importCsv(this.selectedFile)
       .pipe(finalize(() => (this.uploading = false)))
       .subscribe({
         next: (res: any) => this.handleUploadSuccess(res),

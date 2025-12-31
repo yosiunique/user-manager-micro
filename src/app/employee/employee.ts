@@ -110,19 +110,27 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
 
   loadEmployees(): void {
     this.loading = true;
-    this.employeeService.getAll(this.pageIndex, this.pageSize).subscribe({
+    const request = this.searchTerm && this.searchTerm.trim() !== ''
+      ? this.employeeService.searchEmployees(this.searchTerm, this.pageIndex, this.pageSize)
+      : this.employeeService.getAll(this.pageIndex, this.pageSize);
+
+    request.subscribe({
       next: (data) => {
-        this.employees = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleEmployeeSuccess(data);
       },
       error: () => {
         this.message.error('Failed to load employees');
         this.loading = false;
       }
     });
+  }
+
+  private handleEmployeeSuccess(data: any): void {
+    this.employees = data.content;
+    this.total = data.totalElements;
+    this.pageSize = data.size;
+    this.pageIndex = data.number;
+    this.loading = false;
   }
 
   onPageChange(index: number): void {
@@ -138,6 +146,8 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
 
   onSearchChange(value: string): void {
     if (!value || value.trim() === '') {
+      this.searchTerm = '';
+      this.pageIndex = 0;
       this.loadEmployees();
       return;
     }
@@ -151,17 +161,13 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
       switchMap(term => {
         this.loading = true;
         this.pageIndex = 0;
-        // Using the generic search from BaseService
-        return this.employeeService.search(term);
+        this.searchTerm = term;
+        return this.employeeService.searchEmployees(term, this.pageIndex, this.pageSize);
       }),
       takeUntil(this.destroy$)
     ).subscribe({
       next: (data: any) => {
-        this.employees = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleEmployeeSuccess(data);
       },
       error: (err) => {
         console.error('Error during search:', err);
@@ -221,14 +227,24 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
   }
 
   deleteEmployee(id: number): void {
-    this.employeeService.delete(id).subscribe({
-      next: () => {
-        this.message.success('Employee deleted');
-        this.loadEmployees();
+    this.modal.confirm({
+      nzTitle: 'Are you sure you want to delete this employee?',
+      nzContent: '<b style="color: red;">This action cannot be undone.</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.employeeService.delete(id).subscribe({
+          next: () => {
+            this.message.success('Employee deleted');
+            this.loadEmployees();
+          },
+          error: () => {
+            this.message.error('Delete failed');
+          }
+        });
       },
-      error: () => {
-        this.message.error('Delete failed');
-      }
+      nzCancelText: 'No'
     });
   }
 

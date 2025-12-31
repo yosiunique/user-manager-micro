@@ -11,7 +11,7 @@
     </div>
 
     <div class="toolbar-center">
-      <input nz-input placeholder="Search Employee" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
+      <input nz-input placeholder="Search Employee ID" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
         class="search-input" />
     </div>
 
@@ -36,6 +36,7 @@
           <th nzWidth="100px">Employee ID</th>
           <th nzWidth="100px"> Membership ID</th>
           <th nzLeft>Full Name</th>
+          <th nzRight *ngIf="haveRole('Admin')">Actions</th>
         </tr>
       </thead>
       <tbody>

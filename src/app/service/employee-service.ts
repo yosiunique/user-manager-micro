@@ -17,6 +17,10 @@ export class EmployeeService extends BaseService<Employee> {
 
   }
 
+  searchEmployees(employeeId: string, pageIndex: number, pageSize: number) {
+    return this.http.get<any>(`${enviroment.HOST}/employee/search-by-employee-id/${employeeId}?page=${pageIndex}&size=${pageSize}`);
+  }
+
   importCsv(file: File) {
     const formData = new FormData();
     formData.append('file', file);

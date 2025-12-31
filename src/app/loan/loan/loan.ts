@@ -94,6 +94,8 @@ export class LoanComponent extends BaseComponent<Loan> implements OnInit {
 
   onSearchChange(value: string): void {
     if (!value || value.trim() === '') {
+      this.searchTerm = '';
+      this.pageIndex = 0;
       this.loadLoans();
       return;
     }
@@ -107,16 +109,13 @@ export class LoanComponent extends BaseComponent<Loan> implements OnInit {
       switchMap(term => {
         this.loading = true;
         this.pageIndex = 0;
-        return this.loanService.search(term);
+        this.searchTerm = term;
+        return this.loanService.searchLoans(term, this.pageIndex, this.pageSize);
       }),
       takeUntil(this.destroy$)
     ).subscribe({
       next: (data: any) => {
-        this.loans = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleLoanSuccess(data);
       },
       error: (err) => {
         console.error('Error during search:', err);
@@ -143,19 +142,27 @@ export class LoanComponent extends BaseComponent<Loan> implements OnInit {
 
   loadLoans(): void {
     this.loading = true;
-    this.loanService.getAll(this.pageIndex, this.pageSize).subscribe({
+    const request = this.searchTerm && this.searchTerm.trim() !== ''
+      ? this.loanService.searchLoans(this.searchTerm, this.pageIndex, this.pageSize)
+      : this.loanService.getAll(this.pageIndex, this.pageSize);
+
+    request.subscribe({
       next: (data) => {
-        this.loans = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleLoanSuccess(data);
       },
       error: () => {
         this.message.error('Failed to load loans');
         this.loading = false;
       }
     });
+  }
+
+  private handleLoanSuccess(data: any): void {
+    this.loans = data.content;
+    this.total = data.totalElements;
+    this.pageSize = data.size;
+    this.pageIndex = data.number;
+    this.loading = false;
   }
 
   onPageChange(index: number): void {
@@ -219,14 +226,24 @@ export class LoanComponent extends BaseComponent<Loan> implements OnInit {
   }
 
   deleteLoan(id: number): void {
-    this.loanService.delete(id).subscribe({
-      next: () => {
-        this.message.success('Loan deleted');
-        this.loadLoans();
+    this.modal.confirm({
+      nzTitle: 'Are you sure you want to delete this loan?',
+      nzContent: '<b style="color: red;">This action cannot be undone.</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.loanService.delete(id).subscribe({
+          next: () => {
+            this.message.success('Loan deleted');
+            this.loadLoans();
+          },
+          error: () => {
+            this.message.error('Delete failed');
+          }
+        });
       },
-      error: () => {
-        this.message.error('Delete failed');
-      }
+      nzCancelText: 'No'
     });
   }
 

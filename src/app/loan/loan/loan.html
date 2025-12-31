@@ -4,15 +4,15 @@
         <nz-avatar nzIcon="money-collect" class="loan-avatar"></nz-avatar>
     </ng-template>
 
-    <div class="header">
-        <div class="header-left">
+    <div class="toolbar">
+        <div class="toolbar-left">
             <h2>Loan Management</h2>
         </div>
-        <div class="header-center">
-            <input nz-input placeholder="Search Loan ID or Employee" [(ngModel)]="searchTerm"
+        <div class="toolbar-center">
+            <input nz-input placeholder="Search By Employee ID " [(ngModel)]="searchTerm"
                 (ngModelChange)="onSearchChange($event)" class="search-input" />
         </div>
-        <div class="header-right">
+        <div class="toolbar-right">
             <button *ngIf="haveRole('Admin') || haveRole('loan')" nz-button nzType="primary" (click)="uploadFileLoan()">
                 <i nz-icon nzType="upload"></i> Upload Loans
             </button>

@@ -3,7 +3,7 @@
     padding: 24px;
 }
 
-.header {
+.toolbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -16,15 +16,15 @@
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
-.header-left,
-.header-right {
+.toolbar-left,
+.toolbar-right {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
     align-items: center;
 }
 
-.header-center {
+.toolbar-center {
     flex: 1;
     min-width: 200px;
     max-width: 400px;
@@ -35,7 +35,7 @@
 }
 
 @media (max-width: 576px) {
-    .header {
+    .toolbar {
         flex-direction: column;
         align-items: stretch;
     }
