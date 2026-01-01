@@ -139,18 +139,12 @@
         <li *ngIf="haveRole('Admin')|| haveRole('loan')" nz-menu-item routerLink="/home/loan/view"
           routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="file-text"></span>
-          <span>All Loans</span>
+          <span>Loans</span>
         </li>
         <li *ngIf="haveRole('Admin')|| haveRole('loan')" nz-menu-item routerLink="/home/loan-repayment/view"
           routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="user"></span>
           <span>All Loan Repayments</span>
-        </li>
-        <li *ngIf="haveRole('Employee')" nz-menu-item [routerLink]="['/home/loan/view']"
-          [queryParams]="{ employeeId: userAttribute }" routerLinkActive="ant-menu-item-selected"
-          (click)="isCollapsed = true">
-          <span nz-icon nzType="credit-card"></span>
-          <span>My Loans</span>
         </li>
         <li *ngIf="haveRole('Employee')" nz-menu-item [routerLink]="['/home/loan-repayment/view']"
           [queryParams]="{ employeeId: userAttribute }" routerLinkActive="ant-menu-item-selected"
