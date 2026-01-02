@@ -166,7 +166,7 @@ export class SavingComponenet extends BaseComponent<SavingAndLoanRepayment> impl
           this.pageIndex = data.number;
           this.total = data.totalElements;
           this.pageSize = data.size;
-
+          this.handleSavingSuccess(data);
           console.log("my saving", this.mySaving)
         });
       } else {

@@ -166,6 +166,11 @@ export class LoanRepaymentsComponenets extends BaseComponent<LoanRepayment> impl
             this.destroy$.next();
             this.destroy$.complete();
 
+            this.loan = data.content;
+            this.pageIndex = data.number;
+            this.total = data.totalElements;
+            this.pageSize = data.size;
+
             console.log("myLoan", this.myLoan)
 
 

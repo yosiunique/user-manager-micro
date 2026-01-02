@@ -132,8 +132,6 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
       employee: this.fb.group({
         employeeId: ['', Validators.required]
       }),
-
-      totalSaving: [0, Validators.required],
       noOfShare: [0, Validators.required],
     });
   }
@@ -210,7 +208,6 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
       this.isEditMode = false;
       this.currentId = undefined;
       this.shareForm.reset({
-        totalSaving: 0,
         noOfShare: 0
       });
     }

@@ -10,7 +10,8 @@
     </div>
 
     <div class="toolbar-center">
-      <input nz-input placeholder="Search Employee ID" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
+      <input nz-input *ngIf="haveRole('Admin') || haveRole('loan')||haveRole('saving')  "
+        placeholder="Search Employee ID" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)"
         class="search-input" />
     </div>
 

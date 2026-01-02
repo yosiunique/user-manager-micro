@@ -6,6 +6,7 @@ import { SavingService } from '../../service/saving-service';
 import { EmployeeService } from '../../service/employee-service';
 import { SavingAndLoanRepayment } from '../model/saving';
 import { CommonModule } from '@angular/common';
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzInputModule } from 'ng-zorro-antd/input';
@@ -47,7 +48,8 @@ import { SharedService } from '../../core/sharedService/shared-service';
     NzStatisticModule,
     NzListModule,
     NzPaginationModule,
-    NzIconModule
+    NzIconModule,
+    NzDatePickerModule
   ],
 
   templateUrl: './saving-crud-componenets.html',
@@ -79,22 +81,17 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
     super(savingService, modal);
   }
   ngOnInit(): void {
-
-    this.loadSavings();
     this.savingForm = this.fb.group({
       employee: this.fb.group({
-        employeeId: [
-          0,
-          [
-            Validators.required,
-          ]
-        ],
+        employeeId: [0, [Validators.required]],
       }),
       forMonth: [null, [Validators.required]],
       craSaving: [0, [Validators.required, Validators.min(0)]],
     });
 
-
+    if (this.id && this.id.status === 'details') {
+      this.loadSavings();
+    }
   }
 
 
@@ -131,7 +128,7 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
           employee: {
             employeeId: data.employee.id
           },
-          forMonth: data.forMonth,
+          forMonth: data.forMonth ? new Date(data.forMonth) : null,
           craSaving: data.craSaving,
         });
         console.log("saving record loaded for update", data)
@@ -146,7 +143,17 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
   submitForm() {
 
     if (this.savingForm.valid && this.id.status === 'create') {
-      this.savingService.create(this.savingForm.value).subscribe({
+      const formValue = this.savingForm.value;
+      // Format the date for the backend if it's a Date object
+      if (formValue.forMonth instanceof Date) {
+        const d = formValue.forMonth;
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        formValue.forMonth = `${year}-${month}-${day}`;
+      }
+
+      this.savingService.create(formValue).subscribe({
         next: (data) => {
           console.log("saving record created successfully", data)
 
@@ -160,7 +167,17 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
 
 
     } else if (this.id.status === 'update' && this.savingForm.valid) {
-      this.savingService.update(this.updateId, this.savingForm.value).subscribe({
+      const formValue = this.savingForm.value;
+      // Format the date for the backend if it's a Date object
+      if (formValue.forMonth instanceof Date) {
+        const d = formValue.forMonth;
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        formValue.forMonth = `${year}-${month}-${day}`;
+      }
+
+      this.savingService.update(this.updateId, formValue).subscribe({
         next: (data) => {
           console.log("saving record updated successfully", data)
           this.msg.success('Saving record updated successfully.', data);
@@ -291,6 +308,15 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
 
   trackByFn(index: number, item: any): number {
     return item.id;
+  }
+
+  formatDate(date: any): Date | string | null {
+    if (!date) return null;
+    if (Array.isArray(date)) {
+      // Handle array format [year, month, day]
+      return new Date(date[0], date[1] - 1, date[2]);
+    }
+    return date;
   }
 
 

@@ -44,7 +44,7 @@
           <td>{{ save.id }}</td>
           <td>{{ save.employee.id }}</td>
           <td>{{ save.employee.employeeFullName }}</td>
-          <td>{{ save.forMonth | date: 'MMMM yyyy' }}</td>
+          <td>{{ formatDate(save.forMonth) | date: 'MMMM yyyy' }}</td>
           <td>{{ save.craSaving }}</td>
 
           <!-- <td class="button" *ngIf="haveRole('Admin') || haveRole('saving')">
@@ -81,7 +81,7 @@
             </div>
             <div class="info-row">
               <span class="label">Month:</span>
-              <span class="value">{{ save.forMonth | date: 'MMMM yyyy' }}</span>
+              <span class="value">{{ formatDate(save.forMonth) | date: 'MMMM yyyy' }}</span>
             </div>
           </div>
           <!-- <div class="card-actions" *ngIf="haveRole('Admin') || haveRole('saving')">
@@ -128,8 +128,8 @@
       <nz-form-item>
         <nz-form-label [nzRequired]="true">Select Month</nz-form-label>
         <nz-form-control [nzErrorTip]="'Month is required'">
-          <nz-date-picker nzMode="month" formControlName="forMonth" style="width: 100%;"
-            nzPlaceHolder="Select Month"></nz-date-picker>
+          <nz-date-picker nzMode="month" formControlName="forMonth" style="width: 100%;" nzPlaceHolder="Select Month"
+            [nzAllowClear]="false"></nz-date-picker>
         </nz-form-control>
       </nz-form-item>
 
