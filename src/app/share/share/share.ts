@@ -266,9 +266,10 @@ export class ShareComponent extends BaseComponent<Share> implements OnInit {
 
 
   getByEmployyeeId(employeeId: number) {
-    this.shareService.getById(employeeId).subscribe({
+    this.shareService.searchShares(employeeId as any, this.pageIndex, this.pageSize).subscribe({
       next: (response) => {
         this.myShare = response;
+        this.handleShareSuccess(response)
 
       },
       error: (err) => {
