@@ -99,7 +99,7 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
 
   loadSavings() {
     this.employeeId = this.id.id;
-    this.getTotalSaving();
+    // this.getTotalSaving();
     this.getEmployeeOutstanding();
     this.savingService.getsavingByEmployeeId(this.id.id, this.pageIndex, this.pageSize).subscribe({
 
@@ -110,6 +110,8 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
         this.total = data.totalElements;
         this.pageSize = data.size;
         console.log("saving data loaded successfully", data)
+
+        this.totalSaving = data.content[0].employee.totalSaving;
       },
       error: (error) => {
         console.log("failed to load saving data", error)
@@ -281,7 +283,8 @@ export class SavingCrudComponenets extends BaseComponent<SavingAndLoanRepayment>
 
 
   async getTotalSaving() {
-    this.totalSaving = 0;
+
+    this.totalSaving = 0 ;
     this.savingService.findTotalByEmployeeId(this.employeeId).subscribe({
       next: (data: any) => {
         console.log("this total  data ", data)

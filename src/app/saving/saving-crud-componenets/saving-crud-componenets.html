@@ -42,7 +42,7 @@
       <tbody>
         <tr *ngFor="let save of saving; trackBy: trackByFn">
           <td>{{ save.id }}</td>
-          <td>{{ save.employee.id }}</td>
+          <td>{{ save.employee.employeeId }}</td>
           <td>{{ save.employee.employeeFullName }}</td>
           <td>{{ formatDate(save.forMonth) | date: 'MMMM yyyy' }}</td>
           <td>{{ save.craSaving }}</td>
@@ -77,7 +77,7 @@
             </div>
             <div class="info-row">
               <span class="label">Emp ID:</span>
-              <span class="value">{{ save.employee.id }}</span>
+              <span class="value">{{ save.employee.employeeId }}</span>
             </div>
             <div class="info-row">
               <span class="label">Month:</span>

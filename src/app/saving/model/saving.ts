@@ -3,6 +3,8 @@ export interface Employee {
    employeeId: number;
    employeeFullName: string;
    membershipId: string;
+   totalSaving ?: number;     
+   totalRepayments ?: number;  
 }
 
 export interface Loan {
