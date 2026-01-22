@@ -4,10 +4,27 @@
     <div class="header-left">
       <h2>Share Management</h2>
     </div>
+
     <div class="header-center">
-      <input nz-input *ngIf="haveRole('Admin')||haveRole('loan')||haveRole('saving')" placeholder="Search Employee ID"
-        [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange($event)" class="search-input" />
+      <div class="search-wrapper" *ngIf="haveRole('Admin')||haveRole('loan')||haveRole('saving')">
+        <nz-input-group [nzSuffix]="suffixButton" [nzPrefix]="prefixIcon" *ngIf="!isAdvancedSearch">
+          <input nz-input placeholder="Search Employee ID..." 
+                 [(ngModel)]="searchTerm" 
+                 (keyup.enter)="onSearch()" 
+                 class="search-input" />
+        </nz-input-group>
+        <ng-template #prefixIcon><i nz-icon nzType="search"></i></ng-template>
+        <ng-template #suffixButton>
+          <button nz-button nzType="primary" nzSearch (click)="onSearch()">Search</button>
+        </ng-template>
+
+        <button nz-button nzType="link" (click)="toggleAdvancedSearch()">
+          {{ isAdvancedSearch ? 'Simple Search' : 'Advanced Search' }}
+          <i nz-icon [nzType]="isAdvancedSearch ? 'up' : 'down'"></i>
+        </button>
+      </div>
     </div>
+
     <div class="header-right">
       <button *ngIf="haveRole('Admin')" nz-button nzType="primary" (click)="openDrawer()">
         <i nz-icon nzType="plus"></i> Add Share
@@ -15,8 +32,27 @@
     </div>
   </div>
 
-  <!-- SHARE CARDS (Responsive Layout) -->
-  <!-- SHARE DESKTOP VIEW (Table) -->
+  <div class="advanced-search-panel" *ngIf="isAdvancedSearch" style="margin-bottom: 20px; padding: 15px; background: #fafafa; border: 1px solid #f0f0f0; border-radius: 4px;">
+    <div nz-row [nzGutter]="24">
+      <div nz-col [nzXs]="24" [nzSm]="9">
+        <label>Employee ID</label>
+        <input nz-input placeholder="Enter Employee ID" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+      </div>
+      <div nz-col [nzXs]="24" [nzSm]="9">
+        <label>Employee Full Name</label>
+        <input nz-input placeholder="Enter Full Name" [(ngModel)]="searchFullName" (keyup.enter)="onSearch()" />
+      </div>
+      <div nz-col [nzXs]="24" [nzSm]="6" style="display: flex; align-items: flex-end; gap: 8px;">
+        <button nz-button nzType="primary" (click)="onSearch()">
+          <i nz-icon nzType="search"></i> Search
+        </button>
+        <button nz-button nzType="default" (click)="clearSearch()">
+          <i nz-icon nzType="clear"></i> Reset
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="desktop-view" *ngIf="haveRole('Admin')">
     <nz-table #shareTable [nzData]="shares" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
       [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
@@ -54,13 +90,12 @@
     </nz-table>
   </div>
 
-  <!-- SHARE MOBILE VIEW (Cards) -->
   <div class="mobile-view" *ngIf="haveRole('Admin')">
     <div class="share-cards-container">
       <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
         <nz-list-item *ngFor="let share of shares">
           <nz-card [nzBordered]="true" class="share-card" [nzActions]="[actionEdit, actionDelete]">
-            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="share?.employee?.employeeFullName ?? ''"
+            <nz-card-meta [nzAvatar]="avatarTemplate || null" [nzTitle]="share?.employee?.employeeFullName ?? ''"
               [nzDescription]="'Membership: ' + share?.employee?.membershipId"></nz-card-meta>
 
             <div class="card-extra-content">
@@ -97,18 +132,13 @@
     </div>
   </div>
 
-  <!-- ======================================================
-        SHARE DRAWER FORM
-       ====================================================== -->
   <nz-drawer [nzVisible]="drawerVisible" nzPlacement="right" [nzWidth]="'min(480px, 100vw)'"
     [nzTitle]="isEditMode ? 'Edit Share' : 'Add Share'" (nzOnClose)="closeDrawer()">
-
-
-
     <div class="drawer-content">
-
       <form nz-form *nzDrawerContent [formGroup]="shareForm">
-        <button nz-button nzType="primary" *ngIf="haveRole('creator')" (click)="uploadFileShare()">Upload Share</button>
+        <button nz-button nzType="primary" *ngIf="haveRole('creator')" (click)="uploadFileShare()" style="margin-bottom: 20px;">
+          <i nz-icon nzType="upload"></i> Upload Share
+        </button>
 
         <div formGroupName="employee">
           <nz-form-item>
@@ -118,8 +148,6 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-
-
 
         <nz-form-item>
           <nz-form-label>No. of Share</nz-form-label>
@@ -132,20 +160,16 @@
           <button nz-button (click)="closeDrawer()">Cancel</button>
           <button nz-button nzType="primary" (click)="submitForm()">Save</button>
         </div>
-
       </form>
-
     </div>
-
   </nz-drawer>
 
 </div>
 
-
-<div *ngIf="!haveRole('Admin')" class="share-cards-container">
+<div *ngIf="!haveRole('Admin') && myShare" class="share-cards-container" style="padding: 20px;">
   <div class="desktop-view">
     <nz-table #myShareTable [nzData]="[myShare]" [nzLoading]="loading" [nzFrontPagination]="true" [nzBordered]="true"
-      nzSize="middle" [nzShowPagination]="false" *ngIf="myShare">
+      nzSize="middle" [nzShowPagination]="false">
       <thead>
         <tr>
           <th nzWidth="100px">ID</th>
@@ -168,43 +192,23 @@
   </div>
 
   <div class="mobile-view">
-    <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
+    <nz-list [nzLoading]="loading">
       <nz-list-item>
-        <nz-card [nzBordered]="true" class="share-card" [nzActions]="[actionEdit, actionDelete]">
-          <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="myShare?.employee?.employeeFullName || 'N/A'"
-            [nzDescription]="'Membership: ' + myShare?.employee?.membershipId"></nz-card-meta>
-
+        <nz-card [nzBordered]="true" class="share-card">
+          <nz-card-meta [nzAvatar]="avatarTemplate || null" [nzTitle]="myShare.employee.employeeFullName"
+            [nzDescription]="'Membership: ' + myShare.employee.membershipId"></nz-card-meta>
           <div class="card-extra-content">
             <div class="info-row">
               <span class="label">Employee ID:</span>
-              <span class="value">{{ myShare?.employee?.employeeId }}</span>
+              <span class="value">{{ myShare.employee.employeeId }}</span>
             </div>
             <div class="info-row highlight">
               <span class="label">Shares:</span>
-              <span class="value">{{ myShare?.noOfShare }}</span>
+              <span class="value">{{ myShare.noOfShare }}</span>
             </div>
           </div>
-
-          <ng-template #avatarTemplate>
-            <nz-avatar [nzIcon]="'pie-chart'" class="share-avatar"></nz-avatar>
-          </ng-template>
-
-          <ng-template #actionEdit>
-            <span nz-icon *ngIf="haveRole('Admin')" nzType="edit" (click)="openDrawer(  myShare)"
-              nz-tooltip="Edit"></span>
-          </ng-template>
-          <ng-template #actionDelete>
-            <span nz-icon *ngIf="haveRole('Admin')" nzType="delete" class="delete-icon"
-              (click)="deleteShare(myShare?.id || 0)" nz-tooltip="Delete"></span>
-          </ng-template>
         </nz-card>
       </nz-list-item>
     </nz-list>
-  </div>
-
-  <div class="pagination-wrapper" *ngIf="total > 0">
-    <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
-      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-      nzShowSizeChanger></nz-pagination>
   </div>
 </div>

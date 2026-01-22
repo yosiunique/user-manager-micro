@@ -17,6 +17,10 @@ export class LoanService extends BaseService<Loan> {
         return this.http.get<any>(`${enviroment.HOST}/loan/search-by-employee-id/${employeeId}?page=${pageIndex}&size=${pageSize}`);
     }
 
+    searchByFullName(fullName: string, pageIndex: number, pageSize: number) {
+        return this.http.get<any>(`${enviroment.HOST}/loan/search-by-name?name=${fullName}&page=${pageIndex}&size=${pageSize}`);
+    }
+
     importCsv(file: File) {
         const formData = new FormData();
         formData.append('file', file);

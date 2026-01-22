@@ -89,7 +89,7 @@ export class WelcomComponent implements OnInit {
 
   isNumber(num: number) {
     if (num) {
-      return num;
+      return Number(num.toFixed(2))
     }
     return 0;
 

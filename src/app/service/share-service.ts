@@ -16,6 +16,9 @@ export class ShareService extends BaseService<Share> {
   searchShares(employeeId: string, pageIndex: number, pageSize: number) {
     return this.http.get<any>(`${enviroment.HOST}/share/search-by-employee-id/${employeeId}?page=${pageIndex}&size=${pageSize}`);
   }
+  searchByFullName(fullName: string, pageIndex: number, pageSize: number) {
+    return this.http.get<any>(`${enviroment.HOST}/share/search-by-name?name=${fullName}&page=${pageIndex}&size=${pageSize}`);
+  }
 
   importCsv(file: File) {
     const formData = new FormData();

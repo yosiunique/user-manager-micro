@@ -5,7 +5,7 @@
     <div class="summary-grid">
       <div class="summary-item">
         <h3 class="m-0 text-primary">Total Saving:</h3>
-        <h2 class="text-success fw-bold">{{ totalSaving | number }} ETB</h2>
+        <h2 class="text-success fw-bold">{{ totalSaving | number:'1.2-2'}} ETB</h2>
       </div>
       <!-- <div class="summary-item">
         <h3 class="m-0 text-primary">Employee Outstanding:</h3>
@@ -45,7 +45,7 @@
           <td>{{ save.employee.employeeId }}</td>
           <td>{{ save.employee.employeeFullName }}</td>
           <td>{{ formatDate(save.forMonth) | date: 'MMMM yyyy' }}</td>
-          <td>{{ save.craSaving }}</td>
+          <td>{{ save.craSaving | number:'1.2-2'}}</td>
 
           <!-- <td class="button" *ngIf="haveRole('Admin') || haveRole('saving')">
             <button nz-button nzType="primary" nzSize="small" class="me-1" (click)="updateSaving(true, save.id)">
