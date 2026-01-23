@@ -25,7 +25,7 @@ export class BaseService<T> {
    * get by id 
    */
 
-  getById(id: number): Observable<any> {
+  getById(id: string | number): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/${id}`).
       pipe(catchError(this.handleError))
   }
@@ -46,7 +46,7 @@ export class BaseService<T> {
  *  update
  */
 
-  update(id: number, t: T) {
+  update(id: string | number, t: T) {
     console.log("passed Data", t);
     return this.http
       .put(
@@ -69,7 +69,7 @@ export class BaseService<T> {
       .set('page', `${pageIndex}`)
       .set('size', `${pageSize}`);
 
-    return this.http.get<T>(`${this.baseUrl}/search`, { params });
+    return this.http.get<any>(`${this.baseUrl}/search`, { params });
   }
 
   /** 
@@ -77,7 +77,7 @@ export class BaseService<T> {
    * searching values 
   */
 
-  delete(id: number) {
+  delete(id: string | number) {
     return this.http
       .delete(`${this.baseUrl}/${id}`)
       .pipe(catchError(this.handleError));

@@ -4,8 +4,8 @@
     [nzWidth]="240" class="app-sider desktop-sider">
     <div class="logo-container">
       <div class="logo">
-        <img src="/enat.jpeg" alt="Enat Bank" *ngIf="!isCollapsed" class="logo-image">
-        <span class="logo-text" *ngIf="!isCollapsed">Enat Bank</span>
+        <img src="/moenco.png" alt="Enat Bank" *ngIf="!isCollapsed" class="logo-image">
+        <span class="logo-text" *ngIf="!isCollapsed">Moenco Saccos</span>
       </div>
     </div>
     <ng-container [ngTemplateOutlet]="menuTemplate"></ng-container>
@@ -17,8 +17,8 @@
     <div *nzDrawerContent>
       <div class="logo-container">
         <div class="logo">
-          <img src="/enat.jpeg" alt="Enat Bank" class="logo-image">
-          <span class="logo-text">Enat Bank</span>
+          <img src="/moenco.png" alt="Enat Bank" class="logo-image">
+          <span class="logo-text">Moenco Saccos</span>
         </div>
       </div>
       <ng-container [ngTemplateOutlet]="menuTemplate"></ng-container>
@@ -113,7 +113,7 @@
           [queryParams]="{ employeeId: userAttribute }" routerLinkActive="ant-menu-item-selected"
           (click)="isCollapsed = true">
           <span nz-icon nzType="user"></span>
-          <span>My Profile</span>
+          <span>My Share ...</span>
         </li>
       </ul>
     </li>
@@ -136,6 +136,11 @@
 
     <li nz-submenu nzTitle="Loan" nzIcon="credit-card">
       <ul>
+        <li *ngIf="haveRole('Admin')|| haveRole('loan')" nz-menu-item routerLink="/home/loan/view"
+          routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
+          <span nz-icon nzType="file-text"></span>
+          <span>Loans</span>
+        </li>
         <li *ngIf="haveRole('Admin')|| haveRole('loan')" nz-menu-item routerLink="/home/loan-repayment/view"
           routerLinkActive="ant-menu-item-selected" (click)="isCollapsed = true">
           <span nz-icon nzType="user"></span>

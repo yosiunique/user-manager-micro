@@ -22,59 +22,48 @@ import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
-import { NzContentComponent } from 'ng-zorro-antd/layout';
 import { BaseComponent } from '../core/basecomponenet/basecomponenet';
-import { Subject, debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { Uploadingfile } from '../uploadfile/uploadingfile/uploadingfile';
+import { Auth } from '../auth/auth';
 
 @Component({
   selector: 'app-employee',
   standalone: true,
   imports: [
-    FormsModule,
-    CommonModule,
-    ReactiveFormsModule,
-    NzTableModule,
-    NzButtonModule,
-    NzModalModule,
-    NzDrawerModule,
-    NzFormModule,
-    NzTagModule,
-    NzInputModule,
-    NzDatePickerModule,
-    NzSelectModule,
-    NzIconModule,
-    NzInputNumberModule,
-    NzCardModule,
-    NzListModule,
-    NzGridModule,
-    NzAvatarModule,
-    NzPaginationModule,
-    NzDividerModule,
+    FormsModule, CommonModule, ReactiveFormsModule, NzTableModule,
+    NzButtonModule, NzModalModule, NzDrawerModule, NzFormModule,
+    NzTagModule, NzInputModule, NzDatePickerModule, NzSelectModule,
+    NzIconModule, NzInputNumberModule, NzCardModule, NzListModule,
+    NzGridModule, NzAvatarModule, NzPaginationModule, NzDividerModule,
     NzSkeletonModule
   ],
   templateUrl: './employee.html',
   styleUrls: ['./employee.css']
 })
-export class EmployeeComponent extends BaseComponent<Employee> implements OnInit {
+export class EmployeeComponent extends BaseComponent<Employee> implements OnInit, OnDestroy {
 
   employees: Employee[] = [];
   drawerVisible = false;
   currentId?: number;
 
   employeeForm!: FormGroup;
-  searchTerm: string = '';
-  searchSubject = new Subject<string>();
+  
+  // Search State
+  searchTerm: string = '';      // For Employee ID
+  searchFullName: string = '';  // For Full Name
+  isAdvancedSearch: boolean = false;
+  
   destroy$ = new Subject<void>();
-
 
   constructor(
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     protected override modal: NzModalService,
     private message: NzMessageService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected auth: Auth
   ) {
     super(employeeService, modal)
   }
@@ -85,12 +74,11 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
       const employeeId = params['employeeId'];
       if (employeeId) {
         this.searchTerm = employeeId;
-        this.searchSubject.next(employeeId);
+        this.loadEmployees();
       } else {
         this.loadEmployees();
       }
     });
-    this.setupSearch();
   }
 
   ngOnDestroy(): void {
@@ -98,36 +86,59 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
     this.destroy$.complete();
   }
 
-  initForm(): void {
-    this.employeeForm = this.fb.group({
-      employeeId: ['', Validators.required],
-      employeeFullName: ['', Validators.required],
-      effectiveDate: ['', Validators.required],
-      status: ['ACTIVE', Validators.required],
-      outStanding: [0, Validators.required],
-      emi: [0, Validators.required],
-      loanId: ['', Validators.required],
-      annualInterest: [0, Validators.required],
-      period: [1, Validators.required],
-      firstOutStanding: [0, Validators.required]
-    });
+  // TRIGGER SEARCH MANUALLY
+  onSearch(): void {
+    this.pageIndex = 0;
+    this.loadEmployees();
   }
 
   loadEmployees(): void {
     this.loading = true;
-    this.employeeService.getAll(this.pageIndex, this.pageSize).subscribe({
-      next: (data) => {
-        this.employees = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+    let request;
+
+    if (this.isAdvancedSearch && this.searchFullName.trim()) {
+      // Searching by Name
+      request = this.employeeService.searchByName(this.searchFullName.trim(), this.pageIndex, this.pageSize);
+    } else if (this.searchTerm && this.searchTerm.trim() !== '') {
+      // Searching by Employee ID
+      request = this.employeeService.searchByEmployeeId(this.searchTerm.trim());
+    } else {
+      // Load All
+      request = this.employeeService.getAll(this.pageIndex, this.pageSize);
+    }
+
+    request.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data: any) => {
+        this.handleEmployeeSuccess(data);
       },
       error: () => {
         this.message.error('Failed to load employees');
         this.loading = false;
       }
     });
+  }
+
+  private handleEmployeeSuccess(data: any): void {
+    // Handling both Paginated and Single Object responses
+    this.employees = data.content || (data.id ? [data] : []);
+    this.total = data.totalElements || (data.id ? 1 : 0);
+    this.pageSize = data.size || this.pageSize;
+    this.pageIndex = data.number || 0;
+    this.loading = false;
+  }
+
+  toggleAdvancedSearch(): void {
+    this.isAdvancedSearch = !this.isAdvancedSearch;
+    if (!this.isAdvancedSearch) {
+      this.clearSearch();
+    }
+  }
+
+  clearSearch(): void {
+    this.searchTerm = '';
+    this.searchFullName = '';
+    this.pageIndex = 0;
+    this.loadEmployees();
   }
 
   onPageChange(index: number): void {
@@ -141,37 +152,11 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
     this.loadEmployees();
   }
 
-  onSearchChange(value: string): void {
-    if (!value || value.trim() === '') {
-      this.loadEmployees();
-      return;
-    }
-    this.searchSubject.next(value);
-  }
-
-  setupSearch(): void {
-    this.searchSubject.pipe(
-      debounceTime(800),
-      distinctUntilChanged(),
-      switchMap(term => {
-        this.loading = true;
-        this.pageIndex = 0;
-        // Using the generic search from BaseService
-        return this.employeeService.search(term);
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe({
-      next: (data: any) => {
-        this.employees = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error during search:', err);
-        this.loading = false;
-      }
+  initForm(): void {
+    this.employeeForm = this.fb.group({
+      employeeId: ['', Validators.required],
+      employeeFullName: ['', Validators.required],
+      membershipId: ['', Validators.required]
     });
   }
 
@@ -180,21 +165,11 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
     if (employee) {
       this.isEditMode = true;
       this.currentId = employee.id;
-
-      this.employeeForm.patchValue({
-        ...employee,
-        effectiveDate: employee.effectiveDate ? new Date(employee.effectiveDate) : null
-      });
-
+      this.employeeForm.patchValue({ ...employee });
     } else {
       this.isEditMode = false;
       this.currentId = undefined;
-      this.employeeForm.reset({
-        status: 'ACTIVE',
-        period: 1,
-        outStanding: 0,
-        firstOutStanding: 0
-      });
+      this.employeeForm.reset();
     }
   }
 
@@ -207,63 +182,54 @@ export class EmployeeComponent extends BaseComponent<Employee> implements OnInit
       this.message.error("Please fill all required fields");
       return;
     }
-
-    const formValue: Employee = {
-      ...this.employeeForm.value,
-      effectiveDate: this.employeeForm.value.effectiveDate
-        ? new Date(this.employeeForm.value.effectiveDate)
-        : null
-    };
-
+    const formValue: Employee = { ...this.employeeForm.value };
     const request = this.isEditMode && this.currentId
       ? this.employeeService.update(this.currentId, formValue)
       : this.employeeService.create(formValue);
 
     request.subscribe({
       next: (response) => {
-        this.message.success(this.isEditMode ? "Updated successfully" + response : "Created successfully" + response);
-
+        this.message.success(this.isEditMode ? "Updated successfully" : "Created successfully");
         this.drawerVisible = false;
         this.loadEmployees();
       },
       error: (err) => {
-        this.message.error("Error", err.error.message);
-        console.log("this is message ...", err.error.message)
+        this.message.error(err.error?.message || "Operation failed");
         this.drawerVisible = false;
       }
     });
   }
 
   deleteEmployee(id: number): void {
-    this.employeeService.delete(id).subscribe({
-      next: () => {
-        this.message.success('Employee deleted');
-        this.loadEmployees();
+    this.modal.confirm({
+      nzTitle: 'Are you sure you want to delete this employee?',
+      nzContent: '<b style="color: red;">This action cannot be undone.</b>',
+      nzOkText: 'Yes',
+      nzOkType: 'primary',
+      nzOkDanger: true,
+      nzOnOk: () => {
+        this.employeeService.delete(id).subscribe({
+          next: () => {
+            this.message.success('Employee deleted');
+            this.loadEmployees();
+          },
+          error: () => this.message.error('Delete failed')
+        });
       },
-      error: () => {
-        this.message.error('Delete failed');
-      }
+      nzCancelText: 'No'
     });
   }
 
   importCsv() {
-
     this.modal.create({
       nzTitle: 'Uploading file',
       nzContent: Uploadingfile,
-      nzData: 'employee',
-      nzOkText: null,
-      nzCancelText: null
-    });
-   
-    
-     this.modal._afterAllClosed.subscribe({
-      next: () => {
-        this.loadEmployees()
-      }});
-
-
+      nzData: 'employee'
+    }).afterClose.subscribe(() => this.loadEmployees());
   }
 
-
+  haveRole(roleName: string) {
+    const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
+    return roles.includes(roleName);
+  }
 }

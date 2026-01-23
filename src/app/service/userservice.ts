@@ -16,6 +16,10 @@ export class Userservice extends BaseService<User> {
 
 
 
+  searchUsers(username: string, pageIndex: number, pageSize: number) {
+    return this.http.get<any>(`${enviroment.HOST}/users/search-by-username/${username}?page=${pageIndex}&size=${pageSize}`);
+  }
+
   getByUserName(userName: string) {
     return this.http.get<any>(`${enviroment.HOST}/users/find_by_username/${userName}`);
   }

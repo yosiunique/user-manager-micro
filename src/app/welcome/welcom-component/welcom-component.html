@@ -4,7 +4,7 @@
     <nz-row [nzGutter]="[32, 32]" nzAlign="middle">
       <nz-col [nzXs]="24" [nzLg]="14">
         <div class="hero-content">
-          <h1 class="hero-title">Welcome to Finance Manager</h1>
+          <h1 class="hero-title">ተጨማሪ እጣ በመግዛት ተጠቃሚነትዎን ይጨምሩ</h1>
           <p class="hero-subtitle">
             Manage your loan repayments and savings efficiently with our comprehensive financial management system
           </p>
@@ -21,18 +21,18 @@
         </div>
       </nz-col>
       <nz-col [nzXs]="24" [nzLg]="10">
-        <div class="hero-image">
+        <!-- <div class="hero-image">
           <div class="hero-placeholder">💰</div>
-        </div>
+        </div> -->
       </nz-col>
     </nz-row>
   </div>
 
   <!-- Quick Stats -->
-  <div class="stats-section">
+  <div class="stats-section" *ngIf="haveRole('Admin')">
     <nz-row nzGutter="[16, 16]">
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Total Savings" [nzValue]="isNumber(totalSavings)" nzPrefix="" nzSuffix="ETB"
+        <nz-statistic nzTitle="Total Savings" [nzValue]="isNumber(totalSavings) " nzPrefix="" nzSuffix="ETB"
           [nzValueStyle]="{ color: '#52c41a' }"></nz-statistic>
       </nz-col>
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">

@@ -16,8 +16,11 @@ export class SavingService extends BaseService<SavingAndLoanRepayment> {
   importCsv(file: File, forMonth: Date) {
     const formData = new FormData();
     formData.append("file", file);
-    // Format the date as 'yyyy-MM-dd' which is what Java's LocalDate expects
-    const formattedDate = forMonth.toISOString().split('T')[0];
+    // Format the date as 'yyyy-MM-dd' using local date components to avoid timezone offset issues
+    const year = forMonth.getFullYear();
+    const month = String(forMonth.getMonth() + 1).padStart(2, '0');
+    const day = String(forMonth.getDate()).padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}`;
     formData.append("forMonth", formattedDate);
 
     return this.http.post<any[]>(`${enviroment.HOST}/saving-and-loan-repayments/import-csv`, formData);

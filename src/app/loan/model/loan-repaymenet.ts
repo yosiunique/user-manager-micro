@@ -1,11 +1,12 @@
-import { Employee } from "../../saving/model/saving";
+import { Employee, Loan } from "../../saving/model/saving";
 
-export interface  LoanRepayment{
+
+export interface LoanRepayment {
     id: number;
-    employee:Employee
+    loan: Loan;
     fullName: string;
-    crassLoanRepayment:number;
-    forMonth:Date;
-     principal:number;
-     interset:number;
+    crassLoanRepayment: number;
+    forMonth: Date;
+    principal: number;
+    interset: number;
 }

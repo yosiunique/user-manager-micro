@@ -5,7 +5,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { Role, RoleTypes, RoleTypesDto, User, Roles} from '../model/user';
+import { Role, RoleTypes, RoleTypesDto, User, Roles } from '../model/user';
 import { Userservice } from '../../service/userservice';
 import { NZ_MODAL_DATA, NzModalModule, NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 import { BaseComponent } from '../../core/basecomponenet/basecomponenet';
@@ -16,9 +16,9 @@ import { NzTableModule } from "ng-zorro-antd/table";
 import { Auth } from '../../auth/auth';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 
- interface types{
-  id:number ;
-  status:'isUpdate'|'isCreate'|'isRole'|'isReset'|null
+interface types {
+  id: number;
+  status: 'isUpdate' | 'isCreate' | 'isRole' | 'isReset' | null
 }
 
 @Component({
@@ -34,7 +34,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
     NzTableModule,
     NzTabsModule
 
-],
+  ],
   templateUrl: './crete-update-user.html',
   styleUrl: './crete-update-user.css',
 })
@@ -42,140 +42,141 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 export class CreteUpdateUser extends BaseComponent<User> implements OnInit {
 
   validateForm!: FormGroup;
-  resetFromPassword !:FormGroup;
-  roleForm !:FormGroup;
-  roles:Role[]=[];
+  resetFromPassword !: FormGroup;
+  roleForm !: FormGroup;
+  roles: Role[] = [];
   users: any;
-  allRoles:RoleTypesDto[]=[];
+  allRoles: RoleTypesDto[] = [];
 
   constructor(private fb: FormBuilder
     ,
-    protected  userService:Userservice,
-     modal:NzModalService ,
-     protected auth:Auth,
-     protected userRole:UserRoleService ,
-     protected role:RoleService ,
-     private modalref:NzModalRef,
-      @Inject(NZ_MODAL_DATA) protected operation: types,
+    protected userService: Userservice,
+    modal: NzModalService,
+    protected auth: Auth,
+    protected userRole: UserRoleService,
+    protected role: RoleService,
+    private modalref: NzModalRef,
+    @Inject(NZ_MODAL_DATA) protected operation: types,
   ) {
-    super(userService ,modal);
+    super(userService, modal);
   }
 
-  ngOnInit(): void {    
-    
-    this.validateForm=this.fb.group(
-  {
-    firstName: ['', [Validators.required, Validators.minLength(1)]],
-    lastName: ['', [Validators.required, Validators.minLength(1)]],
-    userName: ['', [Validators.required, Validators.maxLength(50)]],
-    phoneNumber:['',[Validators.required,Validators.maxLength(10)]],
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
-      ]
-    ],
-    confirmPassword: ['', Validators.required],
-    email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
-    attribute: ['', Validators.required]
-  },
-  { validators: this.passwordsMatchValidator }
-);
-   this.resetFromPassword = this.fb.group(
-  {
-    id: [''],
-    password: [
-      '',
-      [
-        Validators.required,
-        Validators.minLength(6),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
-      ]
-    ],
-    confirmPassword: [
-      '',
-      [Validators.required]
-    ],
-    userName: [''],
-    fisrtName: [''],
-    lastName: [''],
-    email: [''],
-    attribute: [''],
-    role: [''],
-    enable: [''],
-    reset: [true]
-  },
-  { validators: this.passwordsMatchValidator }
-);
+  ngOnInit(): void {
 
-this.roleForm = this.fb.group({
-  role:['', [Validators.minLength(1) ,Validators.required]]
-});   
-   
-   this.operation.status==='isUpdate'? this.updateForm(this.operation.id):this.operation.status==='isCreate';
-   if(this.operation.status==='isReset'){
-    this.resetFormBuilder()
-   }
-   if(this.operation.status==='isRole'){
-    this.roles=[];
-    this.getRoles(this.operation.id);
-   this.loadRoles();
-  }
-}
+    this.validateForm = this.fb.group(
+      {
+        firstName: ['', [Validators.required, Validators.minLength(1)]],
+        lastName: ['', [Validators.required, Validators.minLength(1)]],
+        userName: ['', [Validators.required, Validators.maxLength(50)]],
+        phoneNumber: ['', [Validators.required, Validators.maxLength(10)]],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
+          ]
+        ],
+        confirmPassword: ['', Validators.required],
+        email: ['', [Validators.required, Validators.email, Validators.maxLength(100)]],
+        attribute: ['', Validators.required],
+        enable: ['']
+      },
+      { validators: this.passwordsMatchValidator }
+    );
+    this.resetFromPassword = this.fb.group(
+      {
+        id: [''],
+        password: [
+          '',
+          [
+            Validators.required,
+            Validators.minLength(6),
+            Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/)
+          ]
+        ],
+        confirmPassword: [
+          '',
+          [Validators.required]
+        ],
+        userName: [''],
+        fisrtName: [''],
+        lastName: [''],
+        email: [''],
+        attribute: [''],
+        role: [''],
+        enable: [''],
+        reset: [true]
+      },
+      { validators: this.passwordsMatchValidator }
+    );
 
+    this.roleForm = this.fb.group({
+      role: ['', [Validators.minLength(1), Validators.required]]
+    });
 
-
-
-
-passwordsMatchValidator(form: FormGroup) {
-  const password = form.get('password')?.value;
-  const confirmPassword = form.get('confirmPassword')?.value;
-  return password === confirmPassword ? null : { passwordMismatch: true };
-}
-  resetFormBuilder(){
-  this.userService.getById(this.operation.id).subscribe({
-    next:(data)=>{
-     this.resetFromPassword.patchValue({  
-      id:data.id,
-      userName:data.userName,
-      fisrtName:data.firstName,
-      lastName:data.lastName,
-      email:data.email,
-      phoneNumber:data.phoneNumber,
-      attribute:data.attribute,   
-      reset:true,
-     });
-    },
-    error:(error)=>{
-      console.log("this error happen due to this root cause ..",error)
+    this.operation.status === 'isUpdate' ? this.updateForm(this.operation.id) : this.operation.status === 'isCreate';
+    if (this.operation.status === 'isReset') {
+      this.resetFormBuilder()
     }
-  })
+    if (this.operation.status === 'isRole') {
+      this.roles = [];
+      this.getRoles(this.operation.id);
+      this.loadRoles();
+    }
   }
-  updateForm(id:number){
-    this.userService.getById(id).subscribe({
-      next:(response)=>{ 
 
+
+
+
+
+  passwordsMatchValidator(form: FormGroup) {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  }
+  resetFormBuilder() {
+    this.userService.getById(this.operation.id).subscribe({
+      next: (data) => {
+        this.resetFromPassword.patchValue({
+          id: data.id,
+          userName: data.userName,
+          fisrtName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          attribute: data.attribute,
+          reset: true,
+        });
+      },
+      error: (error) => {
+        console.log("this error happen due to this root cause ..", error)
+      }
+    })
+  }
+  updateForm(id: number) {
+    this.userService.getById(id).subscribe({
+      next: (response) => {
         this.validateForm.patchValue({
-          id:response.id,
-          firstName:response.firstName,
-          lastName:response.lastName,
-          userName:response.userName,
-          attribute:response.attribute,
-          phoneNumber:response.phoneNumber,
-          email:response.email,
-          reset:true,
+          id: response.id,
+          firstName: response.firstName,
+          lastName: response.lastName,
+          userName: response.userName,
+          attribute: response.attribute,
+          phoneNumber: response.phoneNumber,
+          email: response.email,
+          enable: response.enable,
+          reset: true,
         });
         this.validateForm.get('userName')?.disable();
-         this.validateForm.removeControl('password');
-         this.validateForm.removeControl('confirmPassword')
-         
+        this.validateForm.removeControl('password');
+        this.validateForm.removeControl('confirmPassword')
+
       },
-      error:(error)=>{
+      error: (error) => {
         this.modal.error({
-          nzTitle:'Error...',
-          nzContent:'the root cause for this error is ' + error
+          nzTitle: 'Error...',
+          nzContent: 'the root cause for this error is ' + error
         })
       }
     })
@@ -183,38 +184,39 @@ passwordsMatchValidator(form: FormGroup) {
   submitForm(): void {
     if (this.validateForm.valid) {
       console.log('Form Submitted Successfully!', this.validateForm.value);
-            const newUser: User = this.validateForm.value;
+      const newUser: User = this.validateForm.value;
 
-   if(this.operation.status==='isCreate') {
-    this.userService.create(newUser).subscribe({
-              next:(data)=>{
-                this.modal.confirm({
-                  nzContent: data
-                })
+      if (this.operation.status === 'isCreate') {
+        this.userService.create(newUser).subscribe({
+          next: (data) => {
+            this.modal.confirm({
+              nzContent: data
+            })
 
-              },
-              error:(error)=>{
-                this.modal.error({
-                  nzContent:'alrady exist' +error
-                })
-              }
-            });
+          },
+          error: (error) => {
+            this.modal.error({
+              nzContent: 'alrady exist' + error
+            })
           }
-if(this.operation.status==='isUpdate'){
-  this.userService.update(this.operation.id,newUser).subscribe({
-     next:(data)=>{
-                this.modal.confirm({
-                  nzContent: data,
-                })
-              },
-              error:(error)=>{
-                this.modal.error({
-                  nzContent:'alrady exist' +error
-                })
-              }
-  });
-  this.modalref.destroy();
-}
+        });
+      }
+      if (this.operation.status === 'isUpdate') {
+        console.log("this user .....", newUser)
+        this.userService.update(this.operation.id, newUser).subscribe({
+          next: (data) => {
+            this.modal.confirm({
+              nzContent: data,
+            })
+          },
+          error: (error) => {
+            this.modal.error({
+              nzContent: 'alrady exist' + error
+            })
+          }
+        });
+        this.modalref.destroy();
+      }
 
 
     } else {
@@ -238,164 +240,165 @@ if(this.operation.status==='isUpdate'){
   }
 
 
-  resetPassword(){
-    if(this.resetFromPassword.get('password')?.value !== this.resetFromPassword.get('confirmPassword')?.value){
- this.resetFromPassword.get('password')?.setValue('');
- this.resetFromPassword.get('confirmPassword')?.setValue('');
-     this.modal.error({
-      nzContent:'password and re-entered password do not match'
-     });
-     return;
-
-    }
-    const user:User= this.resetFromPassword.value;
-           console.log("updated users  ",user);
-this.userService.resetPassword(user).subscribe({
-  next:(data:any)=>{
-    this.modal.confirm({ 
-      nzContent:data
-    });
-    this.modalref.destroy();        
-  },
-  error:(error)=>{
-    this.modal.error({
-      nzContent:'failed to reset password due to this root cause ' + error
-    })
-  }});
-
-}
-
-
-addNewRole(){
- const newRole:RoleTypes= this.roleForm.value;
- console.log("new role to be created  ",newRole);
-this.role.create(newRole).subscribe({
-  next:(data)=>{
-    this.modal.confirm({    
-      nzContent:data  
-
-    });
-  },
-  error:(error)=>{
-    this.modal.error({
-      nzContent:'failed to create role due to this root cause ' + error
-    })
-  } 
-});  
-
-}
-
-removeRole(){
-
-}
-
-
-
-assignRole(id: number) {
-  forkJoin({
-    user: this.userService.getById(this.operation.id).pipe(first()),
-    role: this.role.getById(id).pipe(first())
-  }).subscribe({
-    next: ({ user, role }) => {
-      console.log("user to be assigned: ", user);
-      console.log("role to be assigned: ", role);
-
-      const save :Roles= {
-        user: user,
-        roleTypes: role
-      };
-
-      console.log("data tets  to be saved ", save);
-
-      this.userRole.create(save).subscribe({
-        next: (data) => {
-          this.modal.success({
-            nzTitle: 'Success',
-            nzContent: 'Role assigned successfully '
-          });
-          console.log("Role assignment response: ", data);
-          this.modalref.destroy();
-        },
-        error: (error) => {
-          this.modal.error({
-            nzTitle: 'Error',
-            nzContent: 'Failed to assign role: ' + error.message
-          });
-          console.error("Error saving role assignment: ", error);
-        }
-      });
-    },
-    error: (error) => {
+  resetPassword() {
+    if (this.resetFromPassword.get('password')?.value !== this.resetFromPassword.get('confirmPassword')?.value) {
+      this.resetFromPassword.get('password')?.setValue('');
+      this.resetFromPassword.get('confirmPassword')?.setValue('');
       this.modal.error({
-        nzTitle: 'Error loading data',
-        nzContent: 'Failed to load user or role: ' + error.message
+        nzContent: 'password and re-entered password do not match'
       });
-      console.error("Error fetching user/role data: ", error);
-    }
-  });
-}
+      return;
 
-deleteRole(id:number){
-this.userRole.delete(id).subscribe({
-  next:(data)=>{
-    this.modal.confirm({
-      nzContent:"role "+id+" is deleted Successfully",
-    })
-    this.modalref.destroy();
-  },
-  error:(error)=>{
-    this.modal.error({
-      nzContent:'error '+ error
-    })
+    }
+    const user: User = this.resetFromPassword.value;
+    console.log("updated users  ", user);
+    this.userService.resetPassword(user).subscribe({
+      next: (data: any) => {
+        this.modal.confirm({
+          nzContent: data
+        });
+        this.modalref.destroy();
+      },
+      error: (error) => {
+        this.modal.error({
+          nzContent: 'failed to reset password due to this root cause ' + error
+        })
+      }
+    });
+
   }
-})
-
-}
 
 
-getRoles(id: number) {
-  this.userService.getById(id).subscribe({
-    next:(data)=>{
-    this.roles=data.role;
-    
-  
-      console.log("htis is the role of u  ..... ",this.roles)
+  addNewRole() {
+    const newRole: RoleTypes = this.roleForm.value;
+    console.log("new role to be created  ", newRole);
+    this.role.create(newRole).subscribe({
+      next: (data) => {
+        this.modal.confirm({
+          nzContent: data
 
-  },
-    error: (err) => {
-      console.error('the root cause is ', err);
-    }
-  });
-}
+        });
+      },
+      error: (error) => {
+        this.modal.error({
+          nzContent: 'failed to create role due to this root cause ' + error
+        })
+      }
+    });
+
+  }
+
+  removeRole() {
+
+  }
 
 
-loadRoles(){
-   this.role.getAll(this.pageIndex,this.pageSize).subscribe({
-      next:(data:any)=>{  
-        this.allRoles=data.content;
-        this.total=data.totalElements;
-        this.pageSize=data.size;
-        this.pageIndex=data.number;
-        console.log("all roles ",this.allRoles);
+
+  assignRole(id: number) {
+    forkJoin({
+      user: this.userService.getById(this.operation.id).pipe(first()),
+      role: this.role.getById(id).pipe(first())
+    }).subscribe({
+      next: ({ user, role }) => {
+        console.log("user to be assigned: ", user);
+        console.log("role to be assigned: ", role);
+
+        const save: Roles = {
+          user: user,
+          roleTypes: role
+        };
+
+        console.log("data tets  to be saved ", save);
+
+        this.userRole.create(save).subscribe({
+          next: (data) => {
+            this.modal.success({
+              nzTitle: 'Success',
+              nzContent: 'Role assigned successfully '
+            });
+            console.log("Role assignment response: ", data);
+            this.modalref.destroy();
+          },
+          error: (error) => {
+            this.modal.error({
+              nzTitle: 'Error',
+              nzContent: 'Failed to assign role: ' + error.message
+            });
+            console.error("Error saving role assignment: ", error);
+          }
+        });
+      },
+      error: (error) => {
+        this.modal.error({
+          nzTitle: 'Error loading data',
+          nzContent: 'Failed to load user or role: ' + error.message
+        });
+        console.error("Error fetching user/role data: ", error);
+      }
+    });
+  }
+
+  deleteRole(id: number) {
+    this.userRole.delete(id).subscribe({
+      next: (data) => {
+        this.modal.confirm({
+          nzContent: "role " + id + " is deleted Successfully",
+        })
+        this.modalref.destroy();
+      },
+      error: (error) => {
+        this.modal.error({
+          nzContent: 'error ' + error
+        })
       }
     })
-   }
+
+  }
+
+
+  getRoles(id: number) {
+    this.userService.getById(id).subscribe({
+      next: (data) => {
+        this.roles = data.role;
+
+
+        console.log("htis is the role of u  ..... ", this.roles)
+
+      },
+      error: (err) => {
+        console.error('the root cause is ', err);
+      }
+    });
+  }
+
+
+  loadRoles() {
+    this.role.getAll(this.pageIndex, this.pageSize).subscribe({
+      next: (data: any) => {
+        this.allRoles = data.content;
+        this.total = data.totalElements;
+        this.pageSize = data.size;
+        this.pageIndex = data.number;
+        console.log("all roles ", this.allRoles);
+      }
+    })
+  }
 
 
 
   onPageChange($event: number) {
- this.pageIndex=$event-1;
-  this.loadRoles();
-}
-onPageSizeChange($event: number) {
-
-  this.pageSize=$event;
-  if(this.operation.status==='isRole'){
+    this.pageIndex = $event - 1;
     this.loadRoles();
   }
-  
+  onPageSizeChange($event: number) {
 
-}
+    this.pageSize = $event;
+    if (this.operation.status === 'isRole') {
+      this.loadRoles();
+    }
+
+
+  }
 
 
 

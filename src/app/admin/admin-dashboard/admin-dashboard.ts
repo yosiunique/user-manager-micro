@@ -78,20 +78,28 @@ export class AdminDashboard extends BaseComponent<User> {
   }
 
   loadUsers() {
-    this.userService.getAll(this.pageIndex, this.pageSize).subscribe({
-      next: (data) => {
-        this.users = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        console.log("this is the data of .....", data)
-        this.users = data.content;
+    this.loading = true;
+    const request = this.searchTerm && this.searchTerm.trim() !== ''
+      ? this.userService.searchUsers(this.searchTerm, this.pageIndex, this.pageSize)
+      : this.userService.getAll(this.pageIndex, this.pageSize);
 
+    request.subscribe({
+      next: (data) => {
+        this.handleSearchSuccess(data);
       },
       error: (error) => {
-        console.log("this is the root cause", error)
+        console.error("Error loading users:", error);
+        this.loading = false;
       }
-    })
+    });
+  }
+
+  private handleSearchSuccess(data: any): void {
+    this.users = data.content;
+    this.total = data.totalElements;
+    this.pageSize = data.size;
+    this.pageIndex = data.number;
+    this.loading = false;
   }
 
   resetPassword(id: number) {
@@ -334,15 +342,17 @@ export class AdminDashboard extends BaseComponent<User> {
     this.pageIndex = $event - 1;
     this.loadUsers();
   }
+
   onPageSizeChange($event: number) {
-
     this.pageSize = $event;
+    this.pageIndex = 0;
     this.loadUsers();
-
   }
 
   onSearchChange(value: string): void {
     if (!value || value.trim() === '') {
+      this.searchTerm = '';
+      this.pageIndex = 0;
       this.loadUsers();
       return;
     }
@@ -356,16 +366,13 @@ export class AdminDashboard extends BaseComponent<User> {
       switchMap(term => {
         this.loading = true;
         this.pageIndex = 0;
-        return this.userService.search(term);
+        this.searchTerm = term;
+        return this.userService.searchUsers(term, this.pageIndex, this.pageSize);
       }),
       takeUntil(this.destroy$)
     ).subscribe({
       next: (data: any) => {
-        this.users = data.content;
-        this.total = data.totalElements;
-        this.pageSize = data.size;
-        this.pageIndex = data.number;
-        this.loading = false;
+        this.handleSearchSuccess(data);
       },
       error: (err) => {
         console.error('Error during search:', err);
