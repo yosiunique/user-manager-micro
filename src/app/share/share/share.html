@@ -53,11 +53,20 @@
     </div>
   </div>
 
-  <div class="desktop-view" *ngIf="haveRole('Admin')">
-    <nz-table #shareTable [nzData]="shares" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
-      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzScroll]="{ x: '1000px' }" [nzBordered]="true" nzSize="middle">
+  <div class="desktop-view" >
+    <nz-table #shareTable 
+    [nzData]="shares"
+     [nzLoading]="loading" 
+     [nzFrontPagination]="false" 
+     [nzTotal]="total"
+      [nzPageIndex]="pageIndex + 1"
+       [nzPageSize]="pageSize" 
+       [nzPageSizeOptions]="[5,10,20,30,40,50]"
+        nzShowSizeChanger
+      (nzPageIndexChange)="onPageChange($event)"
+       (nzPageSizeChange)="onPageSizeChange($event)"
+      [nzScroll]="{ x: '1000px' }" [nzBordered]="true" 
+      nzSize="middle">
       <thead>
         <tr>
           <th nzWidth="100px">ID</th>
@@ -69,13 +78,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let share of shareTable.data">
+        <tr *ngFor="let share of shares">
           <td>{{ share.id }}</td>
           <td><strong>{{ share?.employee?.employeeFullName }}</strong></td>
           <td>{{ share?.employee?.membershipId }}</td>
           <td>{{ share?.employee?.employeeId }}</td>
           <td>{{ share?.noOfShare }}</td>
-          <td>
+          <td     *ngIf="haveRole('Admin')">
             <div class="action-buttons">
               <button nz-button nzType="text" (click)="openDrawer(share)" nz-tooltip="Edit">
                 <i nz-icon nzType="edit" style="color: #1890ff;"></i>
@@ -90,11 +99,11 @@
     </nz-table>
   </div>
 
-  <div class="mobile-view" *ngIf="haveRole('Admin')">
+  <div class="mobile-view">
     <div class="share-cards-container">
       <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
         <nz-list-item *ngFor="let share of shares">
-          <nz-card [nzBordered]="true" class="share-card" [nzActions]="[actionEdit, actionDelete]">
+          <nz-card [nzBordered]="true" class="share-card"  *ngIf="haveRole('Admin')" [nzActions]="[actionEdit, actionDelete]">
             <nz-card-meta [nzAvatar]="avatarTemplate || null" [nzTitle]="share?.employee?.employeeFullName ?? ''"
               [nzDescription]="'Membership: ' + share?.employee?.membershipId"></nz-card-meta>
 
@@ -113,10 +122,10 @@
               <nz-avatar [nzIcon]="'pie-chart'" class="share-avatar"></nz-avatar>
             </ng-template>
 
-            <ng-template #actionEdit>
-              <span nz-icon nzType="edit" (click)="openDrawer(share)" nz-tooltip="Edit"></span>
+            <ng-template  #actionEdit>
+              <span nz-icon nzType="edit"   (click)="openDrawer(share)" nz-tooltip="Edit"></span>
             </ng-template>
-            <ng-template #actionDelete>
+            <ng-template  #actionDelete>
               <span nz-icon nzType="delete" class="delete-icon" (click)="deleteShare(share.id)"
                 nz-tooltip="Delete"></span>
             </ng-template>
@@ -166,10 +175,15 @@
 
 </div>
 
-<div *ngIf="!haveRole('Admin') && myShare" class="share-cards-container" style="padding: 20px;">
+<div *ngIf="haveRole('Employee') && myShare" class="share-cards-container" style="padding: 20px;">
   <div class="desktop-view">
-    <nz-table #myShareTable [nzData]="[myShare]" [nzLoading]="loading" [nzFrontPagination]="true" [nzBordered]="true"
-      nzSize="middle" [nzShowPagination]="false">
+    <nz-table #myShareTable
+     [nzData]="[myShare]" 
+     [nzLoading]="loading"
+      [nzFrontPagination]="true" 
+      [nzBordered]="true"
+      nzSize="middle" 
+      [nzShowPagination]="false">
       <thead>
         <tr>
           <th nzWidth="100px">ID</th>
