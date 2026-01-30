@@ -44,16 +44,15 @@ export class SavingComponenet extends BaseComponent<any> implements OnInit, OnDe
 
   employees: Employee[] = [];
   myEmployees: Employee[] = [];
-  
-  // Search state variables
-  searchTerm: string = '';      // For Employee ID
-  searchFullName: string = '';  // For Advanced Search Name
+
+  searchTerm: string = '';
+  searchFullName: string = '';
   isAdvancedSearch: boolean = false;
-  
+
   employeeId?: number;
   uploading = false;
   destroy$ = new Subject<void>();
-  
+
   private msg = inject(NzMessageService);
   private employeeService = inject(EmployeeService);
 
@@ -80,9 +79,16 @@ export class SavingComponenet extends BaseComponent<any> implements OnInit, OnDe
     });
   }
 
-  /**
-   * Manual Search Trigger (On Button Click or Enter Key)
-   */
+  // ✅ Safe numeric getter for current employee
+  get currentUserId(): number {
+    const id = Number(this.auth.getUserAttribute());
+    if (isNaN(id)) {
+      console.warn('Current user employeeId is not a valid number!');
+      return -1;
+    }
+    return id;
+  }
+
   onSearch(): void {
     this.pageIndex = 0;
     this.loadSavings();
@@ -92,7 +98,6 @@ export class SavingComponenet extends BaseComponent<any> implements OnInit, OnDe
     this.loading = true;
     let request;
 
-    // Logic for Button-Driven Search
     if (this.isAdvancedSearch && this.searchFullName.trim()) {
       request = this.employeeService.searchByName(this.searchFullName.trim(), this.pageIndex, this.pageSize);
     } else if (this.searchTerm && this.searchTerm.trim() !== '') {

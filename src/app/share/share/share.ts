@@ -229,4 +229,11 @@ avatarTemplate: TemplateRef<void> | null | undefined;
     const roles = this.auth.getUserRoles().map((role: any) => role.roleTypes.role);
     return roles.includes(roleName);
   }
+
+ protected  get currentUserId(): number {
+
+  console.log("currecnt users" , this.auth.getUserAttribute())
+  return Number(this.auth.getUserAttribute());
+
+}
 }

@@ -1,29 +1,31 @@
+<!-- ================= ADMIN / LOAN ROLE VIEW ================= -->
 <div *ngIf="haveRole('loan')">
+
+  <!-- ===== Toolbar ===== -->
   <div class="toolbar">
     <div class="toolbar-left">
       <button nz-button nzType="primary" (click)="createLoanRepayments()">
-        <i nz-icon nzType="plus" nzTheme="outline"></i>
+        <i nz-icon nzType="plus"></i>
         New Loan Repayment
       </button>
     </div>
 
     <div class="toolbar-center">
       <div class="search-wrapper" *ngIf="haveRole('Admin') || haveRole('loan') || haveRole('saving')">
-        <nz-input-group [nzSuffix]="suffixButton" [nzPrefix]="prefixIcon" *ngIf="!isAdvancedSearch">
-          <input nz-input placeholder="Search Employee ID..." 
-                 [(ngModel)]="searchTerm" 
-                 (keyup.enter)="onSearch()"
-                 class="search-input" />
+
+        <nz-input-group *ngIf="!isAdvancedSearch">
+          <input
+            nz-input
+            placeholder="Search Employee ID..."
+            [(ngModel)]="searchTerm"
+            (keyup.enter)="onSearch()" />
         </nz-input-group>
-        <ng-template #prefixIcon><i nz-icon nzType="search"></i></ng-template>
-        <ng-template #suffixButton>
-          <button nz-button nzType="primary" nzSearch (click)="onSearch()">Search</button>
-        </ng-template>
 
         <button nz-button nzType="link" (click)="toggleAdvancedSearch()">
           {{ isAdvancedSearch ? 'Hide' : 'Expand' }}
           <i nz-icon [nzType]="isAdvancedSearch ? 'up' : 'down'"></i>
         </button>
+
       </div>
     </div>
 
@@ -37,51 +39,56 @@
     </div>
   </div>
 
+  <!-- ===== Advanced Search ===== -->
   <div class="advanced-search-panel" *ngIf="isAdvancedSearch">
     <div nz-row [nzGutter]="24">
       <div nz-col [nzXs]="24" [nzSm]="9">
         <label>Employee ID</label>
-        <input nz-input placeholder="Enter Employee ID" [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+        <input nz-input [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
       </div>
+
       <div nz-col [nzXs]="24" [nzSm]="9">
         <label>Employee Full Name</label>
-        <input nz-input placeholder="Enter Full Name" [(ngModel)]="searchFullName" (keyup.enter)="onSearch()" />
+        <input nz-input [(ngModel)]="searchFullName" (keyup.enter)="onSearch()" />
       </div>
-      <div nz-col [nzXs]="24" [nzSm]="6" style="display: flex; align-items: flex-end; gap: 8px; padding-bottom: 2px;">
-        <button nz-button nzType="primary" (click)="onSearch()">
-          <i nz-icon nzType="search"></i> Search
-        </button>
-        <button nz-button nzType="default" (click)="clearSearch()">
-          <i nz-icon nzType="clear"></i> Reset
-        </button>
+
+      <div nz-col [nzXs]="24" [nzSm]="6">
+        <button nz-button nzType="primary" (click)="onSearch()">Search</button>
+        <button nz-button nzType="default" (click)="clearSearch()">Reset</button>
       </div>
     </div>
   </div>
 
+  <!-- ===== DESKTOP TABLE ===== -->
   <div class="desktop-view">
-    <nz-table #empTable [nzData]="employees" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
-      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzScroll]="{ x: '1000px' }" [nzBordered]="true" nzSize="middle">
+    <nz-table
+      #empTable
+      [nzData]="employees"
+      [nzLoading]="loading"
+      [nzFrontPagination]="false"
+      [nzTotal]="total"
+      [nzPageIndex]="pageIndex + 1"
+      [nzPageSize]="pageSize"
+      nzBordered>
+
       <thead>
         <tr>
-          <th nzWidth="100px">ID</th>
+          <th>ID</th>
           <th>Full Name</th>
           <th>Employee ID</th>
           <th>Membership ID</th>
           <th>Total Repayment</th>
-          <th nzWidth="150px">Actions</th>
+          <th>Actions</th>
         </tr>
       </thead>
+
       <tbody>
         <tr *ngFor="let emp of empTable.data">
           <td>{{ emp.id }}</td>
           <td><strong>{{ emp.employeeFullName }}</strong></td>
           <td>{{ emp.employeeId }}</td>
           <td>{{ emp.membershipId }}</td>
-          <td>
-            <span style="font-weight: 600; color: #2d2786;">{{ (emp.totalRepayments || 0) | number:'1.2-2' }} ETB</span>
-          </td>
+          <td>{{ (emp.totalRepayments || 0) | number:'1.2-2' }} ETB</td>
           <td>
             <button nz-button nzType="link" (click)="getLoanRepaymentgById(emp.employeeId)">
               <i nz-icon nzType="eye"></i> Details
@@ -89,70 +96,65 @@
           </td>
         </tr>
       </tbody>
+
     </nz-table>
   </div>
 
+  <!-- ===== MOBILE VIEW ===== -->
   <div class="mobile-view">
-    <div class="loan-cards-container">
-      <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
-        <nz-list-item *ngFor="let emp of employees">
-          <nz-card [nzBordered]="true" class="loan-card" [nzActions]="[actionDetails]">
-            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="emp.employeeFullName"
-              [nzDescription]="'Member ID: ' + emp.membershipId"></nz-card-meta>
-            <div class="card-extra-content">
-              <div class="info-row">
-                <span class="label">Employee ID:</span>
-                <span class="value">{{ emp.employeeId }}</span>
-              </div>
-              <div class="info-row highlight">
-                <span class="label">Total Repayment:</span>
-                <span class="value">{{ (emp.totalRepayments || 0) | number:'1.2-2' }} ETB</span>
-              </div>
-            </div>
-            <ng-template #avatarTemplate>
-              <nz-avatar [nzIcon]="'user'" class="loan-avatar"></nz-avatar>
-            </ng-template>
-            <ng-template #actionDetails>
-              <button nz-button nzType="link" (click)="getLoanRepaymentgById(emp.employeeId)">
-                <i nz-icon nzType="eye"></i> View Details
-              </button>
-            </ng-template>
-          </nz-card>
-        </nz-list-item>
-      </nz-list>
-      <div class="pagination-wrapper" *ngIf="total > 0">
-        <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
-          (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-          nzShowSizeChanger></nz-pagination>
-      </div>
-    </div>
+    <nz-list [nzLoading]="loading">
+      <nz-list-item *ngFor="let emp of employees">
+        <nz-card>
+          <nz-card-meta
+            [nzTitle]="emp.employeeFullName"
+            [nzDescription]="'Employee ID: ' + emp.employeeId">
+          </nz-card-meta>
+
+          <p><strong>Total:</strong> {{ (emp.totalRepayments || 0) | number:'1.2-2' }} ETB</p>
+
+          <button nz-button nzType="link" (click)="getLoanRepaymentgById(emp.employeeId)">
+            View Details
+          </button>
+        </nz-card>
+      </nz-list-item>
+    </nz-list>
   </div>
+
 </div>
 
+<!-- ================= EMPLOYEE-ONLY VIEW ================= -->
 <div *ngIf="!haveRole('Admin') && haveRole('Employee')">
-  <div class="desktop-view">
-    <nz-table #myLoanTable [nzData]="myEmployees" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzBordered]="true" nzSize="middle">
-      <thead>
-        <tr>
-          <th>Full Name</th>
-          <th>Employee ID</th>
-          <th>Total Repayment</th>
-          <th nzWidth="150px">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let emp of myLoanTable.data">
+
+  <nz-table
+    #myLoanTable
+    [nzData]="myEmployees"
+    [nzLoading]="loading"
+    nzBordered>
+
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Employee ID</th>
+        <th>Total Repayment</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let emp of myLoanTable.data">
+        <!-- <ng-container *ngIf="!employeeId || emp.employeeId === employeeId"> -->
           <td><strong>{{ emp.employeeFullName }}</strong></td>
           <td>{{ emp.employeeId }}</td>
-          <td>{{ (emp.totalRepayments || 0) | number }} ETB</td>
+          <td>{{ (emp.totalRepayments || 0) | number:'1.2-2' }} ETB</td>
           <td>
             <button nz-button nzType="link" (click)="getLoanRepaymentgById(emp.employeeId)">
               <i nz-icon nzType="eye"></i> Details
             </button>
           </td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </div>
+        <!-- </ng-container> -->
+      </tr>
+    </tbody>
+
+  </nz-table>
+
 </div>

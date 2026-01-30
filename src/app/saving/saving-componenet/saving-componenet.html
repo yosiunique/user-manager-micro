@@ -1,12 +1,14 @@
+<!-- Admin / Role-based toolbar -->
 <div *ngIf="haveRole('saving')">
   <div class="toolbar">
+    <!-- Toolbar Left -->
     <div class="toolbar-left">
       <button nz-button nzType="primary" (click)="createSaving()">
-        <i nz-icon nzType="plus" nzTheme="outline"></i>
-        New Saving
+        <i nz-icon nzType="plus" nzTheme="outline"></i> New Saving
       </button>
     </div>
 
+    <!-- Toolbar Center -->
     <div class="toolbar-center">
       <div class="search-wrapper" *ngIf="haveRole('Admin') || haveRole('loan') || haveRole('saving')">
         <nz-input-group [nzSuffix]="suffixButton" [nzPrefix]="prefixIcon" *ngIf="!isAdvancedSearch">
@@ -27,6 +29,7 @@
       </div>
     </div>
 
+    <!-- Toolbar Right -->
     <div class="toolbar-right">
       <button nz-button nzType="primary" [nzLoading]="uploading" (click)="uploadFile()">
         <i nz-icon nzType="upload"></i> Upload CSV
@@ -37,7 +40,8 @@
     </div>
   </div>
 
-  <div class="advanced-search-panel" *ngIf="isAdvancedSearch" style="margin-bottom: 20px; padding: 15px; background: #fafafa; border: 1px solid #f0f0f0; border-radius: 4px;">
+  <!-- Advanced Search Panel -->
+  <div class="advanced-search-panel" *ngIf="isAdvancedSearch">
     <div nz-row [nzGutter]="24">
       <div nz-col [nzXs]="24" [nzSm]="9">
         <label>Employee ID</label>
@@ -58,30 +62,26 @@
     </div>
   </div>
 
+  <!-- Desktop View Table -->
   <div class="desktop-view">
-    <nz-table #empTable [nzData]="employees" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
-      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzScroll]="{ x: '1000px' }" [nzBordered]="true" nzSize="middle">
+    <nz-table [nzData]="employees" [nzLoading]="loading" ...>
       <thead>
         <tr>
-          <th nzWidth="100px">ID</th>
+          <th>ID</th>
           <th>Full Name</th>
           <th>Employee ID</th>
           <th>Membership ID</th>
           <th>Total Saving</th>
-          <th nzWidth="150px">Actions</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let emp of empTable.data">
+        <tr *ngFor="let emp of employees">
           <td>{{ emp.id }}</td>
           <td><strong>{{ emp.employeeFullName }}</strong></td>
           <td>{{ emp.employeeId }}</td>
           <td>{{ emp.membershipId }}</td>
-          <td>
-            <span style="font-weight: 600; color: #2d2786;">{{ (emp.totalSaving ?? 0) | number:'1.2-2' }} ETB</span>
-          </td>
+          <td>{{ (emp.totalSaving ?? 0) | number:'1.2-2' }} ETB</td>
           <td>
             <button nz-button nzType="link" (click)="getsavingById(emp.employeeId)">
               <i nz-icon nzType="eye"></i> View Details
@@ -90,73 +90,33 @@
         </tr>
       </tbody>
     </nz-table>
-  </div>
-
-  <div class="mobile-view">
-    <div class="saving-cards-container">
-      <nz-list [nzLoading]="loading" [nzGrid]="{ gutter: 16, xs: 24, sm: 12, md: 8, lg: 6, xl: 4 }">
-        <nz-list-item *ngFor="let emp of employees">
-          <nz-card [nzBordered]="true" class="saving-card" [nzActions]="[actionDetails]">
-            <nz-card-meta [nzAvatar]="avatarTemplate" [nzTitle]="emp.employeeFullName"
-              [nzDescription]="'Member ID: ' + emp.membershipId"></nz-card-meta>
-            <div class="card-extra-content">
-              <div class="info-row">
-                <span class="label">Employee ID:</span>
-                <span class="value">{{ emp.employeeId }}</span>
-              </div>
-              <div class="info-row highlight">
-                <span class="label">Total Saving:</span>
-                <span class="value">{{ (emp.totalSaving || 0) | number:'1.2-2' }} ETB</span>
-              </div>
-            </div>
-            <ng-template #avatarTemplate>
-              <nz-avatar [nzIcon]="'user'" class="bank-avatar"></nz-avatar>
-            </ng-template>
-            <ng-template #actionDetails>
-              <button nz-button nzType="link" (click)="getsavingById(emp.employeeId)">
-                <i nz-icon nzType="eye"></i> View Details
-              </button>
-            </ng-template>
-          </nz-card>
-        </nz-list-item>
-      </nz-list>
-      <div class="pagination-wrapper" *ngIf="total > 0">
-        <nz-pagination [nzPageIndex]="pageIndex + 1" [nzTotal]="total" [nzPageSize]="pageSize"
-          (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-          nzShowSizeChanger></nz-pagination>
-      </div>
-    </div>
   </div>
 </div>
 
+<!-- Employee-only View -->
 <div *ngIf="!haveRole('Admin') && haveRole('Employee')">
-  <div class="desktop-view">
-    <nz-table #myEmpTable [nzData]="myEmployees" [nzLoading]="loading" [nzFrontPagination]="false" [nzTotal]="total"
-      [nzPageIndex]="pageIndex + 1" [nzPageSize]="pageSize" [nzPageSizeOptions]="[5,10,20,30,40,50]" nzShowSizeChanger
-      (nzPageIndexChange)="onPageChange($event)" (nzPageSizeChange)="onPageSizeChange($event)"
-      [nzScroll]="{ x: '1000px' }" [nzBordered]="true" nzSize="middle">
-      <thead>
-        <tr>
-          <th>Full Name</th>
-          <th>Employee ID</th>
-          <th>Total Saving</th>
-          <th nzWidth="150px">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let emp of myEmpTable.data">
-          <td><strong>{{ emp.employeeFullName }}</strong></td>
-          <td>{{ emp.employeeId }}</td>
-          <td>
-            <span style="font-weight: 600; color: #2d2786;">{{ (emp.totalSaving || 0) | number:'1.2-2' }} ETB</span>
-          </td>
-          <td>
-            <button nz-button nzType="link" (click)="getsavingById(emp.employeeId)">
-              <i nz-icon nzType="eye"></i> View Details
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </div>
+  <nz-table [nzData]="myEmployees" [nzLoading]="loading" ...>
+    <thead>
+      <tr>
+        <th>Full Name</th>
+        <th>Employee ID</th>
+        <th>Total Saving</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let emp of myEmployees">
+       <ng-container *ngIf="emp.employeeId === currentUserId">
+        <td><strong>{{ emp.employeeFullName }}</strong></td>
+        <td>{{ emp.employeeId }}</td>
+        <td>{{ (emp.totalSaving ?? 0) | number:'1.2-2' }} ETB</td>
+        <td>
+          <button nz-button nzType="link" (click)="getsavingById(emp.employeeId)">
+            <i nz-icon nzType="eye"></i> View Details
+          </button>
+        </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </nz-table>
 </div>
