@@ -15,6 +15,7 @@ import { UserRoleService } from '../../service/user-role-service';
 import { NzTableModule } from "ng-zorro-antd/table";
 import { Auth } from '../../auth/auth';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 interface types {
   id: number;
@@ -32,8 +33,8 @@ interface types {
     NzButtonModule,
     NzCardModule,
     NzTableModule,
-    NzTabsModule
-
+    NzTabsModule ,
+    NzIconModule 
   ],
   templateUrl: './crete-update-user.html',
   styleUrl: './crete-update-user.css',
@@ -47,7 +48,8 @@ export class CreteUpdateUser extends BaseComponent<User> implements OnInit {
   roles: Role[] = [];
   users: any;
   allRoles: RoleTypesDto[] = [];
-
+  passwordVisible=false;
+  confirmPassword=false;
   constructor(private fb: FormBuilder
     ,
     protected userService: Userservice,

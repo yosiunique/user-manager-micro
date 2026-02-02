@@ -27,9 +27,20 @@
     <ng-container *ngIf="operation.status !== 'isUpdate'">
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired nzFor="password">Password</nz-form-label>
-        <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="passwordErrorTpl">
-          <input nz-input type="password" formControlName="password" id="password" placeholder="Enter password" />
+        <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="passwordErrorTpl">  
+          <nz-input-group  [nzSuffix]="passwordEyeTpl">
+          <input nz-input [type]="passwordVisible?'text':'password'"
+           formControlName="password" id="password" placeholder="Enter password" />
+          </nz-input-group>
         </nz-form-control>
+        <ng-template #passwordEyeTpl>
+     <span 
+          nz-icon 
+          [nzType]="passwordVisible ? 'eye-invisible' : 'eye'" 
+          (click)="passwordVisible = !passwordVisible" 
+          style="cursor: pointer; color: #1890ff;">
+        </span>
+    </ng-template>
         <ng-template #passwordErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please input your password!</ng-container>
           <ng-container *ngIf="control.hasError('minlength')">Password must be at least 6 characters.</ng-container>
@@ -41,9 +52,21 @@
       <nz-form-item>
         <nz-form-label [nzSpan]="7" nzRequired nzFor="confirmPassword">Confirm Password</nz-form-label>
         <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="confirmPasswordErrorTpl">
-          <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword"
+<nz-input-group  [nzSuffix]="passwordEyeTplconfi">
+          <input nz-input [type]="confirmPassword ? 'text' :'password' " formControlName="confirmPassword" id="confirmPassword"
             placeholder="Re-enter password" />
+
+            </nz-input-group>
         </nz-form-control>
+        
+          <ng-template #passwordEyeTplconfi>
+     <span 
+          nz-icon 
+          [nzType]="confirmPassword ? 'eye-invisible' : 'eye'" 
+          (click)="confirmPassword = !confirmPassword" 
+          style="cursor: pointer; color: #1890ff;">
+        </span>
+    </ng-template>
         <ng-template #confirmPasswordErrorTpl let-control>
           <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>
           <ng-container *ngIf="validateForm.hasError('passwordMismatch')">Passwords do not match!</ng-container>
@@ -181,8 +204,18 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired nzFor="password">New Password</nz-form-label>
       <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="passwordErrorTpl">
-        <input nz-input type="password" formControlName="password" id="password" placeholder="Enter new password" />
+        <nz-input-group  [nzSuffix]="passwordEyeTpl">
+        <input nz-input [type]="passwordVisible?'text' :'password' " formControlName="password" id="password" placeholder="Enter new password" />
+        </nz-input-group>
       </nz-form-control>
+        <ng-template #passwordEyeTpl>
+     <span 
+          nz-icon 
+          [nzType]="passwordVisible ? 'eye-invisible' : 'eye'" 
+          (click)="passwordVisible = !passwordVisible" 
+          style="cursor: pointer; color: #1890ff;">
+        </span>
+    </ng-template>
       <ng-template #passwordErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">Please input new password!</ng-container>
         <ng-container *ngIf="control.hasError('minlength')">Password must be at least 6 characters.</ng-container>
@@ -194,9 +227,20 @@
     <nz-form-item>
       <nz-form-label [nzSpan]="7" nzRequired nzFor="confirmPassword">Confirm Password</nz-form-label>
       <nz-form-control [nzSpan]="15" nzHasFeedback [nzErrorTip]="confirmPasswordErrorTpl">
-        <input nz-input type="password" formControlName="confirmPassword" id="confirmPassword"
+        <nz-input-group [nzSuffix]="passwordEyeTplconfir">
+        <input nz-input [type]="confirmPassword?'text' :'password' " formControlName="confirmPassword" id="confirmPassword"
           placeholder="Re-enter new password" />
+          </nz-input-group>
       </nz-form-control>
+
+          <ng-template #passwordEyeTplconfir>
+     <span 
+          nz-icon 
+          [nzType]="confirmPassword ? 'eye-invisible' : 'eye'" 
+          (click)="confirmPassword = !confirmPassword" 
+          style="cursor: pointer; color: #1890ff;">
+        </span>
+    </ng-template>
       <ng-template #confirmPasswordErrorTpl let-control>
         <ng-container *ngIf="control.hasError('required')">Please confirm your password!</ng-container>
         <ng-container *ngIf="resetFromPassword.hasError('passwordMismatch')">Passwords do not match!</ng-container>

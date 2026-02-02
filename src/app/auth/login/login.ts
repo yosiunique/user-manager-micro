@@ -8,16 +8,19 @@ import { SharedService } from '../../core/sharedService/shared-service';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzIconModule } from 'ng-zorro-antd/icon'; // Added for the eye icons
 
 @Component({
   selector: 'app-login',
+  standalone: true, // Ensure standalone if used in your project
   imports: [
     RouterModule,
     FormsModule,
     CommonModule,
-    NzFormModule ,   
-    NzButtonModule ,
-    NzInputModule ,
+    NzFormModule,
+    NzButtonModule,
+    NzInputModule,
+    NzIconModule, // Added
     ReactiveFormsModule
   ],
   templateUrl: './login.html',
@@ -31,6 +34,12 @@ export class Login implements OnInit {
   reset: boolean = false;
   token: string = '';
   enable: boolean = false;
+  showPasswordToggle=true;
+  userForm!:FormGroup ;
+  // Password visibility states
+  passwordVisible = false;
+  resetPasswordVisible = false;
+  confirmPasswordVisible = false;
 
   constructor(
     protected authService: Auth,
@@ -63,6 +72,15 @@ export class Login implements OnInit {
       role: [],
       enable: []
     }, { validators: this.passwordMatchValidator });
+
+
+    this.userForm=this.fb.group(
+      {
+        userName:['',Validators.required],
+        password:['' ,Validators.required]
+
+      }
+    )
   }
 
   passwordMatchValidator(group: AbstractControl) {
@@ -72,7 +90,9 @@ export class Login implements OnInit {
   }
 
   login() {
-    this.authService.login({ userName: this.userName, password: this.password }).subscribe({
+    if(this.userForm.invalid)
+      return ;
+    this.authService.login(this.userForm.value).subscribe({
       next: (response: any) => {
         this.reset = this.authService.getTokenofReset(response.token);
         const userName = this.authService.getUserNamebeforLogin(response.token);
