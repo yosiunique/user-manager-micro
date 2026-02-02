@@ -8,7 +8,7 @@
           <p class="hero-subtitle">
             Manage your loan repayments and savings efficiently with our comprehensive financial management system
           </p>
-          <div class="hero-actions" >
+          <div class="hero-actions" *ngIf="haveRole('Admin')">
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToSavings()">
               <i nz-icon nzType="dollar"></i>
               Manage Savings
@@ -29,7 +29,7 @@
   </div>
 
   <!-- Quick Stats -->
-  <div class="stats-section" *ngIf="haveRole('Admin')">
+  <div class="stats-section"   *ngIf="haveRole('Admin')" >
     <nz-row nzGutter="[16, 16]">
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
         <nz-statistic nzTitle="Total Savings" [nzValue]="isNumber(totalSavings) " nzPrefix="" nzSuffix="ETB"
@@ -95,7 +95,7 @@
   </div>
 
   <!-- Quick Actions -->
-  <div class="quick-actions">
+  <div class="quick-actions"   *ngIf="haveRole('Admin')">
     <h2 class="section-title">Quick Actions</h2>
     <nz-row nzGutter="[16, 16]">
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
