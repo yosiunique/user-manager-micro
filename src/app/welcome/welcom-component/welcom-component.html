@@ -8,7 +8,7 @@
           <p class="hero-subtitle">
             Manage your loan repayments and savings efficiently with our comprehensive financial management system
           </p>
-          <div class="hero-actions" *ngIf="haveRole('Admin')">
+          <div class="hero-actions" >
             <button nz-button nzType="primary" nzSize="large" (click)="navigateToSavings()">
               <i nz-icon nzType="dollar"></i>
               Manage Savings
@@ -51,7 +51,7 @@
   </div>
 
   <!-- Features Section -->
-  <div class="features-section">
+  <div class="features-section"   *ngIf="haveRole('Admin')>
     <h2 class="section-title">What You Can Do</h2>
     <nz-row nzGutter="[24, 24]">
       <div nz-col [nzXs]="24" [nzMd]="12">
