@@ -1,6 +1,6 @@
 export const enviroment = {
-    ISSUE_URL: 'http://10.1.12.70:8061/api/auth',
-    HOST: 'http://10.1.12.70:8061/api',
+    ISSUE_URL: 'http://localhost:8080/api/auth',
+    HOST: 'http://localhost:8080/api',
     REMOTE_HOST: 'http:'
 
 }

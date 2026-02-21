@@ -3,7 +3,8 @@ export interface Employee {
    employeeId: number;
    employeeFullName: string;
    membershipId: string;
-   totalSaving ?: number;     
+   totalSaving ?: number; 
+   totalShare?:number;    
    totalRepayments ?: number;  
 }
 
@@ -32,4 +33,5 @@ export interface Share {
    employee: Employee;
    totalSaving: number;
    noOfShare: number;
+   remark:string;
 }

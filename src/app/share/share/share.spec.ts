@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { Share } from './share';
+import { ShareComponent } from './share';
+import { Share } from '../../saving/model/saving';
 
 describe('Share', () => {
-  let component: Share;
-  let fixture: ComponentFixture<Share>;
+  let  component: ShareComponent;
+  let fixture: ComponentFixture<ShareComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Share]
+      declarations: [ShareComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(Share);
+    fixture = TestBed.createComponent(ShareComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

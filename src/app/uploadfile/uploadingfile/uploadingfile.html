@@ -20,6 +20,13 @@
           <span class="hint">The data will be associated with this specific month.</span>
         </div>
         }
+        @if(data==='share'){
+          <textarea 
+  nz-input 
+  [(ngModel)]="remark"
+  placeholder="Enter description">
+</textarea>
+        }
 
         <!-- File Selection -->
         <div class="form-item">

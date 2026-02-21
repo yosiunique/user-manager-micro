@@ -20,12 +20,12 @@ export class ShareService extends BaseService<Share> {
     return this.http.get<any>(`${enviroment.HOST}/share/search-by-name?name=${fullName}&page=${pageIndex}&size=${pageSize}`);
   }
 
-  importCsv(file: File) {
+  importCsv(file: File ,remark :string) {
     const formData = new FormData();
     formData.append('file', file);
 
     return this.http.post<Share[]>(
-      `${enviroment.HOST}/share/import-csv`,
+      `${enviroment.HOST}/share/import-csv/${remark}`,
       formData
     );
   }

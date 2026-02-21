@@ -77,7 +77,9 @@
           <th>Full Name</th>
           <th>Membership ID</th>
           <th>Employee ID</th>
+          <th>Remark</th>
           <th>No. of Share</th>
+          <th>Total Share</th>
           <th nzWidth="150px" *ngIf="haveRole('Admin')">Actions</th>
         </tr>
       </thead>
@@ -87,7 +89,10 @@
           <td><strong>{{ share?.employee?.employeeFullName }}</strong></td>
           <td>{{ share?.employee?.membershipId }}</td>
           <td>{{ share?.employee?.employeeId }}</td>
+           <td>{{share?.remark}}</td>
           <td>{{ share?.noOfShare }}</td>
+          <td>{{ share?.employee?.totalShare }}</td>
+          
           <td *ngIf="haveRole('Admin')">
             <div class="action-buttons">
               <button nz-button nzType="text" (click)="openDrawer(share)" nz-tooltip="Edit">
@@ -120,9 +125,19 @@
                 <span class="label">Employee ID:</span>
                 <span class="value">{{ share?.employee?.employeeId ?? '' }}</span>
               </div>
+
+               <div class="info-row highlight">
+                <span class="label"><b>Remark:</b></span>
+                <span class="value">{{ share?.remark }}</span>
+              </div>
               <div class="info-row highlight">
                 <span class="label">Shares:</span>
                 <span class="value">{{ share?.noOfShare }}</span>
+              </div>
+
+               <div class="info-row highlight">
+                <span class="label"> Total Shares:</span>
+                <span class="value">{{ share?.employee?.totalShare }}</span>
               </div>
             </div>
 
@@ -199,7 +214,9 @@
             <th>Full Name</th>
             <th>Membership ID</th>
             <th>Employee ID</th>
+            <th>remark</th>
             <th>No. of Share</th>
+            <th>Total Share</th>
           </tr>
         </thead>
         <tbody>
@@ -207,8 +224,10 @@
             <td>{{ myShare.id }}</td>
             <td><strong>{{ myShare.employee.employeeFullName }}</strong></td>
             <td>{{ myShare.employee.membershipId }}</td>
+            <td>{{myShare.remark}}</td>
             <td>{{ myShare.employee.employeeId }}</td>
             <td>{{ myShare.noOfShare }}</td>
+            <td>{{myShare.employee.totalShare}}</td>
           </tr>
         </tbody>
       </nz-table>

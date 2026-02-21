@@ -218,6 +218,7 @@ avatarTemplate: TemplateRef<void> | null | undefined;
   }
 
   uploadFileShare() {
+    this.drawerVisible=false ;
     this.modal.create({
       nzTitle: 'Uploading file',
       nzContent: Uploadingfile,
@@ -237,3 +238,4 @@ avatarTemplate: TemplateRef<void> | null | undefined;
 
 }
 }
+

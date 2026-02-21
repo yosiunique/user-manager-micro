@@ -46,7 +46,7 @@ export class Uploadingfile {
   selectedFile: File | null = null;
   uploading: boolean = false;
   forMonth: Date | null = new Date(); // Default to current month for convenience
-
+  remark:string='';
   getTitle(): string {
     switch (this.data) {
       case 'saving': return 'Saving Data Upload';
@@ -170,7 +170,7 @@ export class Uploadingfile {
 
   uploadFileShare() {
     this.uploading = true;
-    this.shareService.importCsv(this.selectedFile!)
+    this.shareService.importCsv(this.selectedFile! ,this.remark)
       .pipe(finalize(() => (this.uploading = false)))
       .subscribe({
         next: (res: any) => this.handleUploadSuccess(res),
