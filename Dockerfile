@@ -1,7 +1,7 @@
 # =========================
 # Build Angular application
 # =========================
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /usr/src/app
 
@@ -23,13 +23,9 @@ FROM nginx:alpine
 
 RUN rm -rf /usr/share/nginx/html/*
 
-# IMPORTANT:
-# Change "user-manager" if your actual Angular project
-# name in angular.json is different.
-COPY --from=builder /usr/src/app/dist/user-manager/browser /usr/share/nginx/html
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Render/Nginx configuration
-COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+COPY --from=builder /usr/src/app/dist/user-manager/browser /usr/share/nginx/html
 
 EXPOSE 80
 
