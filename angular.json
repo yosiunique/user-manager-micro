@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-             "outputPath": "dist/loan-repayments", 
+             "outputPath": "dist/user-manager",
             "browser": "src/main.ts",
             "polyfills": [
               "zone.js"
