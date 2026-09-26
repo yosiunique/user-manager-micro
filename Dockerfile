@@ -1,16 +1,36 @@
-FROM node:18-alpine as builder
+# =========================
+# Build Angular application
+# =========================
+FROM node:18-alpine AS builder
 
-RUN npm install -g @angular/cli
-RUN npm install -g npm@8.5.3
 WORKDIR /usr/src/app
-ARG config=staging
+
 COPY package.json package-lock.json ./
+
 RUN npm install
+
 COPY . .
-RUN ng build --configuration ${config}
 
-# Use Nginx to serve the Angular app
-FROM nginx
+ARG config=staging
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /usr/src/app/dist/loan-repayments/browser /usr/share/nginx/html
+RUN npx ng build --configuration=${config}
+
+
+# =========================
+# Nginx runtime
+# =========================
+FROM nginx:alpine
+
+RUN rm -rf /usr/share/nginx/html/*
+
+# IMPORTANT:
+# Change "user-manager" if your actual Angular project
+# name in angular.json is different.
+COPY --from=builder /usr/src/app/dist/user-manager/browser /usr/share/nginx/html
+
+# Render/Nginx configuration
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

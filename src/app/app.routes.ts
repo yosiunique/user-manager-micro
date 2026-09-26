@@ -6,12 +6,7 @@ import { AdminDashboard } from './admin/admin-dashboard/admin-dashboard';
 import { Mainlayout } from './mainlayout/mainlayout/mainlayout';
 import { CreteUpdateUser } from './admin/crete-update-user/crete-update-user';
 import { Notfound } from './notfound/notfound/notfound';
-import { SavingComponenet } from './saving/saving-componenet/saving-componenet';
-import { LoanRepaymentsComponenets } from './loan/loan-repayments-componenets/loan-repayments-componenets';
 import { WelcomComponent } from './welcome/welcom-component/welcom-component';
-import { EmployeeComponent } from './employee/employee';
-import { ShareComponent } from './share/share/share';
-import { LoanComponent } from './loan/loan/loan';
 
 export const routes: Routes = [
   {
@@ -30,57 +25,15 @@ export const routes: Routes = [
         path: 'welcome',
         component: WelcomComponent
       },
-      {
-        path: 'saving',
-        children: [
-          {
-            path: 'view',
-            component: SavingComponenet, canActivate: [AuthGurd]
-          }
-        ]
-      },
-      {
-        path: 'loan-repayment',
-        children: [
-          {
-            path: 'view',
-            component: LoanRepaymentsComponenets, canActivate: [AuthGurd]
-          }
-        ]
-      },
+
       {
         path: 'admin',
         children: [
           { path: 'users', component: AdminDashboard, canActivate: [AuthGurd] },
         ]
       },
-      {
-        path: 'loan',
-        children: [
-          {
-            path: 'view',
-            component: LoanComponent, canActivate: [AuthGurd]
-          }
-        ]
-      },
-      {
-        path: 'employee',
-        children: [
-          {
-            path: 'view',
-            component: EmployeeComponent
-          }
-        ]
-      },
-      {
-        path: 'share',
-        children: [
-          {
-            path: 'view',
-            component: ShareComponent
-          }
-        ]
-      }
+
+
 
     ], canActivate: [AuthGurd]
   },

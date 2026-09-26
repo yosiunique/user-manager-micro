@@ -1,131 +1,210 @@
 <div class="welcome-container">
-  <!-- Hero Section -->
+
+  <!-- Welcome / User Profile Section -->
+
   <div class="hero-section">
-    <nz-row [nzGutter]="[32, 32]" nzAlign="middle">
-      <nz-col [nzXs]="24" [nzLg]="14">
-        <div class="hero-content">
-          <h1 class="hero-title">ተጨማሪ እጣ በመግዛት ተጠቃሚነትዎን ይጨምሩ</h1>
-          <p class="hero-subtitle">
-            Manage your loan repayments and savings efficiently with our comprehensive financial management system
-          </p>
-          <div class="hero-actions" *ngIf="haveRole('Admin')">
-            <button nz-button nzType="primary" nzSize="large" (click)="navigateToSavings()">
-              <i nz-icon nzType="dollar"></i>
-              Manage Savings
-            </button>
-            <button nz-button nzType="default" nzSize="large" (click)="navigateToLoans()">
-              <i nz-icon nzType="transaction"></i>
-              Manage Loans
-            </button>
-          </div>
+    <div class="hero-content">
+
+
+      <h1 class="hero-title">
+        Welcome, {{ currentUser?.firstName || currentUser?.username || 'User' }}
+      </h1>
+
+      <p class="hero-subtitle">
+        Manage your account, profile, roles, and user information from one place.
+      </p>
+
+      <div class="user-info" *ngIf="currentUser">
+        <div class="user-info-item" *ngIf="currentUser.username">
+          <strong>Username:</strong>
+          <span>{{ currentUser.username }}</span>
         </div>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzLg]="10">
-        <!-- <div class="hero-image">
-          <div class="hero-placeholder">💰</div>
-        </div> -->
-      </nz-col>
-    </nz-row>
-  </div>
 
-  <!-- Quick Stats -->
-  <div class="stats-section"   *ngIf="haveRole('Admin')" >
-    <nz-row nzGutter="[16, 16]">
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Total Savings" [nzValue]="isNumber(totalSavings) " nzPrefix="" nzSuffix="ETB"
-          [nzValueStyle]="{ color: '#52c41a' }"></nz-statistic>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Active Loans" nzSuffix="ETB" [nzValue]="isNumber(activeLoans)"
-          [nzValueStyle]="{ color: '#1890ff' }">ETB</nz-statistic>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Total Users" nzSuffix="Users" [nzValue]="isNumber(totalUsers)"
-          [nzValueStyle]="{ color: '#faad14' }">Users</nz-statistic>
-      </nz-col>
-      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="6">
-        <nz-statistic nzTitle="Pending Actions" [nzValue]="isNumber(pendingActions)"
-          [nzValueStyle]="{ color: '#722ed1' }"></nz-statistic>
-      </nz-col>
-    </nz-row>
-  </div>
+        <div class="user-info-item" *ngIf="currentUser.email">
+          <strong>Email:</strong>
+          <span>{{ currentUser.email }}</span>
+        </div>
 
-  <!-- Features Section -->
-  <div class="features-section"   *ngIf="haveRole('Admin')">
-    <h2 class="section-title">What You Can Do</h2>
-    <nz-row nzGutter="[24, 24]">
-      <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card class="feature-card" nzHoverable (click)="navigateToSavings()">
-          <div class="feature-content">
-            <div class="feature-icon savings">
-              <i nz-icon nzType="dollar" nzTheme="outline"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Savings Management</h3>
-              <p>Track and manage all your savings accounts, set goals, and monitor your financial growth</p>
-              <ul>
-                <li>Import savings data from CSV</li>
-                <li>View savings history and trends</li>
-                <li>Set and track savings goals</li>
-              </ul>
-            </div>
-          </div>
-        </nz-card>
+        <div class="user-info-item" *ngIf="currentUser.firstName || currentUser.lastName">
+          <strong>Name:</strong>
+          <span>
+        {{ currentUser.firstName || '' }}
+            {{ currentUser.lastName || '' }}
+      </span>
+        </div>
       </div>
-      <div nz-col [nzXs]="24" [nzMd]="12">
-        <nz-card class="feature-card" nzHoverable (click)="navigateToLoans()">
-          <div class="feature-content">
-            <div class="feature-icon loans">
-              <i nz-icon nzType="transaction" nzTheme="outline"></i>
-            </div>
-            <div class="feature-text">
-              <h3>Loan Repayments</h3>
-              <p>Manage loan repayment schedules, track payments, and monitor outstanding balances</p>
-              <ul>
-                <li>Import loan data from CSV files</li>
-                <li>Track payment schedules</li>
-                <li>Monitor outstanding balances</li>
-                <li>Generate repayment reports</li>
-              </ul>
-            </div>
-          </div>
-        </nz-card>
-      </div>
-    </nz-row>
+
+    </div>
+
+
   </div>
 
-  <!-- Quick Actions -->
-  <div class="quick-actions"   *ngIf="haveRole('Admin')">
-    <h2 class="section-title">Quick Actions</h2>
-    <nz-row nzGutter="[16, 16]">
+  <!-- User Statistics -->
+
+  <div class="stats-section" *ngIf="haveRole('Admin')">
+
+    <h2 class="section-title">User Management Overview</h2>
+
+    <nz-row [nzGutter]="[16, 16]">
+
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
-        <nz-card class="action-card" nzHoverable (click)="navigateToSavings()">
-          <div class="action-content">
-            <i nz-icon nzType="plus-circle" class="action-icon"></i>
-            <h4>Add New Record</h4>
-            <p>Create new savings or loan records manually</p>
-          </div>
+        <nz-card class="stat-card">
+          <nz-statistic
+            nzTitle="Total Users"
+            [nzValue]="totalUsers"
+            nzSuffix="Users"
+            [nzValueStyle]="{ color: '#1890ff' }">
+          </nz-statistic>
         </nz-card>
       </nz-col>
+
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
-        <nz-card class="action-card" nzHoverable (click)="navigateToSavings()">
-          <div class="action-content">
-            <i nz-icon nzType="upload" class="action-icon"></i>
-            <h4>Import CSV</h4>
-            <p>Bulk import data from CSV files</p>
-          </div>
+        <nz-card class="stat-card">
+          <nz-statistic
+            nzTitle="My Roles"
+            [nzValue]="userRoles.length"
+            nzSuffix="Roles"
+            [nzValueStyle]="{ color: '#52c41a' }">
+          </nz-statistic>
         </nz-card>
       </nz-col>
+
       <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
-        <nz-card class="action-card" nzHoverable (click)="navigateToSavings()">
-          <div class="action-content">
-            <i nz-icon nzType="bar-chart" class="action-icon"></i>
-            <h4>View Reports</h4>
-            <p>Generate comprehensive financial reports</p>
-          </div>
+        <nz-card class="stat-card">
+          <nz-statistic
+            nzTitle="Account Status"
+            [nzValue]="accountStatus"
+            [nzValueStyle]="{ color: '#722ed1' }">
+          </nz-statistic>
         </nz-card>
       </nz-col>
+
     </nz-row>
+
+  </div>
+
+  <!-- Current User Information -->
+
+  <div class="user-section">
+    <h2 class="section-title">My Account</h2>
+
+    <nz-card class="user-card">
+
+      <div class="user-profile">
+
+        <div class="user-avatar">
+          {{ getInitials() }}
+        </div>
+
+        <div class="user-details">
+
+          <h3>
+            {{ currentUser?.firstName || '' }}
+            {{ currentUser?.lastName || '' }}
+          </h3>
+
+          <p *ngIf="currentUser?.username">
+            <strong>Username:</strong>
+            {{ currentUser.username }}
+          </p>
+
+          <p *ngIf="currentUser?.email">
+            <strong>Email:</strong>
+            {{ currentUser.email }}
+          </p>
+
+          <p>
+            <strong>Status:</strong>
+            {{ accountStatus }}
+          </p>
+
+          <div class="roles" *ngIf="userRoles.length > 0">
+            <strong>Roles:</strong>
+
+            <span
+              class="role-tag"
+              *ngFor="let role of userRoles">
+          {{ role }}
+        </span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </nz-card>
+
+  </div>
+
+  <!-- User Management Actions -->
+
+  <div class="quick-actions" *ngIf="haveRole('Admin')">
+    <h2 class="section-title">User Management</h2>
+
+    <nz-row [nzGutter]="[16, 16]">
+
+      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+
+        <nz-card class="action-card">
+          <div class="action-content">
+
+            <div class="action-icon">
+              <i nz-icon nzType="team" nzTheme="outline"></i>
+            </div>
+
+            <h4>User Management</h4>
+
+            <p>
+              View, create, update, and manage system users.
+            </p>
+
+          </div>
+        </nz-card>
+
+      </nz-col>
+
+      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+
+        <nz-card class="action-card">
+          <div class="action-content">
+
+            <div class="action-icon">
+              <i nz-icon nzType="user" nzTheme="outline"></i>
+            </div>
+
+            <h4>My Profile</h4>
+
+            <p>
+              View and manage your personal account information.
+            </p>
+
+          </div>
+        </nz-card>
+
+      </nz-col>
+
+      <nz-col [nzXs]="24" [nzSm]="12" [nzMd]="8">
+
+        <nz-card class="action-card">
+          <div class="action-content">
+
+            <div class="action-icon">
+              <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+            </div>
+
+            <h4>Roles & Permissions</h4>
+
+            <p>
+              Manage user roles and system permissions.
+            </p>
+
+          </div>
+        </nz-card>
+
+      </nz-col>
+
+    </nz-row>
+
   </div>
 
 </div>
